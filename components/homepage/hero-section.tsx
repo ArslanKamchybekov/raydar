@@ -22,7 +22,7 @@ export default function HeroSection() {
                 </Link>
 
                 <Link
-                    href="https://discord.gg/HUcHdrrDgY"
+                    href=""
                     target='_blank'
                     className="mt-5"
                     aria-label="Join Discord (opens in a new tab)"
@@ -33,10 +33,10 @@ export default function HeroSection() {
                     </Button>
                 </Link>
                 <Link
-                    href="https://github.com/michaelshimeles/nextjs14-starter-template"
+                    href=""
                     target='_blank'
                     className='animate-buttonheartbeat border p-2 rounded-full mt-5 hover:dark:bg-black hover:cursor-pointer'
-                    aria-label="View NextJS 14 Starter Template on GitHub"
+                    aria-label="View on Github (opens in a new tab)"
                 >
                     <Github className='w-5 h-5' aria-hidden="true" />
                 </Link>
