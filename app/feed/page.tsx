@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { getFoundItems } from '@/app/actions/foundItems';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,6 +38,8 @@ const FeedPage = () => {
     fetchItems();
   }, []);
 
+
+
   const filteredItems = items.filter((item: any) => {
     const searchLower = searchQuery.toLowerCase();
     return (
@@ -48,6 +51,8 @@ const FeedPage = () => {
       )
     );
   });
+
+  console.log(filteredItems);
 
   const handleItemClick = (item: any) => {
     setSelectedItem(item);
@@ -89,13 +94,13 @@ const FeedPage = () => {
                   <CardTitle className="text-xl">{item.category}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {item.image_id && (
-                    <img
-                      src={`/api/images/${item.image_id}`}
-                      alt={item.description || 'Found item'}
-                      className="w-full h-48 object-cover rounded-md mb-4"
-                    />
-                  )}
+                  <Image
+                    src={item.image_url}
+                    alt={item.description || 'Found item'}
+                    width={500}
+                    height={500}
+                    className="w-full h-48 object-cover rounded-md mb-4"
+                  />
                   <div className="space-y-2">
                     <p className="text-sm text-muted-foreground">
                       Location: {item.location_name}
@@ -141,10 +146,12 @@ const FeedPage = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       {selectedItem.image_id && (
-                        <img
-                          src={`/api/images/${selectedItem.image_id}`}
+                        <Image
+                          src={selectedItem.image_url}
                           alt={selectedItem.description || 'Found item'}
-                          className="w-full h-64 object-cover rounded-lg"
+                          width={500}
+                          height={500}
+                          className="w-full h-48 object-cover rounded-md mb-4"
                         />
                       )}
                     </div>
