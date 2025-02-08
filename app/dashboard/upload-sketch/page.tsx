@@ -76,7 +76,7 @@ export default function UploadSketchPage() {
           body: JSON.stringify({
             image_id: image.image_id,
             description,
-            strictness: strictness === Strictness.LOW ? 0.3 : strictness === Strictness.MEDIUM ? 0.5 : 0.7,
+            threshold: strictness === Strictness.LOW ? 0.3 : strictness === Strictness.MEDIUM ? 0.5 : 0.7,
           }),
         }
       );
@@ -135,7 +135,7 @@ export default function UploadSketchPage() {
               </div>
               
               <div>
-                <Label htmlFor="strictness">Strictness Level</Label>
+                <Label htmlFor="strictness">Threshold</Label>
                 <Select
                   value={strictness}
                   onValueChange={handleStrictnessChange}
