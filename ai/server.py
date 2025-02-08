@@ -5,6 +5,7 @@ from config import supabase
 from dotenv import load_dotenv
 import os
 from io import BytesIO
+from storage3.exceptions import StorageApiError
 
 import torch
 import torchvision.models as models
@@ -14,16 +15,12 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 load_dotenv()
-
-# SUPABASE INIT
-supabase_url = os.getenv("SUPABASE_URL")
-supabase_key = os.getenv("SUPABASE_KEY")
-supabase = supabase.create_client(supabase_url=supabase_url, supabase_key=supabase_key)
 storage = supabase.storage
 bucket_name = "lost_images"
 
 # MODEL INIT
 # FIXME: This is giving warnings. Fix it before submission.
+#########################
 class_labels_path = 'classes.txt'  
 with open(class_labels_path, 'r') as file:
     class_labels = [line.strip() for line in file.readlines()]
@@ -46,35 +43,66 @@ CORS(app)  # Enable CORS for all routes
 
 def predict_the_image(image_data):
     image = Image.open(BytesIO(image_data))
+    image = transform(image).unsqueeze(0)
+    image = image.to(device)
 
+    with torch.no_grad():  # No need to calculate gradients during inference
+        outputs = model(image)  # Get raw outputs (logits)
+        # Get the predicted class (the one with the highest score)
+        _, predicted_class = torch.max(outputs, 1)
+
+    return class_labels[predicted_class.item()]
 
 
 @app.route('/', methods=['GET'])
 def health_check():
     return jsonify({"message": "Server is up and running!"}), 200
 
-@app.route('/get_keywords', methods=["POST"])
-def get_image():
-    # Get only keywords from image
+@app.route('/get_images', methods=["POST"])
+def get_images():
+    # Get all images that match description and image
     # Input -> { image_id: string, description: string }
-    # Go to lost_items bucket and get ${image_id}.jpg
-    # Output -> { keyword: string }
+    # Output -> { images: rows[] }
+
     data = request.get_json()
     image_id = data["image_id"]
-    image_path = image_id + ".jpg"
-    image_data = storage.from_(bucket_name).download(image_path)
+    description = data["description"]
+    extensions = [".JPG", ".jpg", ".png"]
 
-    if not image_data:
-        abort(400, "Bad Request: Missing or invalid parameter")
+    for ext in extensions:
+        image_path = f"{image_id}{ext}"
+        
+        try:
+            # Try to get the image from storage
+            image_data = storage.from_(bucket_name).download(image_path)
+            
+            # If image is found, break the loop
+            break
+        except StorageApiError as e:
+            if e.code == "not_found":
+                # If file not found, try the next extension
+                print(f"Image with extension {ext} not found, trying next extension.")
+            else:
+                # For other errors, stop the loop
+                print(f"Error fetching image with extension {ext}: {e.message}")
+                break
+        except Exception as e:
+            # Handle any other exceptions
+            print(f"Unexpected error: {str(e)}")
+            break
 
-    
+    label = predict_the_image(image_data)
+    print(f"Predicted keyword: {label}")
 
 
-    return jsonify({"keywords": ["Hello", "world"]})
-     
+    # This is Josh's section to analyze the description. He will return an array of rows.
 
-    pass
 
+    #-----------------------------------------------------------------------------------
+
+    # Once Josh is done with analysis, he will return rows. Merge with your rows. And return all rows.
+
+    return jsonify({"rows": "label"})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5500, debug=False)
