@@ -1,0 +1,3 @@
+# Having a 44 MB model in a commit is VERY BAD
+*.pth
+headphone_drawing.*
