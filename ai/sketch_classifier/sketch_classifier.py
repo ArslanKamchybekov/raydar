@@ -8,7 +8,7 @@ import os
 
 # MODEL INIT
 class SketchClassifier:
-    def __init__(self, model_path='sketch_classifier/resnet18_trained_model.pth', class_labels_path='sketch_classifier/classes.txt'):
+    def __init__(self, model_path='sketch_classifier/resnet18_trained_modelv2.pth', class_labels_path='sketch_classifier/classes.txt'):
         """Initialize the image classifier."""
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.class_labels = self._load_class_labels(class_labels_path)
@@ -16,11 +16,14 @@ class SketchClassifier:
         self.transform = self._get_transform()
     
     def _load_class_labels(self, class_labels_path):
-        """Load class labels from a file."""
+        """Load class labels from a file, ignoring empty lines."""
         if not os.path.exists(class_labels_path):
             raise FileNotFoundError(f"Class labels file '{class_labels_path}' not found.")
+        
         with open(class_labels_path, 'r') as file:
-            return [line.strip() for line in file.readlines()]
+            labels = [line.strip() for line in file.readlines() if line.strip()]  # Ignore empty lines
+        
+        return labels
     
     def _load_model(self, model_path):
         """Load the trained model."""
@@ -31,7 +34,7 @@ class SketchClassifier:
         model = models.resnet18(weights=None)  
         
         # Adjust the final fully connected layer for 250 classes
-        model.fc = nn.Linear(model.fc.in_features, 250)  # 250 is the new number of classes
+        model.fc = nn.Linear(model.fc.in_features, len(self.class_labels))  # 250 is the new number of classes
         
         # Load the state dict, with the number of classes now matching
         model.load_state_dict(torch.load(model_path, map_location=self.device))

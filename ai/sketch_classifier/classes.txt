@@ -79,7 +79,6 @@ eyeglasses
 face
 fan
 feather
-filelist.txt
 fire hydrant
 fish
 flashlight
