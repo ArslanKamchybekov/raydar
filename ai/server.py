@@ -3,16 +3,16 @@ from flask_cors import CORS
 
 from config import supabase
 from dotenv import load_dotenv
-import os
 from io import BytesIO
-from storage3.exceptions import StorageApiError
+from storage3.exceptions import StorageApiError # type: ignore
 
 import torch
 import torchvision.models as models
 import torch.nn as nn
 from torchvision import transforms
 from PIL import Image
-import matplotlib.pyplot as plt
+
+from text_extraction.main import predict_the_description_main
 
 load_dotenv()
 storage = supabase.storage
@@ -54,6 +54,10 @@ def predict_the_image(image_data):
     return class_labels[predicted_class.item()]
 
 
+def predict_the_description(input_description, threshold=0.45):
+    description_analysis_rows = predict_the_description_main(input_description, threshold)
+    return description_analysis_rows
+
 @app.route('/', methods=['GET'])
 def health_check():
     return jsonify({"message": "Server is up and running!"}), 200
@@ -67,6 +71,7 @@ def get_images():
     data = request.get_json()
     image_id = data["image_id"]
     description = data["description"]
+    threshold = data["threshold"]
     extensions = [".JPG", ".jpg", ".png"]
 
     for ext in extensions:
@@ -97,7 +102,8 @@ def get_images():
 
     # This is Josh's section to analyze the description. He will return an array of rows.
 
-
+    description_analysis_rows = predict_the_description(description, threshold)
+    
     #-----------------------------------------------------------------------------------
 
     # Once Josh is done with analysis, he will return rows. Merge with your rows. And return all rows.
