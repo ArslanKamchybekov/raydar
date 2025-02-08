@@ -135,7 +135,7 @@ model lost_items { // When user uploads a lost sketch/image, the images get ente
   id              BigInt                 @id @default(autoincrement())
   created_at      DateTime               @default(now())
   image_id        String                 @default(uuid())
-  image_name      String 
+  description     String?
 }
 
 

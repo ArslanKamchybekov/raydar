@@ -12,7 +12,7 @@ import PageWrapper from "@/components/wrapper/page-wrapper"
 
 export default function UploadSketchPage() {
   const [file, setFile] = useState<File | null>(null)
-  const [imageName, setImageName] = useState("")
+  const [description, setDescription] = useState("")
   const [isUploading, setIsUploading] = useState(false)
   const router = useRouter()
 
@@ -24,10 +24,10 @@ export default function UploadSketchPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!file || !imageName) {
+    if (!file || !description) {
       toast({
         title: "Error",
-        description: "Please select a file and enter an image name.",
+        description: "Please select a file and enter a description.",
         variant: "destructive",
       })
       return
@@ -36,14 +36,34 @@ export default function UploadSketchPage() {
     setIsUploading(true)
 
     try {
-      await uploadLostItemSketch(file, imageName)
+      // Upload file to database
+      const imageId = await uploadLostItemSketch(file, description)
+
+      // Send POST request to server with description and imageId
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/get_keywords`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          image_id: imageId,
+          description,
+        }),
+      })
+
+      console.log("Response:", response)
+
+      if (!response.ok) {
+        throw new Error("Failed to send data to the server")
+      }
+
       toast({
         title: "Success",
         description: "Your sketch has been uploaded successfully.",
       })
       router.push("/") // Redirect to home page or a confirmation page
     } catch (error) {
-      console.error("Error uploading sketch:", error)
+      console.error("Error:", error)
       toast({
         title: "Error",
         description: "Failed to upload sketch. Please try again.",
@@ -56,7 +76,7 @@ export default function UploadSketchPage() {
 
   return (
     <PageWrapper>   
-        <div className="container mx-auto py-8">
+        <div className="w-full max-w-md p-4">
         <Card>
             <CardHeader>
             <CardTitle>Upload Lost Item Sketch</CardTitle>
@@ -68,12 +88,12 @@ export default function UploadSketchPage() {
                 <Input id="file" type="file" onChange={handleFileChange} accept="image/*" required />
                 </div>
                 <div>
-                <Label htmlFor="imageName">Image Name</Label>
+                <Label htmlFor="description">Description</Label>
                 <Input
-                    id="imageName"
+                    id="description"
                     type="text"
-                    value={imageName}
-                    onChange={(e) => setImageName(e.target.value)}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                     required
                 />
                 </div>
@@ -87,4 +107,3 @@ export default function UploadSketchPage() {
     </PageWrapper>
   )
 }
-
