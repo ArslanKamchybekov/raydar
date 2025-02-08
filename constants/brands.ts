@@ -11,4 +11,9 @@ export const brands = [
   "jbl",
   "beats",
   "asus",
+  "butun",
+  "other",
+  "hymy sports",
+  "texas instruments",
+  "jabra",
 ];

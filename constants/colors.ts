@@ -3,6 +3,7 @@ export const colors = [
   "blue",
   "green",
   "black",
+  "navy",
   "white",
   "gray",
   "yellow",
@@ -10,4 +11,5 @@ export const colors = [
   "pink",
   "orange",
   "brown",
+  "silver",
 ];
