@@ -27,20 +27,7 @@ def predict_the_description(input_description, threshold=0.45):
     description_analysis_rows = predict_the_description_main(input_description, threshold)
     return description_analysis_rows
 
-@app.route('/', methods=['GET'])
-def health_check():
-    return jsonify({"message": "Server is up and running!"}), 200
-
-@app.route('/get_images', methods=["POST"])
-def get_images():
-    # Get all images that match description and image
-    # Input -> { image_id: string, description: string }
-    # Output -> { images: rows[] }
-
-    data = request.get_json()
-    image_id = data["image_id"]
-    description = data["description"]
-    threshold = data["threshold"]
+def predict_the_sketch(image_id):
     extensions = [".JPG", ".jpg", ".png"]
 
     for ext in extensions:
@@ -79,6 +66,25 @@ def get_images():
     )
     
     sketch_predictive_rows = sketch_predictive_response.data
+    return sketch_predictive_rows
+    
+
+@app.route('/', methods=['GET'])
+def health_check():
+    return jsonify({"message": "Server is up and running!"}), 200
+
+@app.route('/get_images', methods=["POST"])
+def get_images():
+    # Get all images that match description and image
+    # Input -> { image_id: string, description: string }
+    # Output -> { images: rows[] }
+
+    data = request.get_json()
+    image_id = data["image_id"]
+    description = data["description"]
+    threshold = data["threshold"]
+    
+    sketch_predictive_rows = predict_the_sketch(image_id)
 
 
     # This is Josh's section to analyze the description. He will return an array of rows.
