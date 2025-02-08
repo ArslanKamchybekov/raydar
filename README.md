@@ -13,6 +13,9 @@ Raydar is the smart lost and found platform designed specifically for UIC studen
 - **Get Alerts**  
   Receive notifications when a match is found. Raydar will notify you when your lost item has been found.
 
+- **HeatMaps**
+  Visualize high-loss areas on campus, helping users check the most probable locations for their lost belongings.
+
 ## Tech Stack
 
 Raydar is built with a variety of cutting-edge technologies to ensure a seamless experience:

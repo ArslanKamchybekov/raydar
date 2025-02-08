@@ -12,6 +12,11 @@ export default function Footer() {
                             <p className="font-medium">Navigation</p>
                             <ul className="mt-6 space-y-4 text-sm">
                                 <li>
+                                    <Link href="/lost-items" className="transition hover:opacity-75">
+                                        Lost Items
+                                    </Link>
+                                </li>
+                                <li>
                                     <Link href="/found-items" className="transition hover:opacity-75">
                                         Found Items
                                     </Link>
@@ -24,6 +29,27 @@ export default function Footer() {
                                 <li>
                                     <Link href="/how-it-works" className="transition hover:opacity-75">
                                         How It Works
+                                    </Link>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <p className="font-medium">Support</p>
+                            <ul className="mt-6 space-y-4 text-sm">
+                                <li>
+                                    <Link href="/faq" className="transition hover:opacity-75">
+                                        FAQ
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href="/contact" className="transition hover:opacity-75">
+                                        Contact Us
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href="/safety-tips" className="transition hover:opacity-75">
+                                        Safety Tips
                                     </Link>
                                 </li>
                             </ul>
