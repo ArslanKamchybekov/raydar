@@ -3,7 +3,7 @@
 import { supabase } from "@/lib/supabase"
 import { randomUUID } from "crypto"
 
-export async function uploadLostItemSketch(file: File, imageName: string) {
+export async function uploadLostItemSketch(file: File, description: string) {
   try {
     const imageId = randomUUID()
     const fileExt = file.name.split('.').pop()
@@ -20,7 +20,7 @@ export async function uploadLostItemSketch(file: File, imageName: string) {
       .insert([
         {
           image_id: imageId,
-          image_name: imageName,
+          description: description,
         },
       ])
       .select()

@@ -1,65 +1,111 @@
-'use client'
+"use client"
 
-import React, { useEffect, useState } from 'react';
-import { getFoundItems } from '@/app/actions/foundItems';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import PageWrapper from '@/components/wrapper/page-wrapper';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { useEffect, useState, useCallback } from "react"
+import Image from "next/image"
+import { getFoundItems } from "@/app/actions/foundItems"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import PageWrapper from "@/components/wrapper/page-wrapper"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import debounce from "lodash/debounce"
 
 const FeedPage = () => {
-  const [items, setItems] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedItem, setSelectedItem] = useState<any>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [items, setItems] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedItem, setSelectedItem] = useState<any>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [sortBy, setSortBy] = useState("date")
+  const itemsPerPage = 9
 
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        setLoading(true);
-        const data = await getFoundItems();
-        setItems(data);
+        setLoading(true)
+        const data = await getFoundItems()
+        setItems(data)
       } catch (err: any) {
-        setError(err);
+        setError(err)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchItems();
-  }, []);
+    fetchItems()
+  }, [])
 
-  const filteredItems = items.filter((item: any) => {
-    const searchLower = searchQuery.toLowerCase();
-    return (
-      item.description?.toLowerCase().includes(searchLower) ||
-      item.location_name.toLowerCase().includes(searchLower) ||
-      item.category.toLowerCase().includes(searchLower) ||
-      (item.keywords || []).some((keyword: string) => 
-        keyword.toLowerCase().includes(searchLower)
+  const debouncedSearch = useCallback(
+    debounce((value: string) => setSearchQuery(value), 300),
+    [],
+  )
+
+  const sortItems = (items: any[]) => {
+    return [...items].sort((a, b) => {
+      if (sortBy === "date") {
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      } else if (sortBy === "category") {
+        return a.category.localeCompare(b.category)
+      }
+      return 0
+    })
+  }
+
+  const filteredItems = sortItems(
+    items.filter((item: any) => {
+      const searchLower = searchQuery.toLowerCase()
+      return (
+        item.description?.toLowerCase().includes(searchLower) ||
+        item.location_name.toLowerCase().includes(searchLower) ||
+        item.category.toLowerCase().includes(searchLower) ||
+        (item.keywords || []).some((keyword: string) => keyword.toLowerCase().includes(searchLower))
       )
-    );
-  });
+    }),
+  )
+
+  const indexOfLastItem = currentPage * itemsPerPage
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage
+  const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem)
 
   const handleItemClick = (item: any) => {
-    setSelectedItem(item);
-    setIsModalOpen(true);
-  };
+    setSelectedItem(item)
+    setIsModalOpen(true)
+  }
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber)
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-      </div>
-    );
+      <PageWrapper>
+        <div className="container mx-auto py-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, index) => (
+              <Card key={index} className="animate-pulse">
+                <CardHeader>
+                  <CardTitle className="text-xl">Loading...</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="w-full h-48 bg-gray-200 rounded-md mb-4"></div>
+                  <div className="space-y-2">
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Button className="w-full" disabled>
+                    Loading...
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </PageWrapper>
+    )
   }
 
   if (error) {
@@ -67,68 +113,64 @@ const FeedPage = () => {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-lg text-red-500">Error: {error}</div>
       </div>
-    );
+    )
   }
 
   return (
     <PageWrapper>
       <div className="min-h-screen bg-background">
         <div className="container mx-auto py-4">
+          <Select onValueChange={setSortBy} defaultValue="date">
+            <SelectTrigger className="w-[180px] mb-4">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="date">Date</SelectItem>
+              <SelectItem value="category">Category</SelectItem>
+            </SelectContent>
+          </Select>
           <Input
             type="search"
             placeholder="Search items..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => debouncedSearch(e.target.value)}
             className="max-w-sm mx-auto mb-8"
           />
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredItems.map((item: any) => (
+            {currentItems.map((item: any) => (
               <Card key={item.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <CardTitle className="text-xl">{item.category}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {item.image_id && (
-                    <img
-                      src={`/api/images/${item.image_id}`}
-                      alt={item.description || 'Found item'}
-                      className="w-full h-48 object-cover rounded-md mb-4"
-                    />
-                  )}
+                  <Image
+                    src={item.image_url || "/placeholder.svg"}
+                    alt={item.description || "Found item"}
+                    width={500}
+                    height={500}
+                    className="w-full h-48 object-cover rounded-md mb-4"
+                  />
                   <div className="space-y-2">
-                    <p className="text-sm text-muted-foreground">
-                      Location: {item.location_name}
-                    </p>
-                    {item.description && (
-                      <p className="text-sm">{item.description}</p>
-                    )}
+                    <p className="text-sm text-muted-foreground">Location: {item.location_name}</p>
+                    {item.description && <p className="text-sm">{item.description}</p>}
                     {item.colors && item.colors.length > 0 && (
-                      <p className="text-sm">
-                        Colors: {item.colors.join(', ')}
-                      </p>
+                      <p className="text-sm">Colors: {item.colors.join(", ")}</p>
                     )}
-                    {item.brand && (
-                      <p className="text-sm">Brand: {item.brand}</p>
-                    )}
+                    {item.brand && <p className="text-sm">Brand: {item.brand}</p>}
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button 
-                    onClick={() => handleItemClick(item)}
-                    className="w-full"
-                  >
+                  <Button onClick={() => handleItemClick(item)} className="w-full">
                     View Details
                   </Button>
                 </CardFooter>
               </Card>
             ))}
           </div>
-          
+
           {filteredItems.length === 0 && (
-            <div className="text-center text-muted-foreground mt-8">
-              No items found. Try adjusting your search.
-            </div>
+            <div className="text-center text-muted-foreground mt-8">No items found. Try adjusting your search.</div>
           )}
 
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -141,10 +183,12 @@ const FeedPage = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       {selectedItem.image_id && (
-                        <img
-                          src={`/api/images/${selectedItem.image_id}`}
-                          alt={selectedItem.description || 'Found item'}
-                          className="w-full h-64 object-cover rounded-lg"
+                        <Image
+                          src={selectedItem.image_url || "/placeholder.svg"}
+                          alt={selectedItem.description || "Found item"}
+                          width={500}
+                          height={500}
+                          className="w-full h-48 object-cover rounded-md mb-4"
                         />
                       )}
                     </div>
@@ -162,7 +206,7 @@ const FeedPage = () => {
                       {selectedItem.colors && selectedItem.colors.length > 0 && (
                         <div>
                           <h3 className="font-semibold">Colors</h3>
-                          <p>{selectedItem.colors.join(', ')}</p>
+                          <p>{selectedItem.colors.join(", ")}</p>
                         </div>
                       )}
                       {selectedItem.brand && (
@@ -192,7 +236,7 @@ const FeedPage = () => {
                       {selectedItem.keywords && selectedItem.keywords.length > 0 && (
                         <div>
                           <h3 className="font-semibold">Keywords</h3>
-                          <p>{selectedItem.keywords.join(', ')}</p>
+                          <p>{selectedItem.keywords.join(", ")}</p>
                         </div>
                       )}
                     </div>
@@ -201,10 +245,23 @@ const FeedPage = () => {
               )}
             </DialogContent>
           </Dialog>
+          <div className="flex justify-center mt-8">
+            {Array.from({ length: Math.ceil(filteredItems.length / itemsPerPage) }).map((_, index) => (
+              <Button
+                key={index}
+                onClick={() => paginate(index + 1)}
+                variant={currentPage === index + 1 ? "default" : "outline"}
+                className="mx-1"
+              >
+                {index + 1}
+              </Button>
+            ))}
+          </div>
         </div>
       </div>
     </PageWrapper>
-  );
-};
+  )
+}
 
-export default FeedPage;
+export default FeedPage
+

@@ -7,20 +7,11 @@ import { Button } from "../ui/button";
 import { SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
 import { UserProfile } from "../user-profile";
 import ModeToggle from "../mode-toggle";
-import { BlocksIcon } from "lucide-react";
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
 import config from "@/config";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@clerk/nextjs";
 import { Dialog, DialogClose } from "@radix-ui/react-dialog";
-
-const components: { title: string; href: string; description: string }[] = [
-    {
-        title: "Marketing Page",
-        href: "/marketing-page",
-        description: "Write some wavy here to get them to click.",
-    },
-];
 
 export default function NavBar() {
     let userId = null;
@@ -70,28 +61,41 @@ export default function NavBar() {
                 <NavigationMenuList>
                     <NavigationMenuItem className="max-[825px]:hidden ml-5">
                         <NavigationMenuTrigger className="dark:bg-black dark:bg-opacity-50">
-                            Features
+                            Feed
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
                             <ul className="flex flex-col w-[400px] gap-3 p-4 lg:w-[500px]">
-                                {components.map((component, index) => (
-                                    <ListItem
-                                        key={index}
-                                        title={component.title}
-                                        href={component.href}
-                                    >
-                                        {component.description}
-                                    </ListItem>
-                                ))}
+                                <ListItem title="Feed" href="/feed">
+                                    View all lost items found on campus.
+                                </ListItem>
                             </ul>
                         </NavigationMenuContent>
                     </NavigationMenuItem>
-                    <NavigationMenuItem className="max-[825px]:hidden">
-                        <Link href="/dashboard" legacyBehavior passHref>
-                            <Button variant="ghost">
-                                Dashboard
-                            </Button>
-                        </Link>
+
+                    <NavigationMenuItem className="max-[825px]:hidden ml-5">
+                        <NavigationMenuTrigger className="dark:bg-black dark:bg-opacity-50">
+                           Sketch
+                        </NavigationMenuTrigger>
+                        <NavigationMenuContent>
+                            <ul className="flex flex-col w-[400px] gap-3 p-4 lg:w-[500px]">
+                                <ListItem title="Sketch" href="/upload-sketch">
+                                    Draw a sketch of the item you lost.
+                                </ListItem>
+                            </ul>
+                        </NavigationMenuContent>
+                    </NavigationMenuItem>
+
+                    <NavigationMenuItem className="max-[825px]:hidden ml-5">
+                        <NavigationMenuTrigger className="dark:bg-black dark:bg-opacity-50">
+                            Upload
+                        </NavigationMenuTrigger>
+                        <NavigationMenuContent>
+                            <ul className="flex flex-col w-[400px] gap-3 p-4 lg:w-[500px]">
+                                <ListItem title="Upload" href="/upload-lost">
+                                    Upload a lost item to the database.
+                                </ListItem>
+                            </ul>
+                        </NavigationMenuContent>
                     </NavigationMenuItem>
                 </NavigationMenuList>
             </NavigationMenu>

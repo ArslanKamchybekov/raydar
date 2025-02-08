@@ -22,7 +22,21 @@ export async function getFoundItems() {
     throw error;
   }
 
-  return data;
+  // Get signed URLs for all images
+  const itemsWithImages = await Promise.all(
+    data.map(async (item) => {
+      const { data: imageUrl } = await supabase.storage
+        .from("found_images")
+        .getPublicUrl("/" + item.image_id + "." + "jpg");
+
+      return {
+        ...item,
+        image_url: imageUrl.publicUrl,
+      };
+    })
+  );
+
+  return itemsWithImages;
 }
 
 export async function uploadFoundItem(
@@ -49,6 +63,11 @@ export async function uploadFoundItem(
 
     if (storageError) throw storageError;
 
+    // Get the public URL for the uploaded image
+    const { data: urlData } = await supabase.storage
+      .from("found_images")
+      .getPublicUrl(fileName);
+
     // Create database record
     const { data: insertData, error: insertError } = await supabase
       .from("found_items")
@@ -74,7 +93,10 @@ export async function uploadFoundItem(
       throw insertError;
     }
 
-    return insertData[0];
+    return {
+      ...insertData[0],
+      image_url: urlData.publicUrl,
+    };
   } catch (error) {
     console.error("Error uploading found item:", error);
     throw error;
@@ -82,10 +104,35 @@ export async function uploadFoundItem(
 }
 
 export async function deleteFoundItem(id: number) {
-  const { error } = await supabase.from("found_items").delete().eq("id", id);
+  // First get the item to know the image ID
+  const { data: item, error: fetchError } = await supabase
+    .from("found_items")
+    .select("image_id")
+    .eq("id", id)
+    .single();
 
-  if (error) {
-    throw error;
+  if (fetchError) {
+    throw fetchError;
+  }
+
+  // Delete the image from storage
+  const fileName = `${item.image_id}.${item.image_id.split(".").pop()}`;
+  const { error: storageError } = await supabase.storage
+    .from("found_images")
+    .remove([fileName]);
+
+  if (storageError) {
+    throw storageError;
+  }
+
+  // Delete the database record
+  const { error: deleteError } = await supabase
+    .from("found_items")
+    .delete()
+    .eq("id", id);
+
+  if (deleteError) {
+    throw deleteError;
   }
 }
 
@@ -100,5 +147,13 @@ export async function getFoundItem(id: number) {
     throw error;
   }
 
-  return data;
+  // Get the image URL
+  const { data: imageUrl } = await supabase.storage
+    .from("found_images")
+    .getPublicUrl(`${data.image_id}.${data.image_id.split(".").pop()}`);
+
+  return {
+    ...data,
+    image_url: imageUrl.publicUrl,
+  };
 }
