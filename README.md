@@ -41,21 +41,39 @@ Raydar is built with a variety of cutting-edge technologies to ensure a seamless
 - **PyTorch**: An open-source machine learning library for accelerating research prototyping to production deployment.  
   [Learn More](https://pytorch.org/)
 
+- **Levenshtein**: A string metric for measuring the difference between two sequences, used for accurate matching of lost and found items.  
+  [Learn More](https://github.com/ztanml/Levenshtein)
+
+- **Fuzzy**: A library for fuzzy string matching, helping to find approximate matches between strings, ideal for item name matching in the system.  
+  [Learn More](https://github.com/seatgeek/fuzzy)
+
+- **SpaCy**: A fast and efficient NLP library for advanced text processing, used in analyzing item descriptions and identifying key features.  
+  [Learn More](https://spacy.io/)
+
+- **Scikit-learn**: A machine learning library for Python that provides simple tools for data analysis and building predictive models, including clustering lost item data.  
+  [Learn More](https://scikit-learn.org/)
+
+## Environment Variables
+
+To run the application locally, you need to set up the environment variables.
+
 ## Installation
 
 To set up Raydar locally:
 
 1. Clone the repository:
    ```bash
-   git clone <repository_url>
+   git clone https://github.com/ArslanKamchybekov/raydar
    ```
-   
+
 2. Install dependencies:
    ```bash
    npm install
    ```
 
-3. Run the application:
+3. Create a `.env.local` file and set your environment variables as described above.
+
+4. Run the application:
    ```bash
    npm run dev
    ```
