@@ -2,7 +2,7 @@
 
 import { supabase } from "@/lib/supabase";
 import { Locations, Categories, Brands, Colors, Size, Materials, Weather } from "@/types/enums";
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from "crypto"
 
 export async function getFoundItems() {
   const { data, error } = await supabase
@@ -30,7 +30,7 @@ export async function uploadFoundItem(
   keywords: string[]
 ) {
   try {
-    const imageId = uuidv4()
+    const imageId = randomUUID()
     const fileExt = file.name.split('.').pop()
     const fileName = `${imageId}.${fileExt}`
 
