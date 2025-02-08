@@ -7,11 +7,7 @@ import SideBySide from "@/components/homepage/side-by-side";
 import PageWrapper from "@/components/wrapper/page-wrapper";
 import config from "@/config";
 
-<<<<<<< HEAD
-export default function Home() {
-=======
 export default async function Home() {
->>>>>>> 305e8d27ddb290efdd3ea1445c3ee8fb4c7c12b7
   return (
     <PageWrapper>
       <div className="flex flex-col justify-center items-center w-full mt-[1rem] p-3">

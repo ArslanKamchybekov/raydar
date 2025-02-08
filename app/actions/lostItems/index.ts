@@ -1,11 +1,11 @@
 "use server"
 
 import { supabase } from "@/lib/supabase"
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from "crypto"
 
 export async function uploadLostItemSketch(file: File, imageName: string) {
   try {
-    const imageId = uuidv4()
+    const imageId = randomUUID()
     const fileExt = file.name.split('.').pop()
     const fileName = `${imageId}.${fileExt}`
     const { data, error } = await supabase.storage

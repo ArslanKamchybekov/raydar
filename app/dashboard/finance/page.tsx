@@ -21,11 +21,8 @@ export default function Category() {
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 305e8d27ddb290efdd3ea1445c3ee8fb4c7c12b7
       form.reset()
       return
     } catch (error) {
