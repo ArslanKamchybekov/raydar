@@ -19,7 +19,7 @@ const FeedPage = () => {
   const [selectedItem, setSelectedItem] = useState<any>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
-  const [sortBy, setSortBy] = useState("newest")
+  const [sortBy, setSortBy] = useState("oldest")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [claimModalOpen, setClaimModalOpen] = useState(false)
   const [selectedItemForClaim, setSelectedItemForClaim] = useState<any>(null)
@@ -148,7 +148,7 @@ const FeedPage = () => {
       </p>
       <div className="container mx-auto py-4">
         <div className="flex gap-4 mb-4">
-          <Select onValueChange={setSortBy} defaultValue="newest">
+          <Select onValueChange={setSortBy} defaultValue="oldest">
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Sort by date" />
             </SelectTrigger>
