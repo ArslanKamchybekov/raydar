@@ -7,6 +7,7 @@ from io import BytesIO
 from storage3.exceptions import StorageApiError # type: ignore
 
 from text_extraction.main import predict_the_description_main
+from sketch_classifier.sketch_classifier import SketchClassifier
 
 load_dotenv()
 storage = supabase.storage
@@ -64,7 +65,8 @@ def get_images():
             break
 
     
-    label = predict_the_image(image)
+    sketch_model = SketchClassifier()
+    label = sketch_model.predict(image_data)
     print(f"Predicted keyword: {label}")
 
 

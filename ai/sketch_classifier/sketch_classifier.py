@@ -7,7 +7,7 @@ from io import BytesIO
 import os
 
 # MODEL INIT
-class ImageClassifier:
+class SketchClassifier:
     def __init__(self, model_path='resnet18_trained_model.pth', class_labels_path='classes.txt'):
         """Initialize the image classifier."""
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
