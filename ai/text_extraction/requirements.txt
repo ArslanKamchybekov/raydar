@@ -1,0 +1,5 @@
+supabase
+spacy
+scikit-learn
+python-dotenv
+rapidfuzz==3.6.1
