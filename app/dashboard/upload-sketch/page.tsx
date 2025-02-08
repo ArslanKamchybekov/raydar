@@ -16,6 +16,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import Image from "next/image";
+import RelevantItems from "./_components/RelevantItems";
 
 enum Strictness {
   LOW = "LOW",
@@ -23,7 +24,7 @@ enum Strictness {
   HIGH = "HIGH",
 }
 
-type RelevantItem = {
+type SketchRelevantItem = {
   id: string;
   name: string;
   imageUrl: string;
@@ -35,8 +36,7 @@ export default function UploadSketchPage() {
   const [description, setDescription] = useState("");
   const [strictness, setStrictness] = useState<Strictness>(Strictness.LOW);
   const [isUploading, setIsUploading] = useState(false);
-  const [relevantItems, setRelevantItems] = useState<RelevantItem[]>([]);
-  const router = useRouter();
+  const [relevantItems, setRelevantItems] = useState<SketchRelevantItem[]>([]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -58,36 +58,33 @@ export default function UploadSketchPage() {
       });
       return;
     }
-
+  
     setIsUploading(true);
-
+  
     try {
       // Upload file to database
       const image = await uploadLostItemSketch(file, description);
-
-      // Send POST request to server with description, imageId, and strictness
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/get_images`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            image_id: image.image_id,
-            description,
-            threshold: strictness === Strictness.LOW ? 0.3 : strictness === Strictness.MEDIUM ? 0.5 : 0.7,
-          }),
-        }
-      );
-
+  
+      // Send POST request to server
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/get_images`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          image_id: image.image_id,
+          description,
+          threshold: strictness === Strictness.LOW ? 0.3 : strictness === Strictness.MEDIUM ? 0.5 : 0.7,
+        }),
+      });
+  
       if (!response.ok) {
         throw new Error("Failed to send data to the server");
       }
-
+  
       const data = await response.json();
-      setRelevantItems(data.relevantItems || []); // Store the fetched items
-
+      setRelevantItems(data.images || []); // Update to use 'images' from the response
+  
       toast({
         title: "Success",
         description: "Your sketch has been uploaded successfully.",
@@ -103,7 +100,7 @@ export default function UploadSketchPage() {
       setIsUploading(false);
     }
   };
-
+  
   return (
     <div className="flex w-full max-w-6xl mx-auto p-4 gap-8">
       <div className="w-1/3">
@@ -159,34 +156,8 @@ export default function UploadSketchPage() {
         </Card>
       </div>
 
-      {/* Right Side - Relevant Items */}
       <div className="w-2/3">
-        <Card>
-          <CardHeader>
-            <CardTitle>Relevant Items</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {relevantItems.length === 0 ? (
-              <p className="text-gray-500">No relevant items found yet.</p>
-            ) : (
-              <div className="space-y-4">
-                {relevantItems.map((item) => (
-                  <div key={item.id} className="flex gap-4 border-b pb-2">
-                    <Image
-                      src={item.imageUrl}
-                      alt={item.name}
-                      className="w-16 h-16 object-cover rounded"
-                    />
-                    <div>
-                      <p className="text-sm font-semibold">{item.name}</p>
-                      <p className="text-xs text-gray-500">{item.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <RelevantItems items={relevantItems as any} />
       </div>
     </div>
   );
