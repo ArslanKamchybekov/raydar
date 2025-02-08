@@ -1,6 +1,7 @@
 // app/actions/notifications.ts
 'use server'
 
+import { clerkClient } from "@/lib/clerk";
 import { supabase } from "@/lib/supabase";
 import { currentUser } from "@clerk/nextjs/server";
 import nodemailer from 'nodemailer';
@@ -68,86 +69,98 @@ function isItemMatch(item: Item, alert: Alert): boolean {
 }
 
 async function sendMatchNotification(alert: Alert, item: Item) {
-    try {
-      const user = await currentUser();
-      if (!user?.emailAddresses?.[0]?.emailAddress) {
-        console.error("No email address found for user");
-        return;
-      }
-  
-      // Create a reusable transporter object using the default SMTP transport
-      const transporter = nodemailer.createTransport({
-        // gmail
-        host: 'smtp.gmail.com',
-        port: 587, // Common SMTP port
-        secure: false, // Use TLS
-        auth: {
-          user: process.env.SMTP_USER, // Replace with your SMTP username
-          pass: process.env.SMTP_PASSWORD, // Replace with your SMTP password
-        },
-      });
-  
-      // Email content
-      const mailOptions = {
-        from: process.env.SMTP_USER,
-        to: user.emailAddresses[0].emailAddress,
-        subject: 'New Item Match Found!',
-        html: `
-          <h2>We found an item matching your alert!</h2>
-          <p>A new item was posted that matches your alert criteria:</p>
-
-          <h4>Item Details:</h4>
-          <ul>
-            <li>Category: ${item.category}</li>
-            <li>Location: ${item.location_name}</li>
-            ${item.brand ? `<li>Brand: ${item.brand}</li>` : ''}
-            ${item.color ? `<li>Color: ${item.color}</li>` : ''}
-            ${item.size ? `<li>Size: ${item.size}</li>` : ''}
-            ${item.material ? `<li>Material: ${item.material}</li>` : ''}
-            ${item.weather ? `<li>Weather: ${item.weather}</li>` : ''}
-          </ul>
-          
-          <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/feed/${item.id}">
-            View Item
-          </a>
-          
-          <p>
-            <small>
-              To manage your alerts, visit your 
-              <a href="${process.env.NEXT_PUBLIC_APP_URL}/alerts">alerts page</a>.
-            </small>
-          </p>
-        `,
-      };
-  
-      // Send the email
-      await transporter.sendMail(mailOptions);
-  
-      // Log the notification
-      await supabase.from("notifications").insert([
-        {
-          userId: alert.userId,
-          alertId: alert.id,
-          itemId: item.id,
-          type: 'EMAIL',
-          status: 'SENT',
-        }
-      ]);
-  
-    } catch (error) {
-      console.error("Error sending notification:", error);
-      
-      // Log failed notification
-      await supabase.from("notifications").insert([
-        {
-          userId: alert.userId,
-          alertId: alert.id,
-          itemId: item.id,
-          type: 'EMAIL',
-          status: 'FAILED',
-          error: error,
-        }
-      ]);
+  try {
+    // Get the user's email from the alert's joined user data
+    const userId = alert.userId
+    const user = await clerkClient.users.getUser(userId);
+    
+    if (!user.emailAddresses || user.emailAddresses.length === 0) {
+      throw new Error("No email address found for user");
     }
+
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
+
+    // Create a more user-friendly email
+    const mailOptions = {
+      from: `"Lost & Found" <${process.env.SMTP_USER}>`,
+      to: user.emailAddresses[0].emailAddress,
+      subject: `Match Found: ${item.category} at ${item.location_name}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #2563eb;">We Found a Match! 🎉</h2>
+          <p>A new item has been found that matches your alert criteria:</p>
+
+          <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="margin-top: 0;">Item Details</h3>
+            <ul style="list-style: none; padding: 0;">
+              <li><strong>Category:</strong> ${item.category}</li>
+              <li><strong>Location:</strong> ${item.location_name}</li>
+              ${item.brand ? `<li><strong>Brand:</strong> ${item.brand}</li>` : ''}
+              ${item.color ? `<li><strong>Color:</strong> ${item.color}</li>` : ''}
+              ${item.size ? `<li><strong>Size:</strong> ${item.size}</li>` : ''}
+              ${item.material ? `<li><strong>Material:</strong> ${item.material}</li>` : ''}
+              ${item.weather ? `<li><strong>Weather:</strong> ${item.weather}</li>` : ''}
+            </ul>
+            ${item.description ? `<p><strong>Description:</strong> ${item.description}</p>` : ''}
+          </div>
+
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/feed/${item.id}" 
+               style="background-color: #2563eb; color: white; padding: 12px 24px; 
+                      text-decoration: none; border-radius: 6px; display: inline-block;">
+              View Item Details
+            </a>
+          </div>
+
+          <hr style="border: 1px solid #e5e7eb; margin: 30px 0;" />
+          
+          <p style="color: #6b7280; font-size: 14px;">
+            To manage your alerts, visit your 
+            <a href="${process.env.NEXT_PUBLIC_APP_URL}/alerts" 
+               style="color: #2563eb; text-decoration: none;">alerts page</a>.
+          </p>
+        </div>
+      `,
+    };
+
+    // Send email
+    await transporter.sendMail(mailOptions);
+
+    // Log successful notification
+    await supabase.from("notifications").insert([
+      {
+        userId: alert.userId,
+        alertId: alert.id,
+        itemId: item.id,
+        type: 'EMAIL',
+        status: 'SENT',
+      }
+    ]);
+
+    console.log(`Notification sent for alert ${alert.id} and item ${item.id}`);
+
+  } catch (error) {
+    console.error("Error sending notification:", error);
+    
+    // Log failed notification
+    await supabase.from("notifications").insert([
+      {
+        userId: alert.userId,
+        alertId: alert.id,
+        itemId: item.id,
+        type: 'EMAIL',
+        status: 'FAILED',
+        error: JSON.stringify(error),
+      }
+    ]);
   }
+}
   
