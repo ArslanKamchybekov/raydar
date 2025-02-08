@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16">
+	<path fill="white" transform="scale(0.015625 0.015625)" d="M576 768L576 896L960 896L960 1024L64 1024L64 896L448 896L448 768L0 768L0 0L1024 0L1024 768L576 768ZM128 128L128 640L896 640L896 128L128 128Z"/>
+</svg>
