@@ -2,6 +2,7 @@
 
 import { supabase } from "@/lib/supabase";
 import { Locations, Categories, Brands, Colors, Size, Materials, Weather } from "@/types/enums";
+import { v4 as uuidv4 } from 'uuid'
 
 export async function getFoundItems() {
   const { data, error } = await supabase
@@ -16,9 +17,8 @@ export async function getFoundItems() {
   return data;
 }
 
-export async function createFoundItem(
-  image_id: string,
-  image_name: string,
+export async function uploadFoundItem(
+  file: File,
   location_name: Locations,
   category: Categories,
   brand: Brands | null,
@@ -29,29 +29,52 @@ export async function createFoundItem(
   description: string | null,
   keywords: string[]
 ) {
-  const { data, error } = await supabase
-    .from("found_items")
-    .insert([
-      {
-        image_id,
-        image_name,
-        location_name,
-        category,
-        brand,
-        colors,
-        size,
-        material,
-        weather_found,
-        description,
-        keywords,
-      },
-    ]);
+  try {
+    const imageId = uuidv4()
+    const fileExt = file.name.split('.').pop()
+    const fileName = `${imageId}.${fileExt}`
 
-  if (error) {
-    throw error;
+    // Upload image to storage
+    const { data: storageData, error: storageError } = await supabase.storage
+      .from('found_images')
+      .upload(fileName, file)
+
+    if (storageError) throw storageError
+
+    // Create database record
+    const { data: insertData, error: insertError } = await supabase
+      .from('found_items')
+      .insert([
+        {
+          image_id: imageId,
+          location_name: location_name.toLowerCase(),
+          category: category.toLowerCase(),
+          brand: brand?.toLowerCase() || null,
+          colors: colors.map(c => c.toLowerCase()),
+          size: size?.toLowerCase() || null,
+          material: material?.toLowerCase() || null,
+          weather_found: weather_found?.toLowerCase() || null,
+          description: description?.toLowerCase() || null,
+          keywords: keywords.map(k => k.toLowerCase()),
+        },
+      ])
+      .select()
+
+    if (insertError) {
+      // If database insert fails, try to clean up the uploaded file
+      await supabase.storage
+        .from('found_images')
+        .remove([fileName])
+      throw insertError
+    }
+
+    return insertData[0]
+  } catch (error) {
+    console.error('Error uploading found item:', error)
+    throw error
   }
-  return data;
 }
+
 
 export async function deleteFoundItem(id: number) {
   const { error } = await supabase.from("found_items").delete().eq("id", id);

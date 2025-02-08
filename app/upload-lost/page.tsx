@@ -1,5 +1,4 @@
-"use client"
-
+'use client'
 import type React from "react"
 import { useState } from "react"
 import { DragDropUpload } from "./_components/DragDropUpload"
@@ -10,15 +9,14 @@ import { Label } from "@/components/ui/label"
 import { toast } from "@/components/ui/use-toast"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Locations, Categories, Brands, Colors, Size, Materials, Weather } from "@/types/enums"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { createFoundItem } from "../actions/foundItems"
+import { uploadFoundItem } from "../actions/foundItems"
+import { supabase } from "@/lib/supabase"
 import PageWrapper from "@/components/wrapper/page-wrapper"
 
 const LostItemUploadPage = () => {
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
-  const [imageName, setImageName] = useState("")
   const [locationName, setLocationName] = useState<Locations | "">("")
   const [category, setCategory] = useState<Categories | "">("")
   const [brand, setBrand] = useState<Brands | "">("")
@@ -32,7 +30,6 @@ const LostItemUploadPage = () => {
 
   const handleFileUpload = (uploadedFile: File) => {
     setFile(uploadedFile)
-    setImageName(uploadedFile.name)
     const reader = new FileReader()
     reader.onloadend = () => {
       setPreview(reader.result as string)
@@ -40,10 +37,23 @@ const LostItemUploadPage = () => {
     reader.readAsDataURL(uploadedFile)
   }
 
+  const uploadImageToStorage = async (file: File, imageId: string) => {
+    const { error } = await supabase.storage
+      .from('found_images')
+      .upload(`${imageId}.jpeg`, file, {
+        contentType: 'image/jpeg',
+        upsert: true
+      })
+
+    if (error) {
+      throw new Error(`Error uploading image: ${error.message}`)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    if (!file || !imageName || !locationName || !category) {
+  
+    if (!file || !locationName || !category) {
       toast({
         title: "Error",
         description: "Please fill in all required fields and upload an image.",
@@ -51,38 +61,31 @@ const LostItemUploadPage = () => {
       })
       return
     }
-
+  
     setIsSubmitting(true)
-
+  
     try {
-      const imageId = crypto.randomUUID()
-
-      // Here you would typically upload the image to a storage service
-      // const imageUrl = await uploadImageToStorage(file)
-
-      await createFoundItem(
-        imageId,
-        imageName,
+      await uploadFoundItem(
+        file,
         locationName as Locations,
         category as Categories,
-        (brand as Brands) || null,
+        brand as Brands || null,
         colors,
-        (size as Size) || null,
-        (material as Materials) || null,
-        (weatherFound as Weather) || null,
+        size as Size || null,
+        material as Materials || null,
+        weatherFound as Weather || null,
         description || null,
-        keywords,
+        keywords
       )
-
+  
       toast({
         title: "Success",
         description: "Your found item report has been submitted.",
       })
-
+  
       // Reset form
       setFile(null)
       setPreview(null)
-      setImageName("")
       setLocationName("")
       setCategory("")
       setBrand("")
@@ -106,174 +109,173 @@ const LostItemUploadPage = () => {
 
   return (
     <PageWrapper>
-        <div className="flex flex-col items-center justify-center w-full max-w-lg p-6 space-y-6">
+      <div className="flex flex-col items-center justify-center w-full max-w-lg p-6 space-y-6">
         <Card>
-            <CardHeader>
+          <CardHeader>
             <CardTitle>Report a Found Item</CardTitle>
-            </CardHeader>
-            <CardContent>
+          </CardHeader>
+          <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-4">
+              <div className="space-y-4">
                 <div>
-                    <Label>Upload Image</Label>
-                    <DragDropUpload onFileUpload={handleFileUpload} />
+                  <Label>Upload Image</Label>
+                  <DragDropUpload onFileUpload={handleFileUpload} />
                 </div>
                 {preview && (
-                    <div>
+                  <div>
                     <Label>Preview</Label>
-                    <img src={preview || "/placeholder.svg"} alt="Preview" className="mt-2 max-w-full h-auto rounded-lg" />
-                    </div>
+                    <img src={preview} alt="Preview" className="mt-2 max-w-full h-auto rounded-lg" />
+                  </div>
                 )}
                 {file && (
-                    <div>
+                  <div>
                     <h3 className="text-lg font-semibold mb-2">File Details</h3>
                     <p>
-                        <strong>Name:</strong> {file.name}
+                      <strong>Name:</strong> {file.name.toLowerCase()}
                     </p>
                     <p>
-                        <strong>Size:</strong> {(file.size / 1024 / 1024).toFixed(2)} MB
+                      <strong>Size:</strong> {(file.size / 1024 / 1024).toFixed(2)} MB
                     </p>
                     <p>
-                        <strong>Type:</strong> {file.type}
+                      <strong>Type:</strong> {file.type.toLowerCase()}
                     </p>
-                    </div>
+                  </div>
                 )}
                 <div>
-                    <Label htmlFor="imageName">Image Name</Label>
-                    <Input id="imageName" value={imageName} onChange={(e) => setImageName(e.target.value)} required />
-                </div>
-                <div>
-                    <Label htmlFor="locationName">Location</Label>
-                    <Select value={locationName} onValueChange={(value) => setLocationName(value as Locations)}>
+                  <Label htmlFor="locationName">Location</Label>
+                  <Select value={locationName} onValueChange={(value) => setLocationName(value.toLowerCase() as Locations)}>
                     <SelectTrigger>
-                        <SelectValue placeholder="Select location" />
+                      <SelectValue placeholder="Select location" />
                     </SelectTrigger>
                     <SelectContent>
-                        {Object.entries(Locations).map(([key, value]) => (
-                        <SelectItem key={key} value={key}>
-                            {value}
+                      {Object.entries(Locations).map(([key, value]) => (
+                        <SelectItem key={key} value={key.toLowerCase()}>
+                          {value}
                         </SelectItem>
-                        ))}
+                      ))}
                     </SelectContent>
-                    </Select>
+                  </Select>
                 </div>
                 <div>
-                    <Label htmlFor="category">Category</Label>
-                    <Select value={category} onValueChange={(value) => setCategory(value as Categories)}>
+                  <Label htmlFor="category">Category</Label>
+                  <Select value={category} onValueChange={(value) => setCategory(value.toLowerCase() as Categories)}>
                     <SelectTrigger>
-                        <SelectValue placeholder="Select category" />
+                      <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
-                        {Object.entries(Categories).map(([key, value]) => (
-                        <SelectItem key={key} value={key}>
-                            {value}
+                      {Object.entries(Categories).map(([key, value]) => (
+                        <SelectItem key={key} value={key.toLowerCase()}>
+                          {value}
                         </SelectItem>
-                        ))}
+                      ))}
                     </SelectContent>
-                    </Select>
+                  </Select>
                 </div>
                 <div>
-                    <Label htmlFor="brand">Brand</Label>
-                    <Select value={brand} onValueChange={(value) => setBrand(value as Brands)}>
+                  <Label htmlFor="brand">Brand</Label>
+                  <Select value={brand} onValueChange={(value) => setBrand(value.toLowerCase() as Brands)}>
                     <SelectTrigger>
-                        <SelectValue placeholder="Select brand" />
+                      <SelectValue placeholder="Select brand" />
                     </SelectTrigger>
                     <SelectContent>
-                        {Object.entries(Brands).map(([key, value]) => (
-                        <SelectItem key={key} value={key}>
-                            {value}
+                      {Object.entries(Brands).map(([key, value]) => (
+                        <SelectItem key={key} value={key.toLowerCase()}>
+                          {value}
                         </SelectItem>
-                        ))}
+                      ))}
                     </SelectContent>
-                    </Select>
+                  </Select>
                 </div>
                 <div>
-                    <Label htmlFor="colors">Colors</Label>
-                    <Select value={colors.join(", ")} onValueChange={(value) => setColors(value.split(", ").map((color) => color as Colors))}>
+                  <Label htmlFor="colors">Colors</Label>
+                  <Select 
+                    value={colors.join(", ")} 
+                    onValueChange={(value) => setColors(value.split(", ").map((color) => color.toLowerCase() as Colors))}
+                  >
                     <SelectTrigger>
-                        <SelectValue placeholder="Select colors" />
+                      <SelectValue placeholder="Select colors" />
                     </SelectTrigger>
                     <SelectContent>
-                        {Object.entries(Colors).map(([key, value]) => (
-                        <SelectItem key={key} value={key}>
-                            {value}
+                      {Object.entries(Colors).map(([key, value]) => (
+                        <SelectItem key={key} value={key.toLowerCase()}>
+                          {value}
                         </SelectItem>
-                        ))}
+                      ))}
                     </SelectContent>
-                    </Select>
+                  </Select>
                 </div>
                 <div>
-                    <Label htmlFor="size">Size</Label>
-                    <Select value={size} onValueChange={(value) => setSize(value as Size)}>
+                  <Label htmlFor="size">Size</Label>
+                  <Select value={size} onValueChange={(value) => setSize(value.toLowerCase() as Size)}>
                     <SelectTrigger>
-                        <SelectValue placeholder="Select size" />
+                      <SelectValue placeholder="Select size" />
                     </SelectTrigger>
                     <SelectContent>
-                        {Object.entries(Size).map(([key, value]) => (
-                        <SelectItem key={key} value={key}>
-                            {value}
+                      {Object.entries(Size).map(([key, value]) => (
+                        <SelectItem key={key} value={key.toLowerCase()}>
+                          {value}
                         </SelectItem>
-                        ))}
+                      ))}
                     </SelectContent>
-                    </Select>
+                  </Select>
                 </div>
                 <div>
-                    <Label htmlFor="material">Material</Label>
-                    <Select value={material} onValueChange={(value) => setMaterial(value as Materials)}>
+                  <Label htmlFor="material">Material</Label>
+                  <Select value={material} onValueChange={(value) => setMaterial(value.toLowerCase() as Materials)}>
                     <SelectTrigger>
-                        <SelectValue placeholder="Select material" />
+                      <SelectValue placeholder="Select material" />
                     </SelectTrigger>
                     <SelectContent>
-                        {Object.entries(Materials).map(([key, value]) => (
-                        <SelectItem key={key} value={key}>
-                            {value}
+                      {Object.entries(Materials).map(([key, value]) => (
+                        <SelectItem key={key} value={key.toLowerCase()}>
+                          {value}
                         </SelectItem>
-                        ))}
+                      ))}
                     </SelectContent>
-                    </Select>
+                  </Select>
                 </div>
                 <div>
-                    <Label htmlFor="weatherFound">Weather Found</Label>
-                    <Select value={weatherFound} onValueChange={(value) => setWeatherFound(value as Weather)}>
+                  <Label htmlFor="weatherFound">Weather Found</Label>
+                  <Select value={weatherFound} onValueChange={(value) => setWeatherFound(value.toLowerCase() as Weather)}>
                     <SelectTrigger>
-                        <SelectValue placeholder="Select weather" />
+                      <SelectValue placeholder="Select weather" />
                     </SelectTrigger>
                     <SelectContent>
-                        {Object.entries(Weather).map(([key, value]) => (
-                        <SelectItem key={key} value={key}>
-                            {value}
+                      {Object.entries(Weather).map(([key, value]) => (
+                        <SelectItem key={key} value={key.toLowerCase()}>
+                          {value}
                         </SelectItem>
-                        ))}
+                      ))}
                     </SelectContent>
-                    </Select>
+                  </Select>
                 </div>
                 <div>
-                    <Label htmlFor="description">Description</Label>
-                    <Textarea
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
                     id="description"
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    onChange={(e) => setDescription(e.target.value.toLowerCase())}
                     placeholder="Provide any additional details about the item..."
-                    />
+                  />
                 </div>
                 <div>
-                    <Label htmlFor="keywords">Keywords</Label>
-                    <Input
+                  <Label htmlFor="keywords">Keywords</Label>
+                  <Input
                     id="keywords"
                     value={keywords.join(", ")}
-                    onChange={(e) => setKeywords(e.target.value.split(",").map((k) => k.trim()))}
+                    onChange={(e) => setKeywords(e.target.value.split(",").map(k => k.trim().toLowerCase()))}
                     placeholder="Enter keywords separated by commas"
-                    />
+                  />
                 </div>
-                </div>
-                <Button type="submit" className="w-full" disabled={isSubmitting}>
+              </div>
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? "Submitting..." : "Submit Found Item Report"}
-                </Button>
+              </Button>
             </form>
-            </CardContent>
+          </CardContent>
         </Card>
-        </div>
-        </PageWrapper>
+      </div>
+    </PageWrapper>
   )
 }
 
