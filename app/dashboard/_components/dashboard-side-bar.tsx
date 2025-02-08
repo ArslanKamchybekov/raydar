@@ -4,7 +4,9 @@ import { Separator } from '@/components/ui/separator'
 import clsx from 'clsx'
 import {
   Banknote,
+  Bell,
   HomeIcon,
+  Map,
   Paintbrush,
   Settings,
   UploadCloud
@@ -44,7 +46,7 @@ export default function DashboardSideBar() {
               href="/dashboard/map"
             >
               <div className="border rounded-lg dark:bg-black dark:border-gray-800 border-gray-400 p-1 bg-white">
-                <Banknote className="h-3 w-3" />
+                <Map className="h-3 w-3" />
               </div>
               Map
             </Link>
@@ -55,7 +57,7 @@ export default function DashboardSideBar() {
               href="/dashboard/alerts"
             >
               <div className="border rounded-lg dark:bg-black dark:border-gray-800 border-gray-400 p-1 bg-white">
-                <Banknote className="h-3 w-3" />
+                <Bell className="h-3 w-3" />
               </div>
               Alerts
             </Link>

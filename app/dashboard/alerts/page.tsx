@@ -150,7 +150,7 @@ const AlertsPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex-1 p-4 flex items-center justify-center">
+      <div className="flex items-center justify-center h-screen">
         <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
       </div>
     );

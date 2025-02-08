@@ -111,9 +111,6 @@ export default function NavBar() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left">
-            <SheetHeader>
-              <SheetTitle>Next Starter</SheetTitle>
-            </SheetHeader>
             <div className="flex flex-col space-y-3 mt-[1rem]">
               <DialogClose asChild>
                 <Link href="/">

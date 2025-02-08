@@ -108,20 +108,18 @@ const FeedPage = () => {
           {[...Array(6)].map((_, index) => (
             <Card key={index} className="animate-pulse">
               <CardHeader>
-                <CardTitle className="text-xl">Loading...</CardTitle>
+                <CardTitle className="text-xl"></CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="w-full h-48 bg-gray-200 rounded-md mb-4"></div>
+                <div className="w-full h-48 bg-gray-700 rounded-md mb-4"></div>
                 <div className="space-y-2">
-                  <div className="h-4 bg-gray-200 rounded"></div>
-                  <div className="h-4 bg-gray-200 rounded"></div>
-                  <div className="h-4 bg-gray-200 rounded"></div>
+                  <div className="h-4 bg-gray-400 rounded"></div>
+                  <div className="h-4 bg-gray-400 rounded"></div>
+                  <div className="h-4 bg-gray-400 rounded"></div>
                 </div>
               </CardContent>
               <CardFooter>
-                <Button className="w-full" disabled>
-                  Loading...
-                </Button>
+                <Button className="w-full" disabled></Button>
               </CardFooter>
             </Card>
           ))}

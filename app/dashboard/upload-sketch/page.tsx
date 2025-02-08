@@ -14,7 +14,7 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-} from "@/components/ui/select"; // Import ShadCN Select components
+} from "@/components/ui/select";
 
 enum Strictness {
   LOW = "LOW",
@@ -22,11 +22,19 @@ enum Strictness {
   HIGH = "HIGH",
 }
 
+type RelevantItem = {
+  id: string;
+  name: string;
+  imageUrl: string;
+  description: string;
+};
+
 export default function UploadSketchPage() {
   const [file, setFile] = useState<File | null>(null);
   const [description, setDescription] = useState("");
   const [strictness, setStrictness] = useState<Strictness>(Strictness.LOW);
   const [isUploading, setIsUploading] = useState(false);
+  const [relevantItems, setRelevantItems] = useState<RelevantItem[]>([]);
   const router = useRouter();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +66,7 @@ export default function UploadSketchPage() {
 
       // Send POST request to server with description, imageId, and strictness
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/get_keywords`,
+        `${process.env.NEXT_PUBLIC_API_URL}/get-relevant-items`,
         {
           method: "POST",
           headers: {
@@ -77,7 +85,7 @@ export default function UploadSketchPage() {
       }
 
       const data = await response.json();
-      console.log(data);
+      setRelevantItems(data.relevantItems || []); // Store the fetched items
 
       toast({
         title: "Success",
@@ -96,7 +104,8 @@ export default function UploadSketchPage() {
   };
 
   return (
-      <div className="w-full max-w-md p-4">
+    <div className="flex w-full max-w-6xl mx-auto p-4 gap-8">
+      <div className="w-1/3">
         <Card>
           <CardHeader>
             <CardTitle>Upload Lost Item Sketch</CardTitle>
@@ -148,5 +157,36 @@ export default function UploadSketchPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Right Side - Relevant Items */}
+      <div className="w-2/3">
+        <Card>
+          <CardHeader>
+            <CardTitle>Relevant Items</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {relevantItems.length === 0 ? (
+              <p className="text-gray-500">No relevant items found yet.</p>
+            ) : (
+              <div className="space-y-4">
+                {relevantItems.map((item) => (
+                  <div key={item.id} className="flex gap-4 border-b pb-2">
+                    <img
+                      src={item.imageUrl}
+                      alt={item.name}
+                      className="w-16 h-16 object-cover rounded"
+                    />
+                    <div>
+                      <p className="text-sm font-semibold">{item.name}</p>
+                      <p className="text-xs text-gray-500">{item.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 }

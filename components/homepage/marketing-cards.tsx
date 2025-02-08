@@ -55,12 +55,19 @@ const ProjectsData = [
     description: 'Modern database toolkit for TypeScript and Node.js, simplifying database interactions.',
     image: 'https://utfs.io/f/c3933696-cd5c-4de7-a24e-1822df8c4215-g7gclc.png',
     url: "https://prisma.io/"
+  },
+  {
+    id: 8,
+    name: 'Pytorch',
+    description: 'An open-source machine learning library that accelerates the path from research prototyping to production deployment.',
+    image: '/PyTorch_logo_icon.png',
+    url: "https://pytorch.org/"
   }
 ]
 
 const SpringAnimatedFeatures = () => {
   return (
-    <div className="flex flex-col justify-center items-center lg:w-[75%]">
+    <div className="flex flex-col justify-center items-center lg:w-[75%] mb-4">
       <div className='flex flex-col mb-[3rem]'>
         <h2 className={`${TITLE_TAILWIND_CLASS} mt-2 font-semibold tracking-tight dark:text-white text-gray-900 text-center`}>
           The Ray's Stack

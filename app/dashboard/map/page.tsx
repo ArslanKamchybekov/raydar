@@ -159,7 +159,7 @@ const LocationPage = () => {
       {topLocation && (
         <Card className="absolute bottom-20 left-10 bg-white shadow-lg max-w-xs z-10">
           <CardHeader>
-            <CardTitle className="text-blue-600">
+            <CardTitle className="text-black">
               Where Are Most Items Lost?
             </CardTitle>
           </CardHeader>

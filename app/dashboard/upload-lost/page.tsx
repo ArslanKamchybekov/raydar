@@ -113,8 +113,9 @@ const LostItemUploadPage = () => {
     }
   }
 
+  // center the form
   return (
-      <div className="flex flex-col items-center justify-center w-full max-w-lg p-6 space-y-6">
+      <div className="flex flex-col items-center justify-center w-full max-w-lg p-6 space-y-6 mx-auto">
         <Card>
           <CardHeader>
             <CardTitle>Report a Found Item</CardTitle>
