@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { uploadFoundItem } from "../../actions/foundItems"
 import PageWrapper from "@/components/wrapper/page-wrapper"
 import { useUser } from "@clerk/nextjs"
+import Image from "next/image"
 
 const LostItemUploadPage = () => {
   const [file, setFile] = useState<File | null>(null)
@@ -130,7 +131,7 @@ const LostItemUploadPage = () => {
                 {preview && (
                   <div>
                     <Label>Preview</Label>
-                    <img src={preview} alt="Preview" className="mt-2 max-w-full h-auto rounded-lg" />
+                    <Image src={preview} alt="Preview" className="mt-2 max-w-full h-auto rounded-lg" />
                   </div>
                 )}
                 {file && (

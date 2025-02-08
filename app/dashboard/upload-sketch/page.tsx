@@ -15,6 +15,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import Image from "next/image";
 
 enum Strictness {
   LOW = "LOW",
@@ -171,7 +172,7 @@ export default function UploadSketchPage() {
               <div className="space-y-4">
                 {relevantItems.map((item) => (
                   <div key={item.id} className="flex gap-4 border-b pb-2">
-                    <img
+                    <Image
                       src={item.imageUrl}
                       alt={item.name}
                       className="w-16 h-16 object-cover rounded"
