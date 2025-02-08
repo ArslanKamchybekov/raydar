@@ -120,7 +120,6 @@ model found_items { // We will upload mock images here and fill ALL fields (opti
   id                BigInt                @id @default(autoincrement()) // If we get to a reporting system, then user uploaded found items will get entered here as well, but in that case, the optional fields are optional.
   created_at        DateTime              @default(now())
   image_id          String                @default(uuid())
-  image_name        String
   location_name     Locations?
   category          Categories?
   brand             Brands?

@@ -43,6 +43,16 @@ export function UserProfile() {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
+<<<<<<< HEAD
+                    <Link href="/user-profile">
+                        <DropdownMenuItem>
+                            <User className="mr-2 h-4 w-4" />
+                            <span>Profile</span>
+                            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                        </DropdownMenuItem>
+                    </Link>
+=======
+>>>>>>> 305e8d27ddb290efdd3ea1445c3ee8fb4c7c12b7
                     <Link href="/dashboard/settings">
                         <DropdownMenuItem>
                             <Settings className="mr-2 h-4 w-4" />

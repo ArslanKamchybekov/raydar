@@ -4,8 +4,13 @@
 - Node.js and yarn/bun installed
 - Accounts and API keys for:
   - Supabase
+<<<<<<< HEAD
+  - Stripe (if using payments)
+  - Clerk (if using authentication)
+=======
   - Stripe
   - Clerk
+>>>>>>> 305e8d27ddb290efdd3ea1445c3ee8fb4c7c12b7
 
 ## Setup
 

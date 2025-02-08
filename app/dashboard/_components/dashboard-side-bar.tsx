@@ -8,9 +8,15 @@ import {
   HomeIcon,
   Settings
 } from "lucide-react"
+<<<<<<< HEAD
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { FaTasks } from 'react-icons/fa'
+=======
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+>>>>>>> 305e8d27ddb290efdd3ea1445c3ee8fb4c7c12b7
 
 export default function DashboardSideBar() {
   const pathname = usePathname();
@@ -20,8 +26,12 @@ export default function DashboardSideBar() {
       <div className="flex h-full max-h-screen flex-col gap-2 ">
         <div className="flex h-[55px] items-center justify-between border-b px-3 w-full">
           <Link className="flex items-center gap-2 font-semibold ml-1" href="/">
+<<<<<<< HEAD
+            <span className="">Nextjs Starter Kit</span>
+=======
             <Image src="/sparkhacks-logo.png" width={50} height={50} alt="App Logo" />
             <span className="">Raydar</span>
+>>>>>>> 305e8d27ddb290efdd3ea1445c3ee8fb4c7c12b7
           </Link>
         </div>
         <div className="flex-1 overflow-auto py-2 ">
