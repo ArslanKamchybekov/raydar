@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import { defaultLocation, locations } from "constants/locations";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { getLostItems } from "@/app/actions/lostItems";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getFoundItems } from "@/app/actions/foundItems";
 import { useTheme } from "next-themes";
@@ -235,11 +234,13 @@ const LocationPage = () => {
             </p>
             <p className="text-sm">
               <span className="font-semibold">Weather:</span>{" "}
-              {topLocation.weatherMostLost}
+              {topLocation.weatherMostLost[0].toUpperCase() +
+                topLocation.weatherMostLost.slice(1)}
             </p>
             <p className="text-sm">
               <span className="font-semibold">Category:</span>{" "}
-              {topLocation.categoryMostLost}
+              {topLocation.categoryMostLost[0].toUpperCase() +
+                topLocation.categoryMostLost.slice(1)}
             </p>
           </CardContent>
         </Card>
