@@ -68,6 +68,17 @@ def get_images():
     
     label = sketch_model.predict(image_data)
     print(f"Predicted keyword: {label}")
+    
+    # Pranav's section
+    sketch_predictive_response = (
+        supabase
+        .table("found_items")
+        .select("*")
+        .cs("keywords", ["label"])
+        .execute()
+    )
+    
+    sketch_predictive_rows = sketch_predictive_response.data
 
 
     # This is Josh's section to analyze the description. He will return an array of rows.

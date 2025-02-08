@@ -4,11 +4,11 @@ from config import supabase
 response = (
     supabase
     .table("found_items")
-    .select("keywords")
-    .cs("keywords", ["earbud"])
+    .select("*")
+    .cs("keywords", ["cell phone"])
     .execute()
 )
 
 
 
-print(response)
+print(response.data)
