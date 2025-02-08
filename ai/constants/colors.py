@@ -1,0 +1,15 @@
+colors = [
+  "red",
+  "blue",
+  "green",
+  "black",
+  "navy",
+  "white",
+  "gray",
+  "yellow",
+  "purple",
+  "pink",
+  "orange",
+  "brown",
+  "silver",
+]

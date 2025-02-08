@@ -1,0 +1,4 @@
+supabase
+spacy
+scikit-learn
+python-dotenv
