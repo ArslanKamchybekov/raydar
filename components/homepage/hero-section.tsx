@@ -15,7 +15,7 @@ export default function HeroSection() {
                 The Ultimate Nextjs 14 Starter Kit for quickly building your SaaS, giving you time to focus on what really matters
             </p>
             <div className="flex justify-center items-center gap-3">
-                <Link href="/dashboard" className="mt-5">
+                <Link href="/dashboard/feed" className="mt-5">
                     <Button className="animate-buttonheartbeat rounded-md bg-blue-600 hover:bg-blue-500 text-sm font-semibold text-white">
                         Get Started
                     </Button>

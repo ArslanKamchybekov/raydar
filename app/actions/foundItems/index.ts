@@ -56,6 +56,7 @@ async function checkImageUrl(url: string): Promise<boolean> {
 
 
 export async function uploadFoundItem(
+  user_id: string,
   file: File,
   location_name: Locations,
   category: Categories,
@@ -89,6 +90,7 @@ export async function uploadFoundItem(
       .from("found_items")
       .insert([
         {
+          user_id: user_id,
           image_id: imageId,
           location_name: location_name.toLowerCase(),
           category: category.toLowerCase(),

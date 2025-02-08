@@ -33,6 +33,6 @@ const nextConfig: NextConfig = {
       port: '',
       pathname: '/**'
     }]
-  }
+  },
 };
 export default nextConfig;

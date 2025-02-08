@@ -12,6 +12,7 @@ import { Locations, Categories, Brands, Colors, Size, Materials, Weather } from 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { uploadFoundItem } from "../actions/foundItems"
 import PageWrapper from "@/components/wrapper/page-wrapper"
+import { useUser } from "@clerk/nextjs"
 
 const LostItemUploadPage = () => {
   const [file, setFile] = useState<File | null>(null)
@@ -26,6 +27,24 @@ const LostItemUploadPage = () => {
   const [description, setDescription] = useState("")
   const [keywords, setKeywords] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const user = useUser()
+
+  if (!user) {
+    return (
+      <PageWrapper>
+        <div className="flex flex-col items-center justify-center w-full max-w-lg p-6 space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Report a Found Item</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-center">You must be signed in to report a found item.</p>
+            </CardContent>
+          </Card>
+        </div>
+      </PageWrapper>
+    )
+  }
 
   const handleFileUpload = (uploadedFile: File) => {
     setFile(uploadedFile)
@@ -52,6 +71,7 @@ const LostItemUploadPage = () => {
   
     try {
       await uploadFoundItem(
+        user.user?.id || "",
         file,
         locationName as Locations,
         category as Categories,
