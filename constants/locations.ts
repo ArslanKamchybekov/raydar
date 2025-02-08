@@ -74,28 +74,41 @@ export const locations = [
     lat: 41.8728430083608,
     lng: -87.65033734601529,
   },
- 
-  // "addams hall",
-  // "behavioral sciences building",
-  // "burnham hall",
-  // "douglass hall",
-  // "grant hall",
-  // "henry hall",
-  // "lecture center building a",
-  // "lecture center building b",
-  // "lecture center building c",
-  // "lecture center building d",
-  // "lecture center building e",
-  // "lecture center building f",
-  // "lincoln hall",
-  // "stevenson hall",
-  // "university hall",
-  // "taft hall",
-  // "commons south",
-  // "science and engineering labratory west",
-  // "science and engineering labratory east",
-  // "uic student center east",
-  // "richard j daley library",
+  {
+    name: "university hall",
+    lat: 41.873858,
+    lng: -87.651203,
+  },
+  {
+    name: "taft hall",
+    lat: 1.871283,
+    lng: -87.649517,
+  },
+  {
+    name: "commons south",
+    lat: 41.873326,
+    lng: -87.647538,
+  },
+  {
+    name: "science and engineering labratory west",
+    lat: 41.870433,
+    lng: -87.649206,
+  },
+  {
+    name: "science and engineering labratory east",
+    lat: 41.870933,
+    lng: -87.648484,
+  },
+  {
+    name: "uic student center east",
+    lat: 41.871899,
+    lng: -87.648206,
+  },
+  {
+    name: "richard j daley library",
+    lat: 41.8718,
+    lng: -87.650158,
+  },
 ];
 
 export const defaultLocation = {
