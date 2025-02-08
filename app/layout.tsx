@@ -8,16 +8,11 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://starter.rasmic.xyz"),
   title: {
-    default: 'Nextjs Starter Kit',
-    template: `%s | Nextjs Starter Kit`
+    default: 'Raydar - Find lost items with ease',
+    template: '%s | Raydar',
   },
-  description: 'The Ultimate Nextjs 14 Starter Kit for quickly building your SaaS, giving you time to focus on what really matters',
-  openGraph: {
-    description: 'The Ultimate Nextjs 14 Starter Kit for quickly building your SaaS, giving you time to focus on what really matters',
-    url: 'https://starter.rasmic.xyz/'
-  },
+  description: 'Raydar is a platform that helps you find lost items with ease. It uses a combination of technologies to help you find your lost items.',
 }
 
 export default function RootLayout({

@@ -1,99 +1,142 @@
 "use client"
-import { useForm } from 'react-hook-form';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
 import Link from 'next/link';
+import { Linkedin } from 'lucide-react';
 
 export default function Footer() {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        reset,
-    } = useForm();
-
-
-    const onSubmit = async (data: any) => {
-
-
-    };
     return (
-        <footer className="border-t dark:bg-black">
+        <footer className="border-t bg-background">
             <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-                <div className="lg:grid lg:grid-cols-2">
-                    <div
-                        className="border-b   py-8 lg:order-last lg:border-b-0 lg:border-s lg:py-16 lg:ps-16"
-                    >
-                        <div className="mt-8 space-y-4 lg:mt-0">
+                <div className="py-8 lg:py-12">
+                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+                        <div>
+                            <p className="font-medium">Navigation</p>
+                            <ul className="mt-6 space-y-4 text-sm">
+                                <li>
+                                    <Link href="/lost-items" className="transition hover:opacity-75">
+                                        Lost Items
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href="/found-items" className="transition hover:opacity-75">
+                                        Found Items
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href="/report" className="transition hover:opacity-75">
+                                        Report Item
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href="/how-it-works" className="transition hover:opacity-75">
+                                        How It Works
+                                    </Link>
+                                </li>
+                            </ul>
+                        </div>
 
-                            <div>
-                                <h3 className="text-2xl font-medium">This is a fake newsletter title</h3>
-                                <p className="mt-4 max-w-lg  ">
-                                    This is not a real newsletter email input. This is for you to build upon
-                                </p>
-                            </div>
-                            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col border rounded-xl p-4 gap-3 mt-6 w-full">
-                                <Input
-                                    {...register('email', { required: true })}
-                                    placeholder="Enter your email"
-                                    type="email"
-                                />
-                                <Button type="submit">
-                                    Sign Up
-                                </Button>
-                            </form>
+                        <div>
+                            <p className="font-medium">Support</p>
+                            <ul className="mt-6 space-y-4 text-sm">
+                                <li>
+                                    <Link href="/faq" className="transition hover:opacity-75">
+                                        FAQ
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href="/contact" className="transition hover:opacity-75">
+                                        Contact Us
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href="/safety-tips" className="transition hover:opacity-75">
+                                        Safety Tips
+                                    </Link>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <p className="font-medium">Development Team</p>
+                            <ul className="mt-6 space-y-4 text-sm">
+                                <li>
+                                    <Link 
+                                        href="https://linkedin.com/in/developer1" 
+                                        target="_blank" 
+                                        className="flex items-center gap-2 transition hover:opacity-75"
+                                    >
+                                        <Linkedin size={16} />
+                                        Arslan Kamchybekov
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link 
+                                        href="https://linkedin.com/in/developer2" 
+                                        target="_blank" 
+                                        className="flex items-center gap-2 transition hover:opacity-75"
+                                    >
+                                        <Linkedin size={16} />
+                                        Anirudh Kupili
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link 
+                                        href="https://linkedin.com/in/developer3" 
+                                        target="_blank" 
+                                        className="flex items-center gap-2 transition hover:opacity-75"
+                                    >
+                                        <Linkedin size={16} />
+                                        Isaac Alazar
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link 
+                                        href="https://linkedin.com/in/developer4" 
+                                        target="_blank" 
+                                        className="flex items-center gap-2 transition hover:opacity-75"
+                                    >
+                                        <Linkedin size={16} />
+                                        Josh Jung
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link 
+                                        href="https://linkedin.com/in/developer5" 
+                                        target="_blank" 
+                                        className="flex items-center gap-2 transition hover:opacity-75"
+                                    >
+                                        <Linkedin size={16} />
+                                        Pranav Shridhar
+                                    </Link>
+                                </li>
+                            </ul>
                         </div>
                     </div>
 
-                    <div className="py-8 lg:py-16 lg:pe-16">
+                    <div className="mt-8 border-t pt-8">
+                        <ul className="flex flex-wrap gap-4 text-xs">
+                            <li>
+                                <Link href="/terms" className="transition hover:opacity-75">
+                                    Terms & Conditions
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/privacy" className="transition hover:opacity-75">
+                                    Privacy Policy
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/guidelines" className="transition hover:opacity-75">
+                                    Community Guidelines
+                                </Link>
+                            </li>
+                        </ul>
 
-
-                        <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
-
-                            <div>
-                                <p className="font-medium ">Socials</p>
-
-                                <ul className="mt-6 space-y-4 text-sm">
-                                    <li>
-                                        <Link href="https://twitter.com/rasmickyy" target="_blank" className="transition hover:opacity-75"> Twitter </Link>
-                                    </li>
-                                    <li>
-                                        <Link href="https://www.youtube.com/@rasmic" target="_blank" className="  transition hover:opacity-75"> YouTube </Link>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <div>
-                                <p className="font-medium ">Helpful Links</p>
-
-                                <ul className="mt-6 space-y-4 text-sm">
-                                    <li>
-                                        <Link target="_blank" href="/" rel="noopener noreferrer" className="  transition hover:opacity-75"> Docs </Link>
-                                    </li>
-                                    <li>
-                                        <Link href="/" className="  transition hover:opacity-75"> Methodology </Link>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div className="mt-8 border-t   pt-8">
-                            <ul className="flex flex-wrap gap-4 text-xs">
-                                <li>
-                                    <a href="/" target="_blank" className="transition hover:opacity-75">Terms & Conditions </a>
-                                </li>
-
-                                <li>
-                                    <a href="/" target="_blank" className="transition hover:opacity-75">Privacy Policy </a>
-                                </li>
-                            </ul>
-
-                            <p className="mt-8 text-xs  ">&copy; 2024. SomeCompany LLC. All rights reserved.</p>
-                        </div>
+                        <p className="mt-8 text-xs text-muted-foreground">
+                            &copy; {new Date().getFullYear()} Raydar. All rights reserved.
+                        </p>
                     </div>
                 </div>
             </div>
         </footer>
-
-    )
+    );
 }

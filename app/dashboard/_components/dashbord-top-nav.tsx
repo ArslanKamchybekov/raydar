@@ -24,17 +24,12 @@ export default function DashboardTopNav({ children }: { children: ReactNode }) {
             </Link>
           </SheetTrigger>
           <SheetContent side="left">
-            <SheetHeader>
-              <Link href="/">
-                <SheetTitle>Nextjs Starter Kit</SheetTitle>
-              </Link>
-            </SheetHeader>
             <div className="flex flex-col space-y-3 mt-[1rem]">
               <DialogClose asChild>
-                <Link href="/dashboard">
+                <Link href="/dashboard/feed">
                   <Button variant="outline" className="w-full">
                     <HomeIcon className="mr-2 h-4 w-4" />
-                    Home
+                    Feed
                   </Button>
                 </Link>
               </DialogClose>

@@ -1,4 +1,5 @@
 import { UserProfile } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 
 export default function Settings() {
   return (
@@ -6,7 +7,7 @@ export default function Settings() {
         <h2 className="mt-10 scroll-m-20 border-b pb-2 w-full text-3xl font-semibold tracking-tight transition-colors first:mt-0">
           My Profile
         </h2>
-        <UserProfile />
+        <UserProfile appearance={{ baseTheme: dark }} />
     </div>
   )
 }

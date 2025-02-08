@@ -20,14 +20,14 @@ export async function createAlert(
     .from("alerts")
     .insert([
       {
-        userId: user.id,
-        category,
-        location,
-        brand,
-        color,
-        size,
-        material,
-        weather,
+        userid: user.id,
+        category: category.toLowerCase(),
+        location: location.toLowerCase(),
+        brand: brand?.toLowerCase() || null,
+        color: color?.toLowerCase() || null,
+        size: size?.toLowerCase() || null,
+        material: material?.toLowerCase() || null,
+        weather: weather?.toLowerCase() || null,
         enabled: true,
       },
     ]);
@@ -48,7 +48,7 @@ export async function deleteAlert(id: string) {
   const { error } = await supabase
     .from("alerts")
     .delete()
-    .eq("userId", user.id)
+    .eq("userid", user.id)
     .eq("id", id);
 
   if (error) {
@@ -65,7 +65,7 @@ export async function getAlerts() {
   const { data, error } = await supabase
     .from("alerts")
     .select("*")
-    .eq("userId", user.id);
+    .eq("userid", user.id);
 
   if (error) {
     throw error;
@@ -80,10 +80,24 @@ export async function toggleAlert(id: string) {
   if (!user) {
     throw new Error("User not found");
   }
+
+  // Fetch the current state of the alert
+  const { data: alert, error: fetchError } = await supabase
+    .from("alerts")
+    .select("enabled")
+    .eq("userid", user.id)
+    .eq("id", id)
+    .single();
+
+  if (fetchError || !alert) {
+    throw new Error("Failed to fetch alert");
+  }
+
+  // Toggle the enabled state
   const { data, error } = await supabase
     .from("alerts")
-    .update({ enabled: true })
-    .eq("userId", user.id)
+    .update({ enabled: !alert.enabled }) // Toggle the value
+    .eq("userid", user.id)
     .eq("id", id);
 
   if (error) {
@@ -92,4 +106,5 @@ export async function toggleAlert(id: string) {
 
   return data;
 }
+
 

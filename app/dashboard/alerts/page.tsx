@@ -8,7 +8,6 @@ import { Switch } from '@/components/ui/switch';
 import { Trash2, Bell, Plus, Loader2 } from 'lucide-react';
 import { Categories, Locations, Brands, Colors, Size, Materials, Weather } from '@/types/enums';
 import { createAlert, deleteAlert, toggleAlert, getAlerts } from "@/app/actions/alerts";
-import { useRouter } from 'next/navigation';
 import { toast } from '@/components/ui/use-toast';
 
 type Alert = {
@@ -36,7 +35,6 @@ type NewAlertInput = {
 };
 
 const AlertsPage = () => {
-  const router = useRouter();
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -57,6 +55,7 @@ const AlertsPage = () => {
   const fetchAlerts = async () => {
     try {
       const data = await getAlerts();
+      console.log(data);
       setAlerts(data);
     } catch (error) {
       toast({
@@ -171,7 +170,6 @@ const AlertsPage = () => {
         <Card className="mb-6">
           <CardHeader>
             <div className="flex items-center gap-2">
-              <Plus className="h-5 w-5 text-gray-700" />
               <CardTitle>Create New Alert</CardTitle>
             </div>
           </CardHeader>
@@ -220,7 +218,6 @@ const AlertsPage = () => {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <Bell className="h-5 w-5 text-gray-700" />
               <CardTitle>Active Alerts ({alerts.length})</CardTitle>
             </div>
           </CardHeader>
@@ -241,25 +238,25 @@ const AlertsPage = () => {
                       />
                       <div className="grid grid-cols-2 gap-x-8 gap-y-1">
                         <p className="text-sm font-semibold">
-                          {Categories[alert.category]}
+                          {alert.category}
                         </p>
                         <p className="text-sm text-gray-600">
-                          {Locations[alert.location]}
+                          {alert.location.toUpperCase()}
                         </p>
                         {alert.brand && (
-                          <p className="text-sm text-gray-600">Brand: {Brands[alert.brand]}</p>
+                          <p className="text-sm text-gray-600">Brand: {alert.brand}</p>
                         )}
                         {alert.color && (
-                          <p className="text-sm text-gray-600">Color: {Colors[alert.color]}</p>
+                          <p className="text-sm text-gray-600">Color: {alert.color}</p>
                         )}
                         {alert.size && (
-                          <p className="text-sm text-gray-600">Size: {Size[alert.size]}</p>
+                          <p className="text-sm text-gray-600">Size: {alert.size}</p>
                         )}
                         {alert.material && (
-                          <p className="text-sm text-gray-600">Material: {Materials[alert.material]}</p>
+                          <p className="text-sm text-gray-600">Material: {alert.material}</p>
                         )}
                         {alert.weather && (
-                          <p className="text-sm text-gray-600">Weather: {Weather[alert.weather]}</p>
+                          <p className="text-sm text-gray-600">Weather: {alert.weather}</p>
                         )}
                       </div>
                     </div>
