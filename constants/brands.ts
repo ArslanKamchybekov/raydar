@@ -1,0 +1,14 @@
+export const brands = [
+  "apple",
+  "samsung",
+  "dell",
+  "hp",
+  "lenovo",
+  "microsoft",
+  "nike",
+  "adidas",
+  "sony",
+  "jbl",
+  "beats",
+  "asus",
+];
