@@ -9,4 +9,6 @@ export const materials = [
   "rubber",
   "composite",
   "synthetic",
+  "unknown",
+  "edible",
 ];
