@@ -181,7 +181,7 @@ const FeedPage = () => {
           {currentItems.map((item: any) => (
             <Card key={item.id} className={`hover:shadow-lg transition-shadow ${item.claimed ? "opacity-50" : ""}`}>
               <CardHeader>
-                <CardTitle className="text-xl">{item.category}</CardTitle>
+                <CardTitle className="text-xl">{item.category[0].toUpperCase() + item.category.slice(1)}</CardTitle>
               </CardHeader>
               <CardContent>
                 <Image
@@ -200,7 +200,7 @@ const FeedPage = () => {
               </CardContent>
               <CardFooter className="flex justify-between">
                 <Button onClick={() => handleItemClick(item)} className="flex-1 mr-2">
-                  View Details
+                  View
                 </Button>
                 <Button onClick={() => handleClaimClick(item)} className="flex-1 ml-2" variant="outline">
                   Claim
