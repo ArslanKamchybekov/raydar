@@ -1,9 +1,7 @@
 'use server'
 
 import { supabase } from "@/lib/supabase";
-import { randomUUID } from "crypto"
 import { currentUser } from "@clerk/nextjs/server";
-
 
 export async function createAlert(
   category: string,
@@ -14,7 +12,10 @@ export async function createAlert(
   material: string | null,
   weather: string | null,
 ) {
-  const { user } = await currentUser();
+  const user = await currentUser();
+  if (!user) {
+    throw new Error("User not found");
+  }
   const { data, error } = await supabase
     .from("alerts")
     .insert([
@@ -38,9 +39,50 @@ export async function createAlert(
 }
 
 export async function deleteAlert(id: string) {
-  const { data, error } = await supabase
+  const user = await currentUser();
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+  const { error } = await supabase
     .from("alerts")
     .delete()
+    .eq("userId", user.id)
+    .eq("id", id);
+
+  if (error) {
+    throw error;
+  }
+}
+
+export async function getAlerts() {
+  const user = await currentUser();
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+  const { data, error } = await supabase
+    .from("alerts")
+    .select("*")
+    .eq("userId", user.id);
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+export async function toggleAlert(id: string) {
+  const user = await currentUser();
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+  const { data, error } = await supabase
+    .from("alerts")
+    .update({ enabled: true })
+    .eq("userId", user.id)
     .eq("id", id);
 
   if (error) {
