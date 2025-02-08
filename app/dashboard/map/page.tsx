@@ -71,6 +71,7 @@ const LocationPage = () => {
             itemsLost,
             weatherMostLost,
             categoryMostLost,
+            itemsLostByCategory: categoryCounts,
           };
         });
 
@@ -86,7 +87,41 @@ const LocationPage = () => {
         locations.forEach((location) => {
           const itemsAtLocation = fetchItems.filter(
             (item) => item.location_name === location.name
-          ).length;
+          );
+          const itemsLost = itemsAtLocation.length;
+
+          // Get the most common weather and category
+          const weatherCounts = itemsAtLocation.reduce((acc, item) => {
+            acc[item.weather_found] = (acc[item.weather_found] || 0) + 1;
+            return acc;
+          }, {} as Record<string, number>);
+
+          const weatherMostLost =
+            Object.keys(weatherCounts).reduce(
+              (a, b) => (weatherCounts[a] > weatherCounts[b] ? a : b),
+              "" // Default value if array is empty
+            ) || "No data";
+
+          const categoryCounts = itemsAtLocation.reduce((acc, item) => {
+            acc[item.category] = (acc[item.category] || 0) + 1;
+            return acc;
+          }, {} as Record<string, number>);
+
+          // Create a string to list all item categories and counts
+          const itemsLostByCategory = Object.entries(categoryCounts)
+            .map(
+              ([category, count]) =>
+                `${category.toUpperCase()}: ${
+                  typeof count === "number" && count > 0 ? count : "None"
+                }`
+            )
+            .join("<br>");
+
+          const categoryMostLost =
+            Object.keys(categoryCounts).reduce(
+              (a, b) => (categoryCounts[a] > categoryCounts[b] ? a : b),
+              "" // Default value if array is empty
+            ) || "No data";
 
           new mapboxgl.Marker()
             .setLngLat([location.lng, location.lat])
@@ -94,7 +129,11 @@ const LocationPage = () => {
               new mapboxgl.Popup().setHTML(
                 `<div style="font-family: 'Arial', sans-serif; color: #333; padding: 10px; max-width: 250px;">
                     <h3 style="font-size: 16px; color: #2563eb; margin: 0;">${location.name.toUpperCase()}</h3>
-                    <p style="font-size: 14px; color: #555; margin: 5px 0;">Items lost: ${itemsAtLocation}</p>
+                    <p style="font-size: 14px; color: #555; margin: 5px 0;"><strong>Items Lost:</strong><br>${
+                      itemsLostByCategory === ""
+                        ? "None found"
+                        : itemsLostByCategory
+                    }</p>
                   </div>`
               )
             )
@@ -114,10 +153,9 @@ const LocationPage = () => {
       <p className="leading-7 text-sm text-gray-600 dark:text-gray-400 mb-6">
         Find out where most items are lost in your area.
       </p>
-      {/* Map container */}
+
       <div ref={mapContainerRef} className="h-full w-full" />
 
-      {/* Side navbar */}
       {topLocation && (
         <Card className="absolute bottom-20 left-10 bg-white shadow-lg max-w-xs z-10">
           <CardHeader>
