@@ -39,14 +39,14 @@ const FeedPage = () => {
     }
 
     fetchItems()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Get unique categories from items
   const categories = ["all", ...Array.from(new Set(items.map((item) => item.category)))].sort()
 
-  const debouncedSearch = useCallback(
+  const debouncedSearch = useCallback( 
     debounce((value: string) => setSearchQuery(value), 300),
-    [],
+    [setSearchQuery],
   )
 
   const sortItems = (items: any[]) => {

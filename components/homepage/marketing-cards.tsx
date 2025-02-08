@@ -70,7 +70,7 @@ const SpringAnimatedFeatures = () => {
     <div className="flex flex-col justify-center items-center lg:w-[75%] mb-4">
       <div className='flex flex-col mb-[3rem]'>
         <h2 className={`${TITLE_TAILWIND_CLASS} mt-2 font-semibold tracking-tight dark:text-white text-gray-900 text-center`}>
-          The Ray's Stack
+          The Ray&apos;s Stack
         </h2>
         <p className="mx-auto max-w-[500px] text-gray-600 dark:text-gray-400 text-center mt-2 ">
           The technologies that power Raydar and make it the best lost and found platform for UIC students

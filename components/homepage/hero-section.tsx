@@ -10,7 +10,7 @@ export default async function HeroSection() {
         <section className='flex flex-col items-center justify-center leading-6 mt-[3rem]' aria-label="Nextjs Starter Kit Hero">
             <div className="flex flex-col items-center justify-center w-full max-w-4xl px-4 py-8 mx-auto">
                 <h1 className="scroll-m-20 max-w-[800px] text-6xl font-bold tracking-tight text-center bg-gradient-to-t from-[#ADD8E6] to-[#00008B] bg-clip-text text-transparent dark:from-[#ADD8E6] dark:to-[#00008B] dark:bg-clip-text dark:text-transparent">
-                    Find What You've Lost on Campus with Raydar
+                    Find What You&apos;ve Lost on Campus with Raydar
                 </h1>
                 <p className="mx-auto max-w-[600px] text-gray-500 md:text-lg text-center mt-4 dark:text-gray-400">
                     Raydar is the smart lost and found platform for UIC students. Upload images, get matches, and find your

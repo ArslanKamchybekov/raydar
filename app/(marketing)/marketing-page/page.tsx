@@ -29,7 +29,7 @@ export default async function LandingPage() {
     <PageWrapper>
       <div className="flex flex-col min-h-screen items-center mt-[2.5rem] p-3 w-full">
         <h1 className="scroll-m-20 max-w-[800px] text-5xl font-bold tracking-tight text-center">
-          Find What You've Lost on Campus with Raydar
+        Find What You&apos;ve Lost On Campus with Raydar
         </h1>
         <p className="mx-auto max-w-[600px] text-gray-500 md:text-lg text-center mt-4 dark:text-gray-400">
           Raydar is the smart lost and found platform for UIC students. Upload images, get matches, and find your
@@ -112,7 +112,7 @@ export default async function LandingPage() {
                 Why Choose Raydar?
               </h2>
               <p className="text-md mb-5 leading-relaxed">
-                Raydar is more than just a lost and found system. It's a smart platform designed specifically for UIC
+                Raydar is more than just a lost and found system. It&apos;s a smart platform designed specifically for UIC
                 students to make the process of recovering lost items quick, easy, and efficient.
               </p>
               <ol className="flex flex-col gap-1 list-decimal ml-8 mb-4">
@@ -136,7 +136,7 @@ export default async function LandingPage() {
                 Get Started with Raydar
               </h2>
               <p className="text-md mb-5 leading-relaxed">
-                Join the Raydar community today and never worry about losing your belongings on campus again. It's free,
+                Join the Raydar community today and never worry about losing your belongings on campus again. It&apos;s free
                 fast, and could save you hours of searching.
               </p>
               <div className="flex gap-4 mt-6 justify-center">

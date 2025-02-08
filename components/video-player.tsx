@@ -43,7 +43,7 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({ videoSrc }) => {
       video.removeEventListener("timeupdate", updateProgress);
       video.removeEventListener("ended", handleVideoEnd);
     };
-  }, [autoplay]);
+  }, [autoplay]);  // eslint-disable-next-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const handleMouseMove = () => {

@@ -1,6 +1,6 @@
 "use server"
 
-import { clerkClient } from "@/lib/utils"
+import { clerkClient } from "@/lib/clerk"
 
 interface SerializableUserData {
   id: string
