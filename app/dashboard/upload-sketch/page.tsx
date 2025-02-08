@@ -67,7 +67,7 @@ export default function UploadSketchPage() {
 
       // Send POST request to server with description, imageId, and strictness
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/get-relevant-items`,
+        `${process.env.NEXT_PUBLIC_API_URL}/get_images`,
         {
           method: "POST",
           headers: {
@@ -76,7 +76,7 @@ export default function UploadSketchPage() {
           body: JSON.stringify({
             image_id: image.image_id,
             description,
-            strictness,
+            strictness: strictness === Strictness.LOW ? 0.3 : strictness === Strictness.MEDIUM ? 0.5 : 0.7,
           }),
         }
       );
