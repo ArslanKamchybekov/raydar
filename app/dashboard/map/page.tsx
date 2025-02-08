@@ -108,6 +108,12 @@ const LocationPage = () => {
 
   return (
     <div className="relative h-screen w-screen">
+      <div className="flex items-center gap-2 mb-2">
+        <h1 className="text-3xl font-semibold tracking-tight">Raydar Map</h1>
+      </div>
+      <p className="leading-7 text-sm text-gray-600 dark:text-gray-400 mb-6">
+        Find out where most items are lost in your area.
+      </p>
       {/* Map container */}
       <div ref={mapContainerRef} className="h-full w-full" />
 

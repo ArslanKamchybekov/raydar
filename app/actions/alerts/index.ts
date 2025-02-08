@@ -80,9 +80,23 @@ export async function toggleAlert(id: string) {
   if (!user) {
     throw new Error("User not found");
   }
+
+  // Fetch the current state of the alert
+  const { data: alert, error: fetchError } = await supabase
+    .from("alerts")
+    .select("enabled")
+    .eq("userid", user.id)
+    .eq("id", id)
+    .single();
+
+  if (fetchError || !alert) {
+    throw new Error("Failed to fetch alert");
+  }
+
+  // Toggle the enabled state
   const { data, error } = await supabase
     .from("alerts")
-    .update({ enabled: true })
+    .update({ enabled: !alert.enabled }) // Toggle the value
     .eq("userid", user.id)
     .eq("id", id);
 
@@ -92,4 +106,5 @@ export async function toggleAlert(id: string) {
 
   return data;
 }
+
 

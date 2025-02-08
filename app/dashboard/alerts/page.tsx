@@ -8,7 +8,6 @@ import { Switch } from '@/components/ui/switch';
 import { Trash2, Bell, Plus, Loader2 } from 'lucide-react';
 import { Categories, Locations, Brands, Colors, Size, Materials, Weather } from '@/types/enums';
 import { createAlert, deleteAlert, toggleAlert, getAlerts } from "@/app/actions/alerts";
-import { useRouter } from 'next/navigation';
 import { toast } from '@/components/ui/use-toast';
 
 type Alert = {
@@ -171,7 +170,6 @@ const AlertsPage = () => {
         <Card className="mb-6">
           <CardHeader>
             <div className="flex items-center gap-2">
-              <Plus className="h-5 w-5 text-gray-700" />
               <CardTitle>Create New Alert</CardTitle>
             </div>
           </CardHeader>
@@ -220,7 +218,6 @@ const AlertsPage = () => {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <Bell className="h-5 w-5 text-gray-700" />
               <CardTitle>Active Alerts ({alerts.length})</CardTitle>
             </div>
           </CardHeader>
@@ -244,7 +241,7 @@ const AlertsPage = () => {
                           {alert.category}
                         </p>
                         <p className="text-sm text-gray-600">
-                          {alert.location}
+                          {alert.location.toUpperCase()}
                         </p>
                         {alert.brand && (
                           <p className="text-sm text-gray-600">Brand: {alert.brand}</p>

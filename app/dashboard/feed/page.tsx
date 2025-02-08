@@ -140,6 +140,12 @@ const FeedPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <div className="flex items-center gap-2 mb-2">
+        <h1 className="text-3xl font-semibold tracking-tight">Raydar Feed</h1>
+      </div>
+      <p className="leading-7 text-sm text-gray-600 dark:text-gray-400 mb-6">
+        Browse through the items that have been found on campus.
+      </p>
       <div className="container mx-auto py-4">
         <div className="flex gap-4 mb-4">
           <Select onValueChange={setSortBy} defaultValue="newest">
@@ -164,15 +170,14 @@ const FeedPage = () => {
               ))}
             </SelectContent>
           </Select>
+          <Input
+            type="search"
+            placeholder="Search items..."
+            value={searchQuery}
+            onChange={(e) => debouncedSearch(e.target.value)}
+            className="max-w-sm mx-auto mb-8"
+          />
         </div>
-
-        <Input
-          type="search"
-          placeholder="Search items..."
-          value={searchQuery}
-          onChange={(e) => debouncedSearch(e.target.value)}
-          className="max-w-sm mx-auto mb-8"
-        />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {currentItems.map((item: any) => (
@@ -277,13 +282,6 @@ const FeedPage = () => {
                         <p>{selectedItem.keywords.join(", ")}</p>
                       </div>
                     )}
-                  </div>
-                </div>
-                <div className="mt-6 space-y-4">
-                  <div>
-                    <h3 className="font-semibold">Posted by</h3>
-                    <p>{selectedItem.user_name}</p>
-                    <p>{selectedItem.user_email}</p>
                   </div>
                 </div>
               </>

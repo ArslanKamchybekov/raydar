@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import { uploadLostItemSketch } from "../../actions/lostItems";
-import PageWrapper from "@/components/wrapper/page-wrapper";
 import {
   Select,
   SelectTrigger,
