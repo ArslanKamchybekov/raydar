@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
 import { useEffect, useState, useCallback } from "react"
 import Image from "next/image"
 import { getFoundItems } from "@/app/actions/foundItems"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import debounce from "lodash/debounce"
@@ -27,82 +27,57 @@ const FeedPage = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        setLoading(true);
-        const data = await getFoundItems();
-        setItems(data);
+        setLoading(true)
+        const data = await getFoundItems()
+        setItems(data)
       } catch (err: any) {
-        setError(err);
+        setError(err)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchItems();
-  }, []);
-
-  // Get unique categories from items
-  const categories = [
-    "all",
-    ...Array.from(new Set(items.map((item) => item.category))),
-  ].sort();
+    fetchItems()
+  }, [])
 
   const debouncedSearch = useCallback(
     debounce((value: string) => setSearchQuery(value), 300),
-    []
-  );
+    [],
+  )
 
   const sortItems = (items: any[]) => {
     return [...items].sort((a, b) => {
-      if (sortBy === "newest") {
-        return (
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
-      } else if (sortBy === "oldest") {
-        return (
-          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-        );
+      if (sortBy === "date") {
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      } else if (sortBy === "category") {
+        return a.category.localeCompare(b.category)
       }
-      return 0;
-    });
-  };
+      return 0
+    })
+  }
 
   const filteredItems = sortItems(
     items.filter((item: any) => {
-      const searchLower = searchQuery.toLowerCase();
-      const matchesSearch =
+      const searchLower = searchQuery.toLowerCase()
+      return (
         item.description?.toLowerCase().includes(searchLower) ||
         item.location_name.toLowerCase().includes(searchLower) ||
         item.category.toLowerCase().includes(searchLower) ||
-        (item.keywords || []).some((keyword: string) =>
-          keyword.toLowerCase().includes(searchLower)
-        );
+        (item.keywords || []).some((keyword: string) => keyword.toLowerCase().includes(searchLower))
+      )
+    }),
+  )
 
-      const matchesCategory =
-        selectedCategory === "all" || item.category === selectedCategory;
-
-      return matchesSearch && matchesCategory;
-    })
-  );
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+  const indexOfLastItem = currentPage * itemsPerPage
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage
+  const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem)
 
   const handleItemClick = (item: any) => {
-    setSelectedItem(item);
-    setIsModalOpen(true);
-  };
+    setSelectedItem(item)
+    setIsModalOpen(true)
+  }
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber)
-
-  const handleClaimItem = async (itemId: number) => {
-    try {
-      setIsModalOpen(false)
-    } catch (error) {
-      console.error("Error claiming item:", error)
-      // You might want to show an error message to the user here
-    }
-  }
 
   const handleClaimClick = async (item: any) => {
     try {
@@ -120,7 +95,6 @@ const FeedPage = () => {
   }
 
   if (loading) {
-    // ... (loading state remains the same)
     return (
       <div className="container mx-auto py-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -154,7 +128,7 @@ const FeedPage = () => {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-lg text-red-500">Error: {error}</div>
       </div>
-    );
+    )
   }
 
   return (
@@ -288,9 +262,6 @@ const FeedPage = () => {
                     <p>{selectedItem.user_name}</p>
                     <p>{selectedItem.user_email}</p>
                   </div>
-                  <Button onClick={() => handleClaimItem(selectedItem.id)} className="w-full">
-                    Claim Item
-                  </Button>
                 </div>
               </>
             )}
@@ -344,4 +315,4 @@ const FeedPage = () => {
   )
 }
 
-export default FeedPage;
+export default FeedPage
