@@ -20,6 +20,7 @@ bucket_name = "lost_images"
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
+sketch_model = SketchClassifier()
 
 
 def predict_the_description(input_description, threshold=0.45):
@@ -65,7 +66,6 @@ def get_images():
             break
 
     
-    sketch_model = SketchClassifier()
     label = sketch_model.predict(image_data)
     print(f"Predicted keyword: {label}")
 
