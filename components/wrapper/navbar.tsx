@@ -1,5 +1,9 @@
 "use client"
 import Link from 'next/link';
+<<<<<<< HEAD
+=======
+import Image from 'next/image';
+>>>>>>> 305e8d27ddb290efdd3ea1445c3ee8fb4c7c12b7
 import * as React from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { Button } from "../ui/button";
@@ -23,7 +27,10 @@ const components: { title: string; href: string; description: string }[] = [
 
 export default function NavBar() {
     let userId = null;
+<<<<<<< HEAD
     /* eslint-disable react-hooks/rules-of-hooks */
+=======
+>>>>>>> 305e8d27ddb290efdd3ea1445c3ee8fb4c7c12b7
     if (config?.auth?.enabled) {
         const user = useAuth();
         userId = user?.userId;
@@ -63,7 +70,11 @@ export default function NavBar() {
             <NavigationMenu>
                 <NavigationMenuList className="max-[825px]:hidden flex gap-3 w-[100%] justify-between">
                     <Link href="/" className="pl-2 flex items-center" aria-label="Home">
+<<<<<<< HEAD
                         <BlocksIcon aria-hidden="true" />
+=======
+                        <Image src="/sparkhacks-logo.png" width={50} height={50} alt="App Logo" />
+>>>>>>> 305e8d27ddb290efdd3ea1445c3ee8fb4c7c12b7
                         <span className="sr-only">Home</span>
                     </Link>
                 </NavigationMenuList>
