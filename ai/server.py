@@ -85,17 +85,9 @@ def get_images():
     threshold = data["threshold"]
     
     sketch_predictive_rows = predict_the_sketch(image_id)
-
-
-    # This is Josh's section to analyze the description. He will return an array of rows.
-
     description_analysis_rows = predict_the_description(description, threshold)
     
-    #-----------------------------------------------------------------------------------
-
-    # Once Josh is done with analysis, he will return rows. Merge with your rows. And return all rows.
-
-    return jsonify({"rows": "label"})
+    return jsonify({"images": sketch_predictive_rows + description_analysis_rows})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5500, debug=False)
