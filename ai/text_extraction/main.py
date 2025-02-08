@@ -1,17 +1,14 @@
 from processors.similarity_processor import SimilarityProcessor
 from dotenv import load_dotenv
 
-def main():
+def predict_the_description_main(input_description, threshold=0.45):
     load_dotenv()
     # Initialize the processor
     config = {
-        "similarity_threshold": 0.45,  # Adjust as needed
+        "similarity_threshold": threshold,  # Adjust as needed
         "max_similar_items": 10       # Adjust as needed
     }
     processor = SimilarityProcessor(config)
-
-    # Input description to compare against
-    input_description = "Lost a black and red nike bag around the gym"
 
     # Find similar items in the database
     similar_items = processor.find_similar_items_in_db(input_description, threshold=config["similarity_threshold"])
