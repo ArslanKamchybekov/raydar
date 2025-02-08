@@ -8,7 +8,7 @@ import os
 
 # MODEL INIT
 class SketchClassifier:
-    def __init__(self, model_path='resnet18_trained_model.pth', class_labels_path='classes.txt'):
+    def __init__(self, model_path='sketch_classifier/resnet18_trained_model.pth', class_labels_path='sketch_classifier/classes.txt'):
         """Initialize the image classifier."""
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.class_labels = self._load_class_labels(class_labels_path)
@@ -26,8 +26,14 @@ class SketchClassifier:
         """Load the trained model."""
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Model file '{model_path}' not found.")
-        model = models.resnet18(weights=None)  # Avoid warnings, no pre-trained weights
-        model.fc = nn.Linear(model.fc.in_features, len(self.class_labels))  # Adjust for classes
+        
+        # Load ResNet18 without pre-trained weights
+        model = models.resnet18(weights=None)  
+        
+        # Adjust the final fully connected layer for 250 classes
+        model.fc = nn.Linear(model.fc.in_features, 250)  # 250 is the new number of classes
+        
+        # Load the state dict, with the number of classes now matching
         model.load_state_dict(torch.load(model_path, map_location=self.device))
         model = model.to(self.device)
         model.eval()  # Set to evaluation mode

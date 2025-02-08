@@ -3,11 +3,11 @@ from rapidfuzz import fuzz, process
 class TextCorrector:
     def __init__(self):
         # Load all our known words from the constants
-        from constants.brands import brands
-        from constants.locations import locations
-        from constants.colors import colors
-        from constants.materials import materials
-        from constants.weather import weather
+        from text_extraction.constants.brands import brands
+        from text_extraction.constants.locations import locations
+        from text_extraction.constants.colors import colors
+        from text_extraction.constants.materials import materials
+        from text_extraction.constants.weather import weather
         
         # Common misspellings dictionary
         self.common_misspellings = {

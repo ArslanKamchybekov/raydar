@@ -1,5 +1,5 @@
-from utils.text_corrector import TextCorrector
-from utils.nlp_utils import extract_features
+from text_extraction.utils.text_corrector import TextCorrector
+from text_extraction.utils.nlp_utils import extract_features
 
 class ItemProcessor:
     def __init__(self):

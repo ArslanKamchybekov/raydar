@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 from config import supabase
@@ -7,6 +7,7 @@ from io import BytesIO
 from storage3.exceptions import StorageApiError # type: ignore
 
 from text_extraction.main import predict_the_description_main
+
 from sketch_classifier.sketch_classifier import SketchClassifier
 
 load_dotenv()
@@ -83,6 +84,8 @@ def get_images():
     image_id = data["image_id"]
     description = data["description"]
     threshold = data["threshold"]
+
+    
     
     sketch_predictive_rows = predict_the_sketch(image_id)
     description_analysis_rows = predict_the_description(description, threshold)

@@ -1,18 +1,18 @@
 from supabase import create_client
 from sklearn.metrics.pairwise import cosine_similarity
-from utils.vectorizer import TextVectorizer
+from text_extraction.utils.vectorizer import TextVectorizer
 from Levenshtein import ratio
 from typing import List, Dict
 import os
-from utils.nlp_utils import extract_features
+from text_extraction.utils.nlp_utils import extract_features
 
 class SimilarityProcessor:
     def __init__(self, config: Dict):
         self.vectorizer = TextVectorizer()
         self.config = config
         self.supabase = create_client(
-            os.getenv("SUPABASE_URL"),
-            os.getenv("SUPABASE_KEY")
+            "https://ykyccstnnkxdmwembakk.supabase.co/",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlreWNjc3Rubmt4ZG13ZW1iYWtrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczNzc1NjgyNiwiZXhwIjoyMDUzMzMyODI2fQ.9AnR8Ixr3LhgrOgujSkL5iLtoXbkf428hCHxHDqBlVs"
         )
 
     def calculate_similarity(self, text1: str, text2: str, metadata1: dict, metadata2: dict) -> float:
