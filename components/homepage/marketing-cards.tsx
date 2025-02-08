@@ -7,7 +7,7 @@ import Link from 'next/link'
 const ProjectsData = [
   {
     id: 1,
-    name: 'Nextjs 14',
+    name: 'Nextjs 15',
     description: 'A framework for React that enables server-side rendering and effortless deployment.',
     image: 'https://utfs.io/f/a8df6965-e6df-417a-ab0b-b3ad33d701d7-hcfblw.png',
     imageDark: "https://utfs.io/f/c5588304-c7ff-43f9-b164-3b9c78474b73-rv0oux.png",
@@ -55,39 +55,18 @@ const ProjectsData = [
     description: 'Modern database toolkit for TypeScript and Node.js, simplifying database interactions.',
     image: 'https://utfs.io/f/c3933696-cd5c-4de7-a24e-1822df8c4215-g7gclc.png',
     url: "https://prisma.io/"
-  },
-  {
-    id: 8,
-    name: 'Stripe Subsctiptions & One time payments',
-    description: 'Payment processing solution for handling subscriptions and one-off transactions securely.',
-    image: 'https://utfs.io/f/a2fbe9db-35f8-4738-a4c4-0b9a29f4efc7-er2coj.png',
-    url: "https://stripe.com"
-  },
-  {
-    id: 9,
-    name: 'Tanstack Query',
-    description: 'For client side fetching, caching, and revalidation.',
-    image: 'https://utfs.io/f/ee162388-f998-4740-bfc4-9d9a7050f485-90gb5l.png',
-    url: "https://tanstack.com/query/v5"
-  },
-  {
-    id: 10,
-    name: 'Upstash (Redis)',
-    description: 'Redis-based cloud database service for rate-limiting.',
-    image: 'https://utfs.io/f/c01790c1-7c12-4a5e-b50f-a44358124853-3mzznq.png',
-    url: "https://upstash.com/"
-  },
+  }
 ]
 
 const SpringAnimatedFeatures = () => {
   return (
     <div className="flex flex-col justify-center items-center lg:w-[75%]">
       <div className='flex flex-col mb-[3rem]'>
-        <h2 className={`${TITLE_TAILWIND_CLASS} mt-2 font-semibold tracking-tight dark:text-white text-gray-900`}>
-          Nextjs Starter Kit: Built with the best
+        <h2 className={`${TITLE_TAILWIND_CLASS} mt-2 font-semibold tracking-tight dark:text-white text-gray-900 text-center`}>
+          The Ray's Stack
         </h2>
         <p className="mx-auto max-w-[500px] text-gray-600 dark:text-gray-400 text-center mt-2 ">
-          Your customers deserve a product built with the best technologies in our Nextjs Starter Kit
+          The technologies that power Raydar and make it the best lost and found platform for UIC students
         </p>
       </div>
       <div className="grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
