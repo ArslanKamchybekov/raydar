@@ -22,7 +22,7 @@ type Item = {
 
 type Alert = {
   id: string;
-  userId: string;
+  userid: string;
   category: string;
   location: string;
   brand: string | null;
@@ -70,12 +70,19 @@ function isItemMatch(item: Item, alert: Alert): boolean {
 
 async function sendMatchNotification(alert: Alert, item: Item) {
   try {
-    // Get the user's email from the alert's joined user data
-    const userId = alert.userId
-    const user = await clerkClient.users.getUser(userId);
+    // Ensure we have a valid user ID
+    if (!alert.userid) {
+      throw new Error("No user ID found in alert");
+    }
+
+    // Get user from Clerk
+    const user = await clerkClient.users.getUser(alert.userid);
     
-    if (!user.emailAddresses || user.emailAddresses.length === 0) {
-      throw new Error("No email address found for user");
+    // Get primary email address
+    const primaryEmail = user.emailAddresses.find(email => email.id === user.primaryEmailAddressId);
+    
+    if (!primaryEmail) {
+      throw new Error("No primary email address found for user");
     }
 
     const transporter = nodemailer.createTransport({
@@ -88,10 +95,9 @@ async function sendMatchNotification(alert: Alert, item: Item) {
       },
     });
 
-    // Create a more user-friendly email
     const mailOptions = {
       from: `"Lost & Found" <${process.env.SMTP_USER}>`,
-      to: user.emailAddresses[0].emailAddress,
+      to: primaryEmail.emailAddress,
       subject: `Match Found: ${item.category} at ${item.location_name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -137,7 +143,7 @@ async function sendMatchNotification(alert: Alert, item: Item) {
     // Log successful notification
     await supabase.from("notifications").insert([
       {
-        userId: alert.userId,
+        userId: alert.userid,
         alertId: alert.id,
         itemId: item.id,
         type: 'EMAIL',
@@ -153,14 +159,13 @@ async function sendMatchNotification(alert: Alert, item: Item) {
     // Log failed notification
     await supabase.from("notifications").insert([
       {
-        userId: alert.userId,
+        userId: alert.userid,
         alertId: alert.id,
         itemId: item.id,
         type: 'EMAIL',
         status: 'FAILED',
-        error: JSON.stringify(error),
+        error: error instanceof Error ? error.message : 'Unknown error',
       }
     ]);
   }
 }
-  
