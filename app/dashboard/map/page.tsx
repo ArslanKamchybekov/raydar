@@ -3,13 +3,15 @@ import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import { defaultLocation, locations } from "constants/locations";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { getLostItems } from "@/app/actions/lostItems";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getFoundItems } from "@/app/actions/foundItems";
 import { useTheme } from "next-themes";
 
-mapboxgl.accessToken =
-  "pk.eyJ1IjoiaXNhYWNhbGF6YXIiLCJhIjoiY202dm9kdm9uMGFhNTJrcTZtYXc2NjhxNCJ9.aJdcl6mYhL6Pan8t3cck7w";
+// Ensure mapboxgl knows we're in a browser environment
+if (typeof window !== "undefined") {
+  mapboxgl.accessToken =
+    "pk.eyJ1IjoiaXNhYWNhbGF6YXIiLCJhIjoiY202dm9kdm9uMGFhNTJrcTZtYXc2NjhxNCJ9.aJdcl6mYhL6Pan8t3cck7w";
+}
 
 const mapStyles = {
   light: "mapbox://styles/mapbox/light-v11",
@@ -20,7 +22,8 @@ const LocationPage = () => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
-  const { theme } = useTheme();
+  const { theme, systemTheme } = useTheme();
+  const [isClient, setIsClient] = useState(false);
   const [topLocation, setTopLocation] = useState<{
     name: string;
     itemsLost: number;
@@ -28,7 +31,9 @@ const LocationPage = () => {
     categoryMostLost: string;
   } | null>(null);
 
-  // Simplified marker creation without hover effects
+  // Get the actual theme accounting for system preference
+  const currentTheme = theme === "system" ? systemTheme : theme;
+
   const createMarker = (color: string) => {
     const el = document.createElement("div");
     el.className = "custom-marker";
@@ -42,22 +47,39 @@ const LocationPage = () => {
     return el;
   };
 
+  // Handle client-side mounting
   useEffect(() => {
-    if (!mapContainerRef.current || mapRef.current) return;
+    setIsClient(true);
+  }, []);
 
-    mapRef.current = new mapboxgl.Map({
-      container: mapContainerRef.current,
-      style: theme === "dark" ? mapStyles.dark : mapStyles.light,
-      center: [defaultLocation.lng, defaultLocation.lat],
-      zoom: 15,
-      pitch: 45,
-      bearing: -17.6,
-      antialias: true,
-    });
+  // Combined initialization and data fetching
+  useEffect(() => {
+    if (!isClient || !mapContainerRef.current) return;
 
-    const map = mapRef.current;
+    const initializeMapAndMarkers = async () => {
+      // Clean up existing map if it exists
+      if (mapRef.current) {
+        mapRef.current.remove();
+        markersRef.current = [];
+      }
 
-    map.on("load", () => {
+      // Create new map instance
+      const map = new mapboxgl.Map({
+        container: mapContainerRef.current!,
+        style: currentTheme === "dark" ? mapStyles.dark : mapStyles.light,
+        center: [defaultLocation.lng, defaultLocation.lat],
+        zoom: 15,
+        pitch: 45,
+        bearing: -17.6,
+        antialias: true,
+      });
+
+      mapRef.current = map;
+
+      // Wait for map to load before adding layers and markers
+      await new Promise((resolve) => map.on("load", resolve));
+
+      // Add 3D buildings
       map.addLayer({
         id: "3d-buildings",
         source: "composite",
@@ -67,7 +89,7 @@ const LocationPage = () => {
         minzoom: 14,
         paint: {
           "fill-extrusion-color":
-            theme === "dark"
+            currentTheme === "dark"
               ? [
                   "interpolate",
                   ["linear"],
@@ -92,125 +114,133 @@ const LocationPage = () => {
         },
       });
 
+      // Set fog
       map.setFog({
-        color: theme === "dark" ? "#242424" : "#ffffff",
-        "high-color": theme === "dark" ? "#242424" : "#245cdf",
+        color: currentTheme === "dark" ? "#242424" : "#ffffff",
+        "high-color": currentTheme === "dark" ? "#242424" : "#245cdf",
         "horizon-blend": 0.02,
-        "space-color": theme === "dark" ? "#000000" : "#ffffff",
-        "star-intensity": theme === "dark" ? 0.6 : 0,
+        "space-color": currentTheme === "dark" ? "#000000" : "#ffffff",
+        "star-intensity": currentTheme === "dark" ? 0.6 : 0,
       });
-    });
 
-    const initializeMap = async () => {
-      const fetchItems = await getFoundItems();
+      // Add navigation control
+      map.addControl(new mapboxgl.NavigationControl());
 
-      markersRef.current.forEach((marker) => marker.remove());
-      markersRef.current = [];
+      // Fetch and add markers
+      try {
+        const fetchItems = await getFoundItems();
 
-      const locationCounts = locations.map((location) => {
-        const itemsAtLocation = fetchItems.filter(
-          (item) => item.location_name === location.name
-        );
+        const locationCounts = locations.map((location) => {
+          const itemsAtLocation = fetchItems.filter(
+            (item) => item.location_name === location.name
+          );
 
-        const weatherCounts = itemsAtLocation.reduce<Record<string, number>>(
-          (acc, item) => {
-            const weather = item.weather_found || "unknown";
-            acc[weather] = (acc[weather] || 0) + 1;
-            return acc;
-          },
-          {}
-        );
+          const weatherCounts = itemsAtLocation.reduce<Record<string, number>>(
+            (acc, item) => {
+              const weather = item.weather_found || "unknown";
+              acc[weather] = (acc[weather] || 0) + 1;
+              return acc;
+            },
+            {}
+          );
 
-        const weatherMostLost = Object.entries(weatherCounts).reduce<string>(
-          (max, [weather, currentCount]) => {
-            const maxCount = weatherCounts[max] || 0;
-            return currentCount > maxCount ? weather : max;
-          },
-          Object.keys(weatherCounts)[0] || "No data"
-        );
+          const weatherMostLost = Object.entries(weatherCounts).reduce<string>(
+            (max, [weather, currentCount]) => {
+              const maxCount = weatherCounts[max] || 0;
+              return currentCount > maxCount ? weather : max;
+            },
+            Object.keys(weatherCounts)[0] || "No data"
+          );
 
-        const categoryCounts = itemsAtLocation.reduce<Record<string, number>>(
-          (acc, item) => {
-            const category = item.category || "unknown";
-            acc[category] = (acc[category] || 0) + 1;
-            return acc;
-          },
-          {}
-        );
+          const categoryCounts = itemsAtLocation.reduce<Record<string, number>>(
+            (acc, item) => {
+              const category = item.category || "unknown";
+              acc[category] = (acc[category] || 0) + 1;
+              return acc;
+            },
+            {}
+          );
 
-        const categoryMostLost = Object.entries(categoryCounts).reduce<string>(
-          (max, [category, currentCount]) => {
+          const categoryMostLost = Object.entries(
+            categoryCounts
+          ).reduce<string>((max, [category, currentCount]) => {
             const maxCount = categoryCounts[max] || 0;
             return currentCount > maxCount ? category : max;
-          },
-          Object.keys(categoryCounts)[0] || "No data"
-        );
+          }, Object.keys(categoryCounts)[0] || "No data");
 
-        // Create popup with click-only behavior
-        const popup = new mapboxgl.Popup({
-          offset: 25,
-          className: theme === "dark" ? "dark-popup" : "light-popup",
-          closeButton: true,
-        }).setHTML(`
-  <div class="p-4 ${
-    theme === "dark" ? "text-white bg-gray-800" : "text-gray-800 bg-white"
-  }">
-    <h3 class="font-bold text-lg mb-2">${location.name.toUpperCase()}</h3>
-    <div class="space-y-1">
-      ${
-        categoryCounts && Object.entries(categoryCounts).length > 0
-          ? Object.entries(categoryCounts)
-              .map(
-                ([category, count]) => `
-              <div class="flex justify-between">
-                <span>${category.toUpperCase()}:</span>
-                <span class="font-semibold">${count}</span>
+          const popup = new mapboxgl.Popup({
+            offset: 25,
+            className: currentTheme === "dark" ? "dark-popup" : "light-popup",
+            closeButton: true,
+          }).setHTML(`
+            <div class="p-4 ${
+              currentTheme === "dark"
+                ? "text-white bg-gray-800"
+                : "text-gray-800 bg-white"
+            }">
+              <h3 class="font-bold text-lg mb-2">${location.name.toUpperCase()}</h3>
+              <div class="space-y-1">
+                ${
+                  categoryCounts && Object.entries(categoryCounts).length > 0
+                    ? Object.entries(categoryCounts)
+                        .map(
+                          ([category, count]) => `
+                        <div class="flex justify-between">
+                          <span>${category.toUpperCase()}:</span>
+                          <span class="font-semibold">${count}</span>
+                        </div>
+                      `
+                        )
+                        .join("")
+                    : "<div class='flex justify-between font-semibold'><span>No Items found</span></div>"
+                }
               </div>
-            `
-              )
-              .join("")
-          : "<div class='flex justify-between font-semibold'><span>No Items found</span></div>"
+            </div>
+          `);
+
+          const marker = new mapboxgl.Marker({
+            element: createMarker("#2563eb"),
+            anchor: "bottom",
+          })
+            .setLngLat([location.lng, location.lat])
+            .setPopup(popup)
+            .addTo(map);
+
+          markersRef.current.push(marker);
+
+          return {
+            name: location.name.toString().toUpperCase(),
+            itemsLost: itemsAtLocation.length,
+            weatherMostLost,
+            categoryMostLost,
+          };
+        });
+
+        const mostLostLocation = locationCounts.reduce((prev, current) =>
+          current.itemsLost > prev.itemsLost ? current : prev
+        );
+        setTopLocation(mostLostLocation);
+      } catch (error) {
+        console.error("Error loading markers:", error);
       }
-    </div>
-  </div>
-`);
-
-        const marker = new mapboxgl.Marker({
-          element: createMarker("#2563eb"),
-          anchor: "bottom",
-        })
-          .setLngLat([location.lng, location.lat])
-          .setPopup(popup)
-          .addTo(map);
-
-        markersRef.current.push(marker);
-
-        return {
-          name: location.name.toString().toUpperCase(),
-          itemsLost: itemsAtLocation.length,
-          weatherMostLost,
-          categoryMostLost,
-        };
-      });
-
-      const mostLostLocation = locationCounts.reduce((prev, current) =>
-        current.itemsLost > prev.itemsLost ? current : prev
-      );
-      setTopLocation(mostLostLocation);
     };
 
-    initializeMap();
-
-    map.addControl(new mapboxgl.NavigationControl());
+    initializeMapAndMarkers();
 
     return () => {
-      map.remove();
-      markersRef.current = [];
+      if (mapRef.current) {
+        mapRef.current.remove();
+        markersRef.current = [];
+      }
     };
-  }, [theme]);
+  }, [isClient, currentTheme]); // Only depend on isClient and currentTheme
+
+  if (!isClient) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div className="relative h-screen w-screen">
+    <div className="relative h-screen">
       <div className="flex items-center gap-2 mb-2">
         <h1 className="text-3xl font-semibold tracking-tight">Raydar Map</h1>
       </div>
@@ -235,11 +265,13 @@ const LocationPage = () => {
             </p>
             <p className="text-sm">
               <span className="font-semibold">Weather:</span>{" "}
-              {topLocation.weatherMostLost}
+              {topLocation.weatherMostLost[0].toUpperCase() +
+                topLocation.weatherMostLost.slice(1)}
             </p>
             <p className="text-sm">
               <span className="font-semibold">Category:</span>{" "}
-              {topLocation.categoryMostLost}
+              {topLocation.categoryMostLost[0].toUpperCase() +
+                topLocation.categoryMostLost.slice(1)}
             </p>
           </CardContent>
         </Card>

@@ -58,12 +58,10 @@ function isItemMatch(item: Item, alert: Alert): boolean {
     return false;
   }
 
+  console.log(item, alert);
+
   // Optional attribute matches - only check if alert has specified the attribute
-  if (alert.brand && item.brand !== alert.brand) return false;
-  if (alert.color && item.color !== alert.color) return false;
-  if (alert.size && item.size !== alert.size) return false;
-  if (alert.material && item.material !== alert.material) return false;
-  if (alert.weather && item.weather !== alert.weather) return false;
+
 
   console.log("Match found!");
   return true;
