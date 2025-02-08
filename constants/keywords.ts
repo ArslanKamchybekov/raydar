@@ -2,7 +2,7 @@
 type ClassName = string;
 
 // The array with type annotation
-const classes: ClassName[] = [
+export const keywords_list: ClassName[] = [
   "airplane",
   "alarm clock",
   "angel",
