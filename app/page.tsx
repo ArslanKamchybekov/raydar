@@ -14,9 +14,9 @@ export default async function Home() {
       <div className="flex my-[8rem] w-full justify-center items-center">
         <SideBySide />
       </div>
-      <div className="flex flex-col w-full justify-center items-center mb-16">
+      {/* <div className="flex flex-col w-full justify-center items-center mb-16">
         <AutoplayVideo />
-      </div>
+      </div> */}
       <div className="flex flex-col p-2 w-full justify-center items-center">
         <MarketingCards />
       </div>
