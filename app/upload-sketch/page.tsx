@@ -37,7 +37,7 @@ export default function UploadSketchPage() {
 
     try {
       // Upload file to database
-      const imageId = await uploadLostItemSketch(file, description)
+      const image = await uploadLostItemSketch(file, description)
 
       // Send POST request to server with description and imageId
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/get_keywords`, {
@@ -46,22 +46,22 @@ export default function UploadSketchPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          image_id: imageId,
+          image_id: image.image_id,
           description,
         }),
       })
-
-      console.log("Response:", response)
 
       if (!response.ok) {
         throw new Error("Failed to send data to the server")
       }
 
+      const data = await response.json()
+      console.log(data)
+
       toast({
         title: "Success",
         description: "Your sketch has been uploaded successfully.",
       })
-      router.push("/") // Redirect to home page or a confirmation page
     } catch (error) {
       console.error("Error:", error)
       toast({

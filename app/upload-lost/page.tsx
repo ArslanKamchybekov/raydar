@@ -11,19 +11,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Locations, Categories, Brands, Colors, Size, Materials, Weather } from "@/types/enums"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { uploadFoundItem } from "../actions/foundItems"
-import { supabase } from "@/lib/supabase"
 import PageWrapper from "@/components/wrapper/page-wrapper"
 
 const LostItemUploadPage = () => {
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
-  const [locationName, setLocationName] = useState<Locations | "">("")
-  const [category, setCategory] = useState<Categories | "">("")
-  const [brand, setBrand] = useState<Brands | "">("")
-  const [colors, setColors] = useState<Colors[]>([])
-  const [size, setSize] = useState<Size | "">("")
-  const [material, setMaterial] = useState<Materials | "">("")
-  const [weatherFound, setWeatherFound] = useState<Weather | "">("")
+  const [locationName, setLocationName] = useState<Locations | "">("");
+  const [category, setCategory] = useState<Categories | "">("");
+  const [brand, setBrand] = useState<Brands | "">("");
+  const [colors, setColors] = useState<Colors[]>([]);
+  const [size, setSize] = useState<Size | "">("");
+  const [material, setMaterial] = useState<Materials | "">("");
+  const [weatherFound, setWeatherFound] = useState<Weather | "">("");
   const [description, setDescription] = useState("")
   const [keywords, setKeywords] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -35,19 +34,6 @@ const LostItemUploadPage = () => {
       setPreview(reader.result as string)
     }
     reader.readAsDataURL(uploadedFile)
-  }
-
-  const uploadImageToStorage = async (file: File, imageId: string) => {
-    const { error } = await supabase.storage
-      .from('found_images')
-      .upload(`${imageId}.jpeg`, file, {
-        contentType: 'image/jpeg',
-        upsert: true
-      })
-
-    if (error) {
-      throw new Error(`Error uploading image: ${error.message}`)
-    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -69,11 +55,11 @@ const LostItemUploadPage = () => {
         file,
         locationName as Locations,
         category as Categories,
-        brand as Brands || null,
+        brand || null,
         colors,
-        size as Size || null,
-        material as Materials || null,
-        weatherFound as Weather || null,
+        size || null,
+        material || null,
+        weatherFound || null,
         description || null,
         keywords
       )

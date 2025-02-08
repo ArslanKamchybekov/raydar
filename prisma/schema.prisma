@@ -204,3 +204,19 @@ model invoices {
   email           String
   user_id         String?
 }
+
+model Alert {
+  id           Int        @id @default(autoincrement())
+  createdAt    DateTime   @default(now())
+  userId       String
+  category     Categories
+  location     Locations
+  brand        Brands?
+  color        Colors?
+  size         Size?
+  material     Materials?
+  weather      Weather?
+  enabled     Boolean    @default(true)
+
+  @@index([userId, category, location, brand, color, size, material, weather])
+}
