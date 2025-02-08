@@ -10,7 +10,7 @@ import { toast } from "@/components/ui/use-toast"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Locations, Categories, Brands, Colors, Size, Materials, Weather } from "@/types/enums"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { uploadFoundItem } from "../actions/foundItems"
+import { uploadFoundItem } from "../../actions/foundItems"
 import PageWrapper from "@/components/wrapper/page-wrapper"
 import { useUser } from "@clerk/nextjs"
 
@@ -114,7 +114,6 @@ const LostItemUploadPage = () => {
   }
 
   return (
-    <PageWrapper>
       <div className="flex flex-col items-center justify-center w-full max-w-lg p-6 space-y-6">
         <Card>
           <CardHeader>
@@ -281,7 +280,6 @@ const LostItemUploadPage = () => {
           </CardContent>
         </Card>
       </div>
-    </PageWrapper>
   )
 }
 

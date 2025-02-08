@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
-import { uploadLostItemSketch } from "../actions/lostItems";
+import { uploadLostItemSketch } from "../../actions/lostItems";
 import PageWrapper from "@/components/wrapper/page-wrapper";
 import {
   Select,
@@ -97,7 +97,6 @@ export default function UploadSketchPage() {
   };
 
   return (
-    <PageWrapper>
       <div className="w-full max-w-md p-4">
         <Card>
           <CardHeader>
@@ -150,6 +149,5 @@ export default function UploadSketchPage() {
           </CardContent>
         </Card>
       </div>
-    </PageWrapper>
   );
 }
