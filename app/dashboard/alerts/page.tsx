@@ -36,7 +36,6 @@ type NewAlertInput = {
 };
 
 const AlertsPage = () => {
-  const router = useRouter();
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -57,6 +56,7 @@ const AlertsPage = () => {
   const fetchAlerts = async () => {
     try {
       const data = await getAlerts();
+      console.log(data);
       setAlerts(data);
     } catch (error) {
       toast({
@@ -241,25 +241,25 @@ const AlertsPage = () => {
                       />
                       <div className="grid grid-cols-2 gap-x-8 gap-y-1">
                         <p className="text-sm font-semibold">
-                          {Categories[alert.category]}
+                          {alert.category}
                         </p>
                         <p className="text-sm text-gray-600">
-                          {Locations[alert.location]}
+                          {alert.location}
                         </p>
                         {alert.brand && (
-                          <p className="text-sm text-gray-600">Brand: {Brands[alert.brand]}</p>
+                          <p className="text-sm text-gray-600">Brand: {alert.brand}</p>
                         )}
                         {alert.color && (
-                          <p className="text-sm text-gray-600">Color: {Colors[alert.color]}</p>
+                          <p className="text-sm text-gray-600">Color: {alert.color}</p>
                         )}
                         {alert.size && (
-                          <p className="text-sm text-gray-600">Size: {Size[alert.size]}</p>
+                          <p className="text-sm text-gray-600">Size: {alert.size}</p>
                         )}
                         {alert.material && (
-                          <p className="text-sm text-gray-600">Material: {Materials[alert.material]}</p>
+                          <p className="text-sm text-gray-600">Material: {alert.material}</p>
                         )}
                         {alert.weather && (
-                          <p className="text-sm text-gray-600">Weather: {Weather[alert.weather]}</p>
+                          <p className="text-sm text-gray-600">Weather: {alert.weather}</p>
                         )}
                       </div>
                     </div>

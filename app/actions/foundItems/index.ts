@@ -29,16 +29,31 @@ export async function getFoundItems() {
       const { data: imageUrl } = await supabase.storage
         .from("found_images")
         .getPublicUrl("/" + item.image_id + "." + "jpg");
-
+  
+      // Check if the image URL is valid by making an HTTP request
+      const isValidUrl = await checkImageUrl(imageUrl.publicUrl);
+  
       return {
         ...item,
-        image_url: imageUrl.publicUrl,
+        image_url: isValidUrl ? imageUrl.publicUrl : null
       };
     })
   );
 
   return itemsWithImages;
 }
+
+// Function to check if the URL is valid
+async function checkImageUrl(url: string): Promise<boolean> {
+  try {
+    const response = await fetch(url, { method: 'HEAD' });
+    return response.ok; // Return true if the status is 2xx
+  } catch (error) {
+    console.error("Error checking URL:", error);
+    return false; // Return false if the URL check fails
+  }
+}
+
 
 export async function uploadFoundItem(
   file: File,
@@ -156,8 +171,11 @@ export async function getFoundItem(id: number) {
     .from("found_images")
     .getPublicUrl(`${data.image_id}.${data.image_id.split(".").pop()}`);
 
+  const isValidUrl = await checkImageUrl(imageUrl.publicUrl);
+
   return {
     ...data,
-    image_url: imageUrl.publicUrl,
+    image_url: isValidUrl ? imageUrl.publicUrl : null,
   };
+
 }

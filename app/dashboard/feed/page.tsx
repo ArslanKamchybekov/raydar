@@ -6,7 +6,6 @@ import { getFoundItems } from "@/app/actions/foundItems"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import PageWrapper from "@/components/wrapper/page-wrapper"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import debounce from "lodash/debounce"
@@ -79,7 +78,6 @@ const FeedPage = () => {
 
   if (loading) {
     return (
-      <PageWrapper>
         <div className="container mx-auto py-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, index) => (
@@ -104,7 +102,6 @@ const FeedPage = () => {
             ))}
           </div>
         </div>
-      </PageWrapper>
     )
   }
 
@@ -117,7 +114,6 @@ const FeedPage = () => {
   }
 
   return (
-    <PageWrapper>
       <div className="min-h-screen bg-background">
         <div className="container mx-auto py-4">
           <Select onValueChange={setSortBy} defaultValue="date">
@@ -145,7 +141,7 @@ const FeedPage = () => {
                 </CardHeader>
                 <CardContent>
                   <Image
-                    src={item.image_url || "/placeholder.svg"}
+                    src={item.image_url || "/sparkhacks-logo.png"}
                     alt={item.description || "Found item"}
                     width={500}
                     height={500}
@@ -184,7 +180,7 @@ const FeedPage = () => {
                     <div>
                       {selectedItem.image_id && (
                         <Image
-                          src={selectedItem.image_url || "/placeholder.svg"}
+                          src={selectedItem.image_url || "/sparkhacks-logo.png"}
                           alt={selectedItem.description || "Found item"}
                           width={500}
                           height={500}
@@ -259,7 +255,6 @@ const FeedPage = () => {
           </div>
         </div>
       </div>
-    </PageWrapper>
   )
 }
 

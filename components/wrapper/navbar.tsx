@@ -65,7 +65,7 @@ export default function NavBar() {
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
                             <ul className="flex flex-col w-[400px] gap-3 p-4 lg:w-[500px]">
-                                <ListItem title="Feed" href="/feed">
+                                <ListItem title="Feed" href="/dashboard/feed">
                                     View all lost items found on campus.
                                 </ListItem>
                             </ul>
