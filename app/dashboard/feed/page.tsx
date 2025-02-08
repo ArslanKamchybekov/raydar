@@ -173,7 +173,7 @@ const FeedPage = () => {
             placeholder="Search items..."
             value={searchQuery}
             onChange={(e) => debouncedSearch(e.target.value)}
-            className="max-w-sm mx-auto mb-8"
+            className="flex-1"
           />
         </div>
 
