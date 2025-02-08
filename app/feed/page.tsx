@@ -1,19 +1,25 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { getFoundItems } from '@/app/actions/foundItems';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import PageWrapper from '@/components/wrapper/page-wrapper';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
-const FoundItemsDisplay = () => {
+const FeedPage = () => {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const router = useRouter();
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -43,8 +49,9 @@ const FoundItemsDisplay = () => {
     );
   });
 
-  const handleItemClick = (id: any) => {
-    router.push(`/found-items/${id}`);
+  const handleItemClick = (item: any) => {
+    setSelectedItem(item);
+    setIsModalOpen(true);
   };
 
   if (loading) {
@@ -82,7 +89,7 @@ const FoundItemsDisplay = () => {
                   <CardTitle className="text-xl">{item.category}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {item.image_name && (
+                  {item.image_id && (
                     <img
                       src={`/api/images/${item.image_id}`}
                       alt={item.description || 'Found item'}
@@ -108,7 +115,7 @@ const FoundItemsDisplay = () => {
                 </CardContent>
                 <CardFooter>
                   <Button 
-                    onClick={() => handleItemClick(item.id)}
+                    onClick={() => handleItemClick(item)}
                     className="w-full"
                   >
                     View Details
@@ -123,10 +130,81 @@ const FoundItemsDisplay = () => {
               No items found. Try adjusting your search.
             </div>
           )}
+
+          <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <DialogContent className="max-w-3xl">
+              {selectedItem && (
+                <>
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl">{selectedItem.category}</DialogTitle>
+                  </DialogHeader>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      {selectedItem.image_id && (
+                        <img
+                          src={`/api/images/${selectedItem.image_id}`}
+                          alt={selectedItem.description || 'Found item'}
+                          className="w-full h-64 object-cover rounded-lg"
+                        />
+                      )}
+                    </div>
+                    <div className="space-y-4">
+                      <div>
+                        <h3 className="font-semibold">Location</h3>
+                        <p>{selectedItem.location_name}</p>
+                      </div>
+                      {selectedItem.description && (
+                        <div>
+                          <h3 className="font-semibold">Description</h3>
+                          <p>{selectedItem.description}</p>
+                        </div>
+                      )}
+                      {selectedItem.colors && selectedItem.colors.length > 0 && (
+                        <div>
+                          <h3 className="font-semibold">Colors</h3>
+                          <p>{selectedItem.colors.join(', ')}</p>
+                        </div>
+                      )}
+                      {selectedItem.brand && (
+                        <div>
+                          <h3 className="font-semibold">Brand</h3>
+                          <p>{selectedItem.brand}</p>
+                        </div>
+                      )}
+                      {selectedItem.size && (
+                        <div>
+                          <h3 className="font-semibold">Size</h3>
+                          <p>{selectedItem.size}</p>
+                        </div>
+                      )}
+                      {selectedItem.material && (
+                        <div>
+                          <h3 className="font-semibold">Material</h3>
+                          <p>{selectedItem.material}</p>
+                        </div>
+                      )}
+                      {selectedItem.weather_found && (
+                        <div>
+                          <h3 className="font-semibold">Weather When Found</h3>
+                          <p>{selectedItem.weather_found}</p>
+                        </div>
+                      )}
+                      {selectedItem.keywords && selectedItem.keywords.length > 0 && (
+                        <div>
+                          <h3 className="font-semibold">Keywords</h3>
+                          <p>{selectedItem.keywords.join(', ')}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </PageWrapper>
   );
 };
 
-export default FoundItemsDisplay;
+export default FeedPage;
