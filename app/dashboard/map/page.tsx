@@ -254,27 +254,35 @@ const LocationPage = () => {
       />
 
       {topLocation && (
-        <Card className="absolute bottom-20 left-10 shadow-lg max-w-xs z-10 backdrop-blur-sm bg-opacity-90">
-          <CardHeader>
-            <CardTitle>Where Are Most Items Lost?</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm space-y-2">
-              <span className="font-semibold">{topLocation.name}:</span>{" "}
-              {topLocation.itemsLost.toString()} items
-            </p>
-            <p className="text-sm">
-              <span className="font-semibold">Weather:</span>{" "}
-              {topLocation.weatherMostLost[0].toUpperCase() +
-                topLocation.weatherMostLost.slice(1)}
-            </p>
-            <p className="text-sm">
-              <span className="font-semibold">Category:</span>{" "}
-              {topLocation.categoryMostLost[0].toUpperCase() +
-                topLocation.categoryMostLost.slice(1)}
-            </p>
-          </CardContent>
-        </Card>
+        <div className="absolute bottom-0 left-0 p-4 w-full sm:w-auto sm:left-4 md:left-6 lg:left-8">
+          <Card className="shadow-lg backdrop-blur-sm bg-opacity-90 w-full sm:w-[280px] md:w-[320px] lg:w-[360px]">
+            <CardHeader className="p-3 sm:p-4">
+              <CardTitle className="text-base sm:text-lg">
+                Where Are Most Items Lost?
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-3 sm:p-4 space-y-1.5">
+              <p className="text-xs sm:text-sm flex justify-between items-center">
+                <span className="font-semibold">{topLocation.name}:</span>
+                <span>{topLocation.itemsLost.toString()} items</span>
+              </p>
+              <p className="text-xs sm:text-sm flex justify-between items-center">
+                <span className="font-semibold">Weather:</span>
+                <span>
+                  {topLocation.weatherMostLost[0].toUpperCase() +
+                    topLocation.weatherMostLost.slice(1)}
+                </span>
+              </p>
+              <p className="text-xs sm:text-sm flex justify-between items-center">
+                <span className="font-semibold">Category:</span>
+                <span>
+                  {topLocation.categoryMostLost[0].toUpperCase() +
+                    topLocation.categoryMostLost.slice(1)}
+                </span>
+              </p>
+            </CardContent>
+          </Card>
+        </div>
       )}
 
       <style jsx global>{`
