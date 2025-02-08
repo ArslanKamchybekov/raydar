@@ -1,6 +1,6 @@
 "use client"
 import Link from 'next/link';
-import { Linkedin } from 'lucide-react';
+import { Github, Linkedin } from 'lucide-react';
 
 export default function Footer() {
     return (
@@ -60,7 +60,7 @@ export default function Footer() {
                             <ul className="mt-6 space-y-4 text-sm">
                                 <li>
                                     <Link 
-                                        href="https://linkedin.com/in/developer1" 
+                                        href="https://www.linkedin.com/in/arslankamchybekov/" 
                                         target="_blank" 
                                         className="flex items-center gap-2 transition hover:opacity-75"
                                     >
@@ -70,7 +70,7 @@ export default function Footer() {
                                 </li>
                                 <li>
                                     <Link 
-                                        href="https://linkedin.com/in/developer2" 
+                                        href="https://www.linkedin.com/in/akuppili/" 
                                         target="_blank" 
                                         className="flex items-center gap-2 transition hover:opacity-75"
                                     >
@@ -80,7 +80,7 @@ export default function Footer() {
                                 </li>
                                 <li>
                                     <Link 
-                                        href="https://linkedin.com/in/developer3" 
+                                        href="https://www.linkedin.com/in/isaac-alazar-17b949311/" 
                                         target="_blank" 
                                         className="flex items-center gap-2 transition hover:opacity-75"
                                     >
@@ -90,7 +90,7 @@ export default function Footer() {
                                 </li>
                                 <li>
                                     <Link 
-                                        href="https://linkedin.com/in/developer4" 
+                                        href="https://www.linkedin.com/in/joshjonathanjungjr/" 
                                         target="_blank" 
                                         className="flex items-center gap-2 transition hover:opacity-75"
                                     >
@@ -100,7 +100,7 @@ export default function Footer() {
                                 </li>
                                 <li>
                                     <Link 
-                                        href="https://linkedin.com/in/developer5" 
+                                        href="https://www.linkedin.com/in/pranav-shridhar/" 
                                         target="_blank" 
                                         className="flex items-center gap-2 transition hover:opacity-75"
                                     >
@@ -111,7 +111,6 @@ export default function Footer() {
                             </ul>
                         </div>
                     </div>
-
                     <div className="mt-8 border-t pt-8">
                         <ul className="flex flex-wrap gap-4 text-xs">
                             <li>
