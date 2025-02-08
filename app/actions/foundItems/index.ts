@@ -11,6 +11,7 @@ import {
   Weather,
 } from "@/types/enums";
 import { randomUUID } from "crypto";
+import { checkItemMatchesAndNotify } from "../notifications";
 
 export async function getFoundItems() {
   const { data, error } = await supabase
@@ -92,6 +93,9 @@ export async function uploadFoundItem(
       await supabase.storage.from("found_images").remove([fileName]);
       throw insertError;
     }
+
+    // Notify users of any matching alerts
+    await checkItemMatchesAndNotify(insertData[0]);
 
     return {
       ...insertData[0],

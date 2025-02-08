@@ -161,7 +161,6 @@ const AlertsPage = () => {
     <main className="flex-1 p-4">
       <div className="flex flex-col mb-8 w-full max-w-3xl">
         <div className="flex items-center gap-2 mb-2">
-          <Bell className="h-6 w-6 text-gray-700" />
           <h1 className="text-3xl font-semibold tracking-tight">Alerts</h1>
         </div>
         <p className="leading-7 text-sm text-gray-600 dark:text-gray-400 mb-6">
@@ -234,14 +233,14 @@ const AlertsPage = () => {
             ) : (
               <div className="space-y-4">
                 {alerts.map(alert => (
-                  <div key={alert.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                  <div key={alert.id} className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <Switch
                         checked={alert.enabled}
                         onCheckedChange={() => handleToggleAlert(alert.id)}
                       />
                       <div className="grid grid-cols-2 gap-x-8 gap-y-1">
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="text-sm font-semibold">
                           {Categories[alert.category]}
                         </p>
                         <p className="text-sm text-gray-600">

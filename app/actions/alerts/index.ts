@@ -28,6 +28,7 @@ export async function createAlert(
         size,
         material,
         weather,
+        enabled: true,
       },
     ]);
 
