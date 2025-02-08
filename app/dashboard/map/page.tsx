@@ -241,7 +241,7 @@ const LocationPage = () => {
   }
 
   return (
-    <div className="relative h-screen w-screen">
+    <div className="relative h-screen">
       <div className="flex items-center gap-2 mb-2">
         <h1 className="text-3xl font-semibold tracking-tight">Raydar Map</h1>
       </div>
