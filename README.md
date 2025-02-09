@@ -85,4 +85,4 @@ Visit `http://localhost:3000` to view the app in action.
 
 ## License
 
-This project is open-source and available under the [MIT License](LICENSE).
+Unauthorized copying, modification, distribution, or use of this software, in whole or in part, is strictly prohibited.
