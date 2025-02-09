@@ -56,7 +56,7 @@ export default function Footer() {
                         </div>
 
                         <div>
-                            <p className="font-medium">Development Team</p>
+                            <p className="font-medium">The Stack</p>
                             <ul className="mt-6 space-y-4 text-sm">
                                 <li>
                                     <Link 
@@ -131,7 +131,7 @@ export default function Footer() {
                         </ul>
 
                         <p className="mt-8 text-xs text-muted-foreground">
-                            &copy; {new Date().getFullYear()} Raydar. All rights reserved.
+                            &copy; {new Date().getFullYear()} Raydar. The Stack. All rights reserved.
                         </p>
                     </div>
                 </div>

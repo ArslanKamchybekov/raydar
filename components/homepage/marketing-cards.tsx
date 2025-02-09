@@ -60,7 +60,7 @@ const ProjectsData = [
     id: 8,
     name: 'Pytorch',
     description: 'An open-source machine learning library that accelerates the path from research prototyping to production deployment.',
-    image: '/PyTorch_logo_icon.png',
+    image: '/pytorch.png',
     url: "https://pytorch.org/"
   }
 ]
