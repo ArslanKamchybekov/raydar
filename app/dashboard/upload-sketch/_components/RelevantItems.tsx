@@ -64,7 +64,7 @@ const RelevantItems = ({ items }: { items: RelevantItem[] }) => {
                     src={
                       validImages[item.image_id]
                         ? `https://ykyccstnnkxdmwembakk.supabase.co/storage/v1/object/public/found_images/${item.image_id}.jpg`
-                        : "/sparkhacks-logo.png"
+                        : "/logo.png"
                     }
                     alt={item.description}
                     fill
