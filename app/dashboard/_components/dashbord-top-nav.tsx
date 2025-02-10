@@ -19,7 +19,7 @@ export default function DashboardTopNav({ children }: { children: ReactNode }) {
         <Dialog>
           <SheetTrigger className="min-[1024px]:hidden p-2 transition">
             <HamburgerMenuIcon />
-            <Link href="/dashboard">
+            <Link href="/">
               <span className="sr-only">Home</span>
             </Link>
           </SheetTrigger>
