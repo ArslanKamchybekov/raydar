@@ -1,108 +1,95 @@
-"use client"
-
-import { Separator } from '@/components/ui/separator'
-import clsx from 'clsx'
+"use client";
+import { Separator } from "@/components/ui/separator";
+import clsx from "clsx";
 import {
   Bell,
   HomeIcon,
   Map,
   Paintbrush,
   Settings,
-  UploadCloud
-} from "lucide-react"
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import Image from 'next/image'
+  UploadCloud,
+} from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function DashboardSideBar() {
   const pathname = usePathname();
+
+  const links = [
+    { href: "/dashboard/feed", label: "Feed", icon: HomeIcon },
+    { href: "/dashboard/map", label: "Map", icon: Map },
+    { href: "/dashboard/alerts", label: "Alerts", icon: Bell },
+    { href: "/dashboard/upload-lost", label: "Upload", icon: UploadCloud },
+    { href: "/dashboard/upload-sketch", label: "Sketch", icon: Paintbrush },
+    { href: "/dashboard/settings", label: "Settings", icon: Settings },
+  ];
+
   return (
-    <div className="lg:block hidden border-r h-full">
-      <div className="flex h-full max-h-screen flex-col gap-2 ">
-        <div className="flex h-[55px] items-center justify-between border-b px-3 w-full">
-          <Link className="flex items-center gap-2 font-semibold ml-1" href="/">
-            <Image src="/sparkhacks-logo.png" width={50} height={50} alt="App Logo" />
-            <span className="">Raydar</span>
-          </Link>
-        </div>
-        <div className="flex-1 overflow-auto py-2 ">
-          <nav className="grid items-start px-4 text-sm font-medium">
+    <>
+      {/* Desktop Sidebar */}
+      <div className="lg:block hidden border-r h-full">
+        <div className="flex h-full max-h-screen flex-col gap-2">
+          <div className="flex h-[55px] items-center justify-between border-b px-3 w-full">
             <Link
-              className={clsx("flex items-center gap-2 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50", {
-                "flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-2 text-gray-900  transition-all hover:text-gray-900 dark:bg-gray-800 dark:text-gray-50 dark:hover:text-gray-50": pathname === "/dashboard/feed"
-              })}
-              href="/dashboard/feed"
+              className="flex items-center gap-2 font-semibold ml-1"
+              href="/"
             >
-              <div className="border rounded-lg dark:bg-black dark:border-gray-800 border-gray-400 p-1 bg-white">
-                <HomeIcon className="h-3 w-3" />
-              </div>
-              Feed
+              <Image
+                src="/sparkhacks-logo.png"
+                width={50}
+                height={50}
+                alt="App Logo"
+                className="rounded-lg"
+              />
+              <span className="font-medium">Raydar</span>
             </Link>
-            <Link
-              className={clsx("flex items-center gap-2 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50", {
-                "flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-2 text-gray-900  transition-all hover:text-gray-900 dark:bg-gray-800 dark:text-gray-50 dark:hover:text-gray-50": pathname === "/dashboard/map"
-              })}
-              href="/dashboard/map"
-            >
-              <div className="border rounded-lg dark:bg-black dark:border-gray-800 border-gray-400 p-1 bg-white">
-                <Map className="h-3 w-3" />
-              </div>
-              Map
-            </Link>
-            <Link
-              className={clsx("flex items-center gap-2 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50", {
-                "flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-2 text-gray-900  transition-all hover:text-gray-900 dark:bg-gray-800 dark:text-gray-50 dark:hover:text-gray-50": pathname === "/dashboard/alerts"
-              })}
-              href="/dashboard/alerts"
-            >
-              <div className="border rounded-lg dark:bg-black dark:border-gray-800 border-gray-400 p-1 bg-white">
-                <Bell className="h-3 w-3" />
-              </div>
-              Alerts
-            </Link>
-            <Separator className="my-3" />
-            <Link
-              className={clsx("flex items-center gap-2 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50", {
-                "flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-2 text-gray-900  transition-all hover:text-gray-900 dark:bg-gray-800 dark:text-gray-50 dark:hover:text-gray-50": pathname === "/dashboard/upload-lost"
-              })}
-              href="/dashboard/upload-lost"
-              id="onboarding"
-            >
-              <div className="border rounded-lg dark:bg-black dark:border-gray-800 border-gray-400 p-1 bg-white">
-                <UploadCloud className="h-3 w-3" />
-              </div>
-              Upload
-            </Link>
-
-            <Link
-              className={clsx("flex items-center gap-2 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50", {
-                "flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-2 text-gray-900  transition-all hover:text-gray-900 dark:bg-gray-800 dark:text-gray-50 dark:hover:text-gray-50": pathname === "/dashboard/upload-sketch"
-              })}
-              href="/dashboard/upload-sketch"
-              id="onboarding"
-            >
-              <div className="border rounded-lg dark:bg-black dark:border-gray-800 border-gray-400 p-1 bg-white">
-                <Paintbrush className="h-3 w-3" />
-              </div>
-              Sketch
-            </Link>
-
-            <Separator className="my-3" />
-            <Link
-              className={clsx("flex items-center gap-2 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50", {
-                "flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-2 text-gray-900  transition-all hover:text-gray-900 dark:bg-gray-800 dark:text-gray-50 dark:hover:text-gray-50": pathname === "/dashboard/settings"
-              })}
-              href="/dashboard/settings"
-              id="onboarding"
-            >
-              <div className="border rounded-lg dark:bg-black dark:border-gray-800 border-gray-400 p-1 bg-white">
-                <Settings className="h-3 w-3" />
-              </div>
-              Settings
-            </Link>
-          </nav>
+          </div>
+          <div className="flex-1 overflow-auto py-2">
+            <nav className="grid items-start px-4 text-sm font-medium gap-1">
+              {links.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={clsx(
+                    "flex items-center gap-2 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-50 dark:hover:bg-gray-800",
+                    {
+                      "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-50":
+                        pathname === link.href,
+                    }
+                  )}
+                >
+                  <div className="border rounded-lg dark:bg-black dark:border-gray-800 border-gray-200 p-1 bg-white">
+                    <link.icon className="h-4 w-4" />
+                  </div>
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
         </div>
       </div>
-    </div>
-  )
+
+      {/* Mobile Bottom Navigation */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 w-full bg-white/95 dark:bg-black/95 border-t shadow-lg backdrop-blur-sm z-[9999]">
+        <nav className="flex justify-around items-center py-3 px-2 text-sm font-medium safe-area-inset-bottom">
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={clsx(
+                "flex flex-col items-center gap-1 min-w-[4rem] text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50 active:scale-95",
+                {
+                  "text-gray-900 dark:text-gray-50": pathname === link.href,
+                }
+              )}
+            >
+              <link.icon className="h-5 w-5" />
+              <span className="text-xs truncate">{link.label}</span>
+            </Link>
+          ))}
+        </nav>
+      </div>
+    </>
+  );
 }

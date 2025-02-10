@@ -7,10 +7,10 @@ export default function Footer() {
         <footer className="border-t bg-background">
             <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <div className="py-8 lg:py-12">
-                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                         <div>
-                            <p className="font-medium">Navigation</p>
-                            <ul className="mt-6 space-y-4 text-sm">
+                            <p className="font-medium text-lg sm:text-xl">Navigation</p>
+                            <ul className="mt-6 space-y-4 text-sm sm:text-base">
                                 <li>
                                     <Link href="/lost-items" className="transition hover:opacity-75">
                                         Lost Items
@@ -35,8 +35,8 @@ export default function Footer() {
                         </div>
 
                         <div>
-                            <p className="font-medium">Support</p>
-                            <ul className="mt-6 space-y-4 text-sm">
+                            <p className="font-medium text-lg sm:text-xl">Support</p>
+                            <ul className="mt-6 space-y-4 text-sm sm:text-base">
                                 <li>
                                     <Link href="/faq" className="transition hover:opacity-75">
                                         FAQ
@@ -56,8 +56,8 @@ export default function Footer() {
                         </div>
 
                         <div>
-                            <p className="font-medium">The Stack</p>
-                            <ul className="mt-6 space-y-4 text-sm">
+                            <p className="font-medium text-lg sm:text-xl">The Stack</p>
+                            <ul className="mt-6 space-y-4 text-sm sm:text-base">
                                 <li>
                                     <Link 
                                         href="https://www.linkedin.com/in/arslankamchybekov/" 
@@ -112,7 +112,7 @@ export default function Footer() {
                         </div>
                     </div>
                     <div className="mt-8 border-t pt-8">
-                        <ul className="flex flex-wrap gap-4 text-xs">
+                        <ul className="flex flex-wrap gap-4 text-xs sm:text-sm">
                             <li>
                                 <Link href="/terms" className="transition hover:opacity-75">
                                     Terms & Conditions
@@ -130,7 +130,7 @@ export default function Footer() {
                             </li>
                         </ul>
 
-                        <p className="mt-8 text-xs text-muted-foreground">
+                        <p className="mt-8 text-xs text-muted-foreground sm:text-sm">
                             &copy; {new Date().getFullYear()} Raydar. The Stack. All rights reserved.
                         </p>
                     </div>

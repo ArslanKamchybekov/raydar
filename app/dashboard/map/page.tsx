@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getFoundItems } from "@/app/actions/foundItems";
 import { useTheme } from "next-themes";
 
-// Ensure mapboxgl knows we're in a browser environment
 if (typeof window !== "undefined") {
   mapboxgl.accessToken =
     "pk.eyJ1IjoiaXNhYWNhbGF6YXIiLCJhIjoiY202dm9kdm9uMGFhNTJrcTZtYXc2NjhxNCJ9.aJdcl6mYhL6Pan8t3cck7w";
@@ -24,6 +23,7 @@ const LocationPage = () => {
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const { theme, systemTheme } = useTheme();
   const [isClient, setIsClient] = useState(false);
+  const [mapLoaded, setMapLoaded] = useState(false);
   const [topLocation, setTopLocation] = useState<{
     name: string;
     itemsLost: number;
@@ -31,7 +31,6 @@ const LocationPage = () => {
     categoryMostLost: string;
   } | null>(null);
 
-  // Get the actual theme accounting for system preference
   const currentTheme = theme === "system" ? systemTheme : theme;
 
   const createMarker = (color: string) => {
@@ -52,33 +51,29 @@ const LocationPage = () => {
     setIsClient(true);
   }, []);
 
-  // Combined initialization and data fetching
+  // Initialize map
   useEffect(() => {
     if (!isClient || !mapContainerRef.current) return;
 
-    const initializeMapAndMarkers = async () => {
-      // Clean up existing map if it exists
-      if (mapRef.current) {
-        mapRef.current.remove();
-        markersRef.current = [];
-      }
+    // Clean up existing map
+    if (mapRef.current) {
+      mapRef.current.remove();
+      markersRef.current = [];
+    }
 
-      // Create new map instance
-      const map = new mapboxgl.Map({
-        container: mapContainerRef.current!,
-        style: currentTheme === "dark" ? mapStyles.dark : mapStyles.light,
-        center: [defaultLocation.lng, defaultLocation.lat],
-        zoom: 15,
-        pitch: 45,
-        bearing: -17.6,
-        antialias: true,
-      });
+    const map = new mapboxgl.Map({
+      container: mapContainerRef.current,
+      style: currentTheme === "dark" ? mapStyles.dark : mapStyles.light,
+      center: [defaultLocation.lng, defaultLocation.lat],
+      zoom: 15,
+      pitch: 45,
+      bearing: -17.6,
+      antialias: true,
+    });
 
-      mapRef.current = map;
+    mapRef.current = map;
 
-      // Wait for map to load before adding layers and markers
-      await new Promise((resolve) => map.on("load", resolve));
-
+    map.on("load", () => {
       // Add 3D buildings
       map.addLayer({
         id: "3d-buildings",
@@ -123,12 +118,29 @@ const LocationPage = () => {
         "star-intensity": currentTheme === "dark" ? 0.6 : 0,
       });
 
-      // Add navigation control
       map.addControl(new mapboxgl.NavigationControl());
+      setMapLoaded(true);
+    });
 
-      // Fetch and add markers
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        markersRef.current = [];
+      }
+    };
+  }, [isClient, currentTheme]);
+
+  // Add markers after map is loaded
+  useEffect(() => {
+    if (!mapLoaded || !mapRef.current) return;
+
+    const addMarkers = async () => {
       try {
         const fetchItems = await getFoundItems();
+
+        // Clear existing markers
+        markersRef.current.forEach((marker) => marker.remove());
+        markersRef.current = [];
 
         const locationCounts = locations.map((location) => {
           const itemsAtLocation = fetchItems.filter(
@@ -204,7 +216,7 @@ const LocationPage = () => {
           })
             .setLngLat([location.lng, location.lat])
             .setPopup(popup)
-            .addTo(map);
+            .addTo(mapRef.current!);
 
           markersRef.current.push(marker);
 
@@ -225,15 +237,8 @@ const LocationPage = () => {
       }
     };
 
-    initializeMapAndMarkers();
-
-    return () => {
-      if (mapRef.current) {
-        mapRef.current.remove();
-        markersRef.current = [];
-      }
-    };
-  }, [isClient, currentTheme]); // Only depend on isClient and currentTheme
+    addMarkers();
+  }, [mapLoaded, currentTheme]);
 
   if (!isClient) {
     return <div>Loading...</div>;
