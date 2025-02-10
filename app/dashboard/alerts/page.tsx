@@ -55,7 +55,6 @@ const AlertsPage = () => {
   const fetchAlerts = async () => {
     try {
       const data = await getAlerts();
-      console.log(data);
       setAlerts(data);
     } catch (error) {
       toast({

@@ -59,8 +59,6 @@ function isItemMatch(item: Item, alert: Alert): boolean {
     return false;
   }
 
-  console.log(item, alert);
-
   // Optional attribute matches - only check if alert has specified the attribute
 
 

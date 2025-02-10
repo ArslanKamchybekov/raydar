@@ -12,8 +12,6 @@ const ItemPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  console.log(id);
-
   useEffect(() => {
     if (!id) return; // Prevent running until the id is available
 
