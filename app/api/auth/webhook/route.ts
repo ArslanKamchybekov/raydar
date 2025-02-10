@@ -51,10 +51,10 @@ export async function POST(req: Request) {
     });
   }
 
-  // Get the ID and type
-  const { id } = evt.data;
   const eventType = evt.type;
 
+  console.log("🔹 Webhook received:", JSON.stringify(payload, null, 2));
+  console.log("🔹 Headers:", JSON.stringify(headerPayload, null, 2));
 
   switch (eventType) {
     case "user.created":
@@ -66,6 +66,8 @@ export async function POST(req: Request) {
           profile_image_url: payload?.data?.profile_image_url,
           user_id: payload?.data?.id,
         });
+
+        console.log("🔹 User info inserted")
 
         return NextResponse.json({
           status: 200,
