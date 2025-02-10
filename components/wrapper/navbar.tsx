@@ -30,6 +30,7 @@ import {
   DialogTitle,
   DialogClose,
 } from "@radix-ui/react-dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 export default function NavBar() {
   const { isSignedIn, userId } = useAuth();
@@ -133,10 +134,17 @@ export default function NavBar() {
             </Button>
           </SheetTrigger>
           <DialogContent>
-            <DialogTitle className="sr-only">Navigation Menu</DialogTitle>
+            <VisuallyHidden>
+              <DialogTitle className="sr-only">Navigation Menu</DialogTitle>
+            </VisuallyHidden>
             <SheetContent side="left" className="max-w-[75%]">
               <SheetHeader>
-                <Image src="/logo.png" width={50} height={50} alt={"App Logo"} />
+                <Image
+                  src="/logo.png"
+                  width={50}
+                  height={50}
+                  alt={"App Logo"}
+                />
                 <SheetTitle id="mobile-menu-title">Raydar</SheetTitle>
                 <p
                   id="mobile-menu-description"
@@ -164,12 +172,7 @@ export default function NavBar() {
       {/* Desktop Menu */}
       <NavigationMenu className="hidden md:flex gap-3 w-[100%] justify-between">
         <Link href="/" className="pl-2 flex items-center" aria-label="Home">
-          <Image
-            src="/logo.png"
-            width={50}
-            height={50}
-            alt="App Logo"
-          />
+          <Image src="/logo.png" width={50} height={50} alt="App Logo" />
           <span className="text-xl font-bold">Raydar</span>
         </Link>
         <NavigationMenuList>{renderAuthItems()}</NavigationMenuList>

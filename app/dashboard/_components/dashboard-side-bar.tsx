@@ -36,7 +36,7 @@ export default function DashboardSideBar() {
               href="/"
             >
               <Image
-                src="/logo.png"
+                src="/sparkhacks-logo.png"
                 width={50}
                 height={50}
                 alt="App Logo"

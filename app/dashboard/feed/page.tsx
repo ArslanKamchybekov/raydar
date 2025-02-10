@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, ChangeEvent } from "react";
 import Image from "next/image";
 import { getFoundItems } from "@/app/actions/foundItems";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select";
 import debounce from "lodash/debounce";
 import { getUserData } from "@/app/actions/user";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 const FeedPage = () => {
   const [items, setItems] = useState<any[]>([]);
@@ -64,11 +65,16 @@ const FeedPage = () => {
     ...Array.from(new Set(items.map((item) => item.category))),
   ].sort();
 
-  const debouncedSearch = useCallback((value: string) => {
-    debounce((searchValue: string) => {
-      setSearchQuery(searchValue);
-    }, 300)(value);
-  }, []);
+  const debouncedSetSearch = debounce((searchValue: string) => {
+    setSearchQuery(searchValue);
+  }, 300);
+
+  const handleSearch = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      debouncedSetSearch(e.target.value);
+    },
+    [debouncedSetSearch]
+  );
 
   const sortItems = (items: any[]) => {
     return [...items].sort((a, b) => {
@@ -199,8 +205,7 @@ const FeedPage = () => {
           <Input
             type="search"
             placeholder="Search items..."
-            value={searchQuery}
-            onChange={(e) => debouncedSearch(e.target.value)}
+            onChange={handleSearch}
             className="flex-1"
           />
         </div>
@@ -266,74 +271,74 @@ const FeedPage = () => {
 
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogContent className="max-w-3xl">
+            <DialogHeader>
+              <VisuallyHidden>
+                <DialogTitle className="text-2xl">
+                  {selectedItem?.category}
+                </DialogTitle>
+              </VisuallyHidden>
+            </DialogHeader>
             {selectedItem && (
               <>
-                <DialogHeader>
-                  <DialogTitle className="text-2xl">
-                    {selectedItem.category}
-                  </DialogTitle>
-                </DialogHeader>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {selectedItem.image_url && (
+                    <Image
+                      src={selectedItem.image_url || "/logo.png"}
+                      alt={selectedItem.description || "Found item"}
+                      width={500}
+                      height={500}
+                      className="w-full h-48 object-cover rounded-md mb-4"
+                    />
+                  )}
+                </div>
+                <div className="space-y-4">
                   <div>
-                    {selectedItem.image_id && (
-                      <Image
-                        src={selectedItem.image_url || "/logo.png"}
-                        alt={selectedItem.description || "Found item"}
-                        width={500}
-                        height={500}
-                        className="w-full h-48 object-cover rounded-md mb-4"
-                      />
-                    )}
+                    <h3 className="font-semibold">Location</h3>
+                    <p>{selectedItem.location_name}</p>
                   </div>
-                  <div className="space-y-4">
+                  {selectedItem.description && (
                     <div>
-                      <h3 className="font-semibold">Location</h3>
-                      <p>{selectedItem.location_name}</p>
+                      <h3 className="font-semibold">Description</h3>
+                      <p>{selectedItem.description}</p>
                     </div>
-                    {selectedItem.description && (
+                  )}
+                  {selectedItem.colors && selectedItem.colors.length > 0 && (
+                    <div>
+                      <h3 className="font-semibold">Colors</h3>
+                      <p>{selectedItem.colors.join(", ")}</p>
+                    </div>
+                  )}
+                  {selectedItem.brand && (
+                    <div>
+                      <h3 className="font-semibold">Brand</h3>
+                      <p>{selectedItem.brand}</p>
+                    </div>
+                  )}
+                  {selectedItem.size && (
+                    <div>
+                      <h3 className="font-semibold">Size</h3>
+                      <p>{selectedItem.size}</p>
+                    </div>
+                  )}
+                  {selectedItem.material && (
+                    <div>
+                      <h3 className="font-semibold">Material</h3>
+                      <p>{selectedItem.material}</p>
+                    </div>
+                  )}
+                  {selectedItem.weather_found && (
+                    <div>
+                      <h3 className="font-semibold">Weather When Found</h3>
+                      <p>{selectedItem.weather_found}</p>
+                    </div>
+                  )}
+                  {selectedItem.keywords &&
+                    selectedItem.keywords.length > 0 && (
                       <div>
-                        <h3 className="font-semibold">Description</h3>
-                        <p>{selectedItem.description}</p>
+                        <h3 className="font-semibold">Keywords</h3>
+                        <p>{selectedItem.keywords.join(", ")}</p>
                       </div>
                     )}
-                    {selectedItem.colors && selectedItem.colors.length > 0 && (
-                      <div>
-                        <h3 className="font-semibold">Colors</h3>
-                        <p>{selectedItem.colors.join(", ")}</p>
-                      </div>
-                    )}
-                    {selectedItem.brand && (
-                      <div>
-                        <h3 className="font-semibold">Brand</h3>
-                        <p>{selectedItem.brand}</p>
-                      </div>
-                    )}
-                    {selectedItem.size && (
-                      <div>
-                        <h3 className="font-semibold">Size</h3>
-                        <p>{selectedItem.size}</p>
-                      </div>
-                    )}
-                    {selectedItem.material && (
-                      <div>
-                        <h3 className="font-semibold">Material</h3>
-                        <p>{selectedItem.material}</p>
-                      </div>
-                    )}
-                    {selectedItem.weather_found && (
-                      <div>
-                        <h3 className="font-semibold">Weather When Found</h3>
-                        <p>{selectedItem.weather_found}</p>
-                      </div>
-                    )}
-                    {selectedItem.keywords &&
-                      selectedItem.keywords.length > 0 && (
-                        <div>
-                          <h3 className="font-semibold">Keywords</h3>
-                          <p>{selectedItem.keywords.join(", ")}</p>
-                        </div>
-                      )}
-                  </div>
                 </div>
               </>
             )}
@@ -342,7 +347,9 @@ const FeedPage = () => {
         <Dialog open={claimModalOpen} onOpenChange={setClaimModalOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Claim Item</DialogTitle>
+              <VisuallyHidden>
+                <DialogTitle>Claim Item</DialogTitle>
+              </VisuallyHidden>
             </DialogHeader>
             {selectedItemForClaim && (
               <div className="mt-4">
