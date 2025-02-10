@@ -102,8 +102,8 @@ export default function UploadSketchPage() {
   };
   
   return (
-    <div className="flex w-full max-w-6xl mx-auto p-4 gap-8">
-      <div className="w-1/3">
+    <div className="flex flex-col sm:flex-row w-full max-w-6xl mx-auto p-4 gap-8">
+      <div className="sm:w-1/3 w-full">
         <Card>
           <CardHeader>
             <CardTitle>Upload Lost Item Sketch</CardTitle>
@@ -149,14 +149,14 @@ export default function UploadSketchPage() {
               </div>
 
               <Button type="submit" className="w-full" disabled={isUploading}>
-                {isUploading ? "Uploading..." : "Upload Sketch"}
+                {isUploading ? "Uploading..." : "Upload"}
               </Button>
             </form>
           </CardContent>
         </Card>
       </div>
 
-      <div className="w-2/3">
+      <div className="sm:w-2/3 w-full">
         <RelevantItems items={relevantItems as any} />
       </div>
     </div>

@@ -3,7 +3,6 @@
 import { Separator } from '@/components/ui/separator'
 import clsx from 'clsx'
 import {
-  Banknote,
   Bell,
   HomeIcon,
   Map,

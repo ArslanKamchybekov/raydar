@@ -8,7 +8,8 @@ import { SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/component
 import { UserProfile } from '@/components/user-profile'
 import config from '@/config'
 import { HamburgerMenuIcon } from '@radix-ui/react-icons'
-import { Banknote, Folder, HomeIcon, Settings } from 'lucide-react'
+import { Bell, HomeIcon, Map, Paintbrush, Settings, SheetIcon, UploadCloud } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { ReactNode } from 'react'
 
@@ -24,43 +25,87 @@ export default function DashboardTopNav({ children }: { children: ReactNode }) {
             </Link>
           </SheetTrigger>
           <SheetContent side="left">
-            <div className="flex flex-col space-y-3 mt-[1rem]">
-              <DialogClose asChild>
-                <Link href="/dashboard/feed">
-                  <Button variant="outline" className="w-full">
-                    <HomeIcon className="mr-2 h-4 w-4" />
-                    Feed
-                  </Button>
-                </Link>
-              </DialogClose>
-              <DialogClose asChild>
-                <Link href="/dashboard/map">
-                  <Button variant="outline" className="w-full">
-                    <Folder className="mr-2 h-4 w-4" />
-                    Map
-                  </Button>
-                </Link>
-              </DialogClose>
-              <DialogClose asChild>
-                <Link href="/dashboard/alerts">
-                  <Button variant="outline" className="w-full">
-                    <Banknote className="mr-2 h-4 w-4" />
-                    Alerts
-                  </Button>
-                </Link>
-              </DialogClose>
-              <Separator className="my-3" />
-              <DialogClose asChild>
-                <Link href="/dashboard/settings">
-                  <Button variant="outline" className="w-full">
-                    <Settings className="mr-2 h-4 w-4" />
-                    Settings
-                  </Button>
-                </Link>
-              </DialogClose>
+            <SheetHeader>
+              <div className="flex items-center gap-2">
+                <Image src="/sparkhacks-logo.png" width={50} height={50} alt="App Logo" />
+                <SheetTitle>Raydar</SheetTitle>
+              </div>
+            </SheetHeader>
+
+            <div className="flex flex-col space-y-4 mt-6">
+              {/* Home Section */}
+              <div className="space-y-3">
+                <SheetTitle>Home</SheetTitle>
+                <Separator />
+                <DialogClose asChild>
+                  <Link href="/dashboard/feed">
+                    <Button variant="outline" className="w-full">
+                      <HomeIcon className="mr-2 h-4 w-4" /> Feed
+                    </Button>
+                  </Link>
+                </DialogClose>
+              </div>
+
+              {/* Upload Section */}
+              <div className="space-y-3">
+                <SheetTitle>Upload</SheetTitle>
+                <Separator />
+                <div className="space-y-2">
+                  <DialogClose asChild>
+                    <Link href="/dashboard/upload-lost">
+                      <Button variant="outline" className="w-full">
+                        <UploadCloud className="mr-2 h-4 w-4" /> Upload Item
+                      </Button>
+                    </Link>
+                  </DialogClose>
+                  <DialogClose asChild>
+                    <Link href="/dashboard/upload-sketch">
+                      <Button variant="outline" className="w-full">
+                        <Paintbrush className="mr-2 h-4 w-4" /> Upload Sketch
+                      </Button>
+                    </Link>
+                  </DialogClose>
+                </div>
+              </div>
+
+              {/* Explore Section */}
+              <div className="space-y-3">
+                <SheetTitle>Explore</SheetTitle>
+                <Separator />
+                <div className="space-y-2">
+                  <DialogClose asChild>
+                    <Link href="/dashboard/map">
+                      <Button variant="outline" className="w-full">
+                        <Map className="mr-2 h-4 w-4" /> Map View
+                      </Button>
+                    </Link>
+                  </DialogClose>
+                  <DialogClose asChild>
+                    <Link href="/dashboard/alerts">
+                      <Button variant="outline" className="w-full">
+                        <Bell className="mr-2 h-4 w-4" /> Alerts
+                      </Button>
+                    </Link>
+                  </DialogClose>
+                </div>
+              </div>
+
+              {/* Settings Section */}
+              <div className="space-y-3">
+                <SheetTitle>Settings</SheetTitle>
+                <Separator />
+                <DialogClose asChild>
+                  <Link href="/dashboard/settings">
+                    <Button variant="outline" className="w-full">
+                      <Settings className="mr-2 h-4 w-4" /> Settings
+                    </Button>
+                  </Link>
+                </DialogClose>
+              </div>
             </div>
           </SheetContent>
         </Dialog>
+
         <div className="flex justify-center items-center gap-2 ml-auto">
           {config?.auth?.enabled && <UserProfile />}
           <ModeToggle />
