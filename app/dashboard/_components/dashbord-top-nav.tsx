@@ -42,7 +42,7 @@ export default function DashboardTopNav({ children }: { children: ReactNode }) {
             <SheetHeader>
               <div className="flex items-center gap-2">
                 <Image
-                  src="/sparkhacks-logo.png"
+                  src="/logo.png"
                   width={40}
                   height={40}
                   alt="App Logo"
@@ -90,17 +90,6 @@ export default function DashboardTopNav({ children }: { children: ReactNode }) {
             </DialogContent>
           </SheetContent>
         </Dialog>
-
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <Image
-            src="/sparkhacks-logo.png"
-            width={40}
-            height={40}
-            alt="App Logo"
-          />
-          <span className="text-xl font-bold hidden lg:block">Raydar</span>
-        </Link>
 
         {/* Right-side Utilities */}
         <div className="flex items-center gap-3 ml-auto">

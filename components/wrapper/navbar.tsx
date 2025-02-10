@@ -136,7 +136,8 @@ export default function NavBar() {
             <DialogTitle className="sr-only">Navigation Menu</DialogTitle>
             <SheetContent side="left" className="max-w-[75%]">
               <SheetHeader>
-                <SheetTitle id="mobile-menu-title">Mobile Menu</SheetTitle>
+                <Image src="/logo.png" width={50} height={50} alt={"App Logo"} />
+                <SheetTitle id="mobile-menu-title">Raydar</SheetTitle>
                 <p
                   id="mobile-menu-description"
                   className="text-sm text-muted-foreground"
@@ -164,7 +165,7 @@ export default function NavBar() {
       <NavigationMenu className="hidden md:flex gap-3 w-[100%] justify-between">
         <Link href="/" className="pl-2 flex items-center" aria-label="Home">
           <Image
-            src="/sparkhacks-logo.png"
+            src="/logo.png"
             width={50}
             height={50}
             alt="App Logo"
@@ -175,7 +176,7 @@ export default function NavBar() {
       </NavigationMenu>
 
       {/* User Profile and Mode Toggle (for Desktop) */}
-      <div className="flex items-center gap-2 hidden md:flex">
+      <div className="items-center gap-2 hidden md:flex">
         {isSignedIn && <UserProfile />}
         <ModeToggle />
       </div>
