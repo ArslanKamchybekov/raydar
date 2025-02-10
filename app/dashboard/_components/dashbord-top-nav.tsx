@@ -27,7 +27,7 @@ export default function DashboardTopNav({ children }: { children: ReactNode }) {
           <SheetContent side="left">
             <SheetHeader>
               <div className="flex items-center gap-2">
-                <Image src="/sparkhacks-logo.png" width={50} height={50} alt="App Logo" />
+                <Image src="/logo.png" width={50} height={50} alt="App Logo" />
                 <SheetTitle>Raydar</SheetTitle>
               </div>
             </SheetHeader>

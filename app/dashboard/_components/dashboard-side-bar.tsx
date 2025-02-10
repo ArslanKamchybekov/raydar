@@ -21,7 +21,7 @@ export default function DashboardSideBar() {
       <div className="flex h-full max-h-screen flex-col gap-2 ">
         <div className="flex h-[55px] items-center justify-between border-b px-3 w-full">
           <Link className="flex items-center gap-2 font-semibold ml-1" href="/">
-            <Image src="/sparkhacks-logo.png" width={50} height={50} alt="App Logo" />
+            <Image src="/logo.png" width={50} height={50} alt="App Logo" />
             <span className="">Raydar</span>
           </Link>
         </div>

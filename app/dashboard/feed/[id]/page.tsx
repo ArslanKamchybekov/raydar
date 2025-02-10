@@ -48,7 +48,7 @@ const ItemPage = () => {
             </CardHeader>
             <CardContent>
               <Image
-                src={item.image_url || "/sparkhacks-logo.png"}
+                src={item.image_url || "/logo.png"}
                 alt={item.description || "Found item"}
                 width={500}
                 height={500}

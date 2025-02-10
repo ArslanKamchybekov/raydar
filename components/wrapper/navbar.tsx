@@ -128,7 +128,7 @@ export default function NavBar() {
       <NavigationMenu>
         <NavigationMenuList className="max-[825px]:hidden flex gap-3 w-[100%] justify-between">
           <Link href="/" className="pl-2 flex items-center" aria-label="Home">
-            <Image src="/sparkhacks-logo.png" width={50} height={50} alt="App Logo" />
+            <Image src="/logo.png" width={50} height={50} alt="App Logo" />
             <span className="text-xl font-bold">Raydar</span>
           </Link>
         </NavigationMenuList>
