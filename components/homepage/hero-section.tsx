@@ -40,10 +40,10 @@ export default async function HeroSection() {
                 </div>  
 
                 {/* Animated Radar */}
-                <div className="relative w-full flex justify-center mt-8">
+                <div className="relative w-full flex justify-center mt-8 overflow-hidden">
                     <AnimatedRadar />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
-                </div>              
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none" />
+                </div> 
             </div>
         </section>
     );
