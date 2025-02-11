@@ -30,6 +30,7 @@ import { SlidersHorizontal } from "lucide-react";
 import debounce from "lodash/debounce";
 import { getUserData } from "@/app/actions/user";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { ClerkUser } from "@/types/types";
 
 const FeedPage = () => {
   const [items, setItems] = useState<any[]>([]);
@@ -123,7 +124,8 @@ const FeedPage = () => {
         console.error("User ID is missing for this item");
         return;
       }
-      const userData = await getUserData(item.user_id);
+      const userData: ClerkUser = await getUserData(item.user_id);
+      console.log("User Data:", userData);
       setSelectedItemForClaim({ ...item, userData });
       setClaimModalOpen(true);
     } catch (error) {
@@ -396,10 +398,10 @@ const FeedPage = () => {
                 {selectedItemForClaim.userData ? (
                   <>
                     <p>
-                      Name: {selectedItemForClaim.userData.first_name}{" "}
-                      {selectedItemForClaim.userData.last_name}
+                      Name: {selectedItemForClaim.userData.firstName}{" "}
+                      {selectedItemForClaim.userData.lastName}
                     </p>
-                    <p>Email: {selectedItemForClaim.userData.email}</p>
+                    <p>Email: {selectedItemForClaim.userData.emailAddress}</p>
                   </>
                 ) : (
                   <p>Fetching user data...</p>
