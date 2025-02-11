@@ -3,38 +3,10 @@
 
 import { clerkClient } from "@/lib/clerk";
 import { supabase } from "@/lib/supabase";
-import { currentUser } from "@clerk/nextjs/server";
+import { Alert, Item } from "@/types/types";
 import nodemailer from 'nodemailer';
 
-type Item = {
-  id: string;
-  category: string;
-  location_name: string;
-  brand: string | null;
-  color: string | null;
-  size: string | null;
-  material: string | null;
-  weather: string | null;
-  title: string;
-  description: string;
-  createdAt: string;
-};
-
-type Alert = {
-  id: string;
-  userid: string;
-  category: string;
-  location: string;
-  brand: string | null;
-  color: string | null;
-  size: string | null;
-  material: string | null;
-  weather: string | null;
-  enabled: boolean;
-};
-
-export async function checkItemMatchesAndNotify(newItem: Item) {
-  // Get all enabled alerts
+export async function checkMatch(newItem: Item) {
   const { data: alerts, error: alertsError } = await supabase
     .from("alerts")
     .select("*, user!inner(*)")

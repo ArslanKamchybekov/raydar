@@ -2,28 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-
-type RelevantItem = {
-  id: string;
-  image_id: string;
-  brand: string;
-  category: string;
-  colors: string[];
-  created_at: string;
-  description: string;
-  keywords: string[];
-  location_name: string;
-  material: string;
-  similarity_score: number;
-  size: string;
-  user_id: string;
-  weather_found: string;
-};
+import { RelevantItem } from '@/types/types';
 
 const RelevantItems = ({ items }: { items: RelevantItem[] }) => {
   const [validImages, setValidImages] = useState<{ [key: string]: boolean }>({});
 
-  // Test if image exists by making a request
   const testImage = async (image_id: string) => {
     try {
       const response = await fetch(`https://ykyccstnnkxdmwembakk.supabase.co/storage/v1/object/public/found_images/${image_id}.jpg`);
@@ -34,7 +17,6 @@ const RelevantItems = ({ items }: { items: RelevantItem[] }) => {
   };
 
   useEffect(() => {
-    // Check images once items are available
     const checkImages = async () => {
       const imageStatus: { [key: string]: boolean } = {};
       for (const item of items) {

@@ -23,12 +23,6 @@ export enum Locations {
   RJDL = "richard j daley library",
 }
 
-export enum Strictness {
-  LOW = "LOW",
-  MEDIUM = "MEDIUM",
-  HIGH = "HIGH",
-}
-
 export enum Categories {
   PERSONAL = "personal",
   ELECTRONICS = "electronics",

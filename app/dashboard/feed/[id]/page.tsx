@@ -10,7 +10,7 @@ import { Loader2 } from "lucide-react";
 const ItemPage = () => {
   const { id } = useParams();
   const [item, setItem] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -18,20 +18,20 @@ const ItemPage = () => {
 
     const fetchItem = async () => {
       try {
-        setLoading(true);
+        setIsLoading(true);
         const data = await getFoundItem(Number(id)); // Use the getFoundItem action to fetch the specific item
         setItem(data);
       } catch (err: any) {
         setError("Error fetching item");
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     fetchItem();
   }, [id]);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader2 className="h-8 w-8 animate-spin text-gray-500" />

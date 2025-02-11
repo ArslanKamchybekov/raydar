@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -15,28 +14,16 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import Image from "next/image";
 import RelevantItems from "./_components/RelevantItems";
+import { RelevantItem, Threshold } from "@/types/types";
 
-enum Strictness {
-  LOW = "LOW",
-  MEDIUM = "MEDIUM",
-  HIGH = "HIGH",
-}
-
-type SketchRelevantItem = {
-  id: string;
-  name: string;
-  imageUrl: string;
-  description: string;
-};
 
 export default function UploadSketchPage() {
   const [file, setFile] = useState<File | null>(null);
   const [description, setDescription] = useState("");
-  const [strictness, setStrictness] = useState<Strictness>(Strictness.LOW);
+  const [threshold, setThreshold] = useState(Threshold.LOW);
   const [isUploading, setIsUploading] = useState(false);
-  const [relevantItems, setRelevantItems] = useState<SketchRelevantItem[]>([]);
+  const [relevantItems, setRelevantItems] = useState<RelevantItem[]>([]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -44,8 +31,8 @@ export default function UploadSketchPage() {
     }
   };
 
-  const handleStrictnessChange = (value: Strictness) => {
-    setStrictness(value);
+  const handleThresholdChange = (value: Threshold) => {
+    setThreshold(value);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -62,10 +49,8 @@ export default function UploadSketchPage() {
     setIsUploading(true);
   
     try {
-      // Upload file to database
       const image = await uploadLostItemSketch(file, description);
   
-      // Send POST request to server
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/get_images`, {
         method: "POST",
         headers: {
@@ -73,8 +58,8 @@ export default function UploadSketchPage() {
         },
         body: JSON.stringify({
           image_id: image.image_id,
-          description,
-          threshold: strictness === Strictness.LOW ? 0.3 : strictness === Strictness.MEDIUM ? 0.5 : 0.7,
+          description: description,
+          threshold: threshold,
         }),
       });
   
@@ -83,7 +68,7 @@ export default function UploadSketchPage() {
       }
   
       const data = await response.json();
-      setRelevantItems(data.images || []); // Update to use 'images' from the response
+      setRelevantItems(data.images || []);
   
       toast({
         title: "Success",
@@ -132,18 +117,18 @@ export default function UploadSketchPage() {
               </div>
               
               <div>
-                <Label htmlFor="strictness">Threshold</Label>
+                <Label htmlFor="threshold">Threshold</Label>
                 <Select
-                  value={strictness}
-                  onValueChange={handleStrictnessChange}
+                  value={threshold.toString()}
+                  onValueChange={(value) => handleThresholdChange(value as unknown as Threshold)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select Strictness" />
+                    <SelectValue placeholder="Select threshold" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value={Strictness.LOW}>Low</SelectItem>
-                    <SelectItem value={Strictness.MEDIUM}>Medium</SelectItem>
-                    <SelectItem value={Strictness.HIGH}>High</SelectItem>
+                    <SelectItem value={Threshold.LOW.toString()}>Low</SelectItem>
+                    <SelectItem value={Threshold.MEDIUM.toString()}>Medium</SelectItem>
+                    <SelectItem value={Threshold.HIGH.toString()}>High</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -157,7 +142,7 @@ export default function UploadSketchPage() {
       </div>
 
       <div className="sm:w-2/3 w-full">
-        <RelevantItems items={relevantItems as any} />
+        <RelevantItems items={relevantItems} />
       </div>
     </div>
   );

@@ -9,43 +9,20 @@ import { Trash2, Bell, Plus, Loader2 } from 'lucide-react';
 import { Categories, Locations, Brands, Colors, Size, Materials, Weather } from '@/types/enums';
 import { createAlert, deleteAlert, toggleAlert, getAlerts } from "@/app/actions/alerts";
 import { toast } from '@/components/ui/use-toast';
-
-type Alert = {
-  id: string;
-  userId: string;
-  category: keyof typeof Categories;
-  location: keyof typeof Locations;
-  brand: keyof typeof Brands | null;
-  color: keyof typeof Colors | null;
-  size: keyof typeof Size | null;
-  material: keyof typeof Materials | null;
-  weather: keyof typeof Weather | null;
-  enabled: boolean;
-  createdAt: string;
-};
-
-type NewAlertInput = {
-  category: keyof typeof Categories;
-  location: keyof typeof Locations;
-  brand: keyof typeof Brands | '';
-  color: keyof typeof Colors | '';
-  size: keyof typeof Size | '';
-  material: keyof typeof Materials | '';
-  weather: keyof typeof Weather | '';
-};
+import { Alert } from '@/types/types';
 
 const AlertsPage = () => {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [newAlert, setNewAlert] = useState<NewAlertInput>({
+  const [newAlert, setNewAlert] = useState<any>({
     category: '' as keyof typeof Categories,
     location: '' as keyof typeof Locations,
-    brand: '',
-    color: '',
-    size: '',
-    material: '',
-    weather: ''
+    brand: '' as keyof typeof Brands,
+    color: '' as keyof typeof Colors,
+    size: '' as keyof typeof Size,
+    material: '' as keyof typeof Materials,
+    weather: '' as keyof typeof Weather
   });
 
   useEffect(() => {
@@ -176,7 +153,7 @@ const AlertsPage = () => {
             {enumTypes.map(({ enum: enumType, key, label, required }) => (
               <Select
                 key={key}
-                value={newAlert[key as keyof NewAlertInput]}
+                value={newAlert[key]}
                 onValueChange={(value) => 
                   setNewAlert({ ...newAlert, [key]: value })}
               >

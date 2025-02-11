@@ -33,7 +33,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 const FeedPage = () => {
   const [items, setItems] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedItem, setSelectedItem] = useState<any>(null);
@@ -49,18 +49,18 @@ const FeedPage = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        setLoading(true);
+        setIsLoading(true);
         const data = await getFoundItems();
         setItems(data);
       } catch (err: any) {
         setError(err);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     fetchItems();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   const categories = [
     "all",
@@ -69,7 +69,7 @@ const FeedPage = () => {
 
   const debouncedSetSearch = debounce((searchValue: string) => {
     setSearchQuery(searchValue);
-    setCurrentPage(1); // Reset to first page on search
+    setCurrentPage(1); 
   }, 300);
 
   const handleSearch = useCallback(
@@ -158,7 +158,7 @@ const FeedPage = () => {
     </div>
   );
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div>
         <div className="flex items-center gap-2">

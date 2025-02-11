@@ -11,7 +11,7 @@ import {
   Weather,
 } from "@/types/enums";
 import { randomUUID } from "crypto";
-import { checkItemMatchesAndNotify } from "../notifications";
+import { checkMatch } from "../notifications";
 
 export async function getFoundItems() {
   const { data, error } = await supabase
@@ -112,7 +112,7 @@ export async function uploadFoundItem(
     }
 
     // Notify users of any matching alerts
-    await checkItemMatchesAndNotify(insertData[0]);
+    await checkMatch(insertData[0]);
 
     return {
       ...insertData[0],

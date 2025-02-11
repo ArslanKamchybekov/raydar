@@ -10,7 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Locations, Categories, Brands, Colors, Size, Materials, Weather } from "@/types/enums"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { uploadFoundItem } from "../../actions/foundItems"
-import PageWrapper from "@/components/wrapper/page-wrapper"
 import { useUser } from "@clerk/nextjs"
 import Image from "next/image"
 import { keywords_list } from "@/constants/keywords"
@@ -30,23 +29,6 @@ const LostItemUploadPage = () => {
   const [keywords, setKeywords] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const user = useUser()
-
-  if (!user) {
-    return (
-      <PageWrapper>
-        <div className="flex flex-col items-center justify-center w-full max-w-lg p-6 space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Report Found Item</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-center">You must be signed in to report a found item.</p>
-            </CardContent>
-          </Card>
-        </div>
-      </PageWrapper>
-    )
-  }
 
   const handleFileUpload = (uploadedFile: File) => {
     setFile(uploadedFile)
@@ -115,7 +97,6 @@ const LostItemUploadPage = () => {
     }
   }
 
-  // center the form
   return (
     <div className="flex flex-col items-center justify-center w-full max-w-lg mx-auto">
       <Card>

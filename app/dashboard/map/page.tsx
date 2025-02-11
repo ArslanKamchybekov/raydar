@@ -8,8 +8,7 @@ import { getFoundItems } from "@/app/actions/foundItems";
 import { useTheme } from "next-themes";
 
 if (typeof window !== "undefined") {
-  mapboxgl.accessToken =
-    "pk.eyJ1IjoiaXNhYWNhbGF6YXIiLCJhIjoiY202dm9kdm9uMGFhNTJrcTZtYXc2NjhxNCJ9.aJdcl6mYhL6Pan8t3cck7w";
+  mapboxgl.accessToken = "pk.eyJ1IjoiaXNhYWNhbGF6YXIiLCJhIjoiY202dm9kdm9uMGFhNTJrcTZtYXc2NjhxNCJ9.aJdcl6mYhL6Pan8t3cck7w";
 }
 
 const mapStyles = {

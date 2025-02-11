@@ -8,7 +8,7 @@ export async function uploadLostItemSketch(file: File, description: string) {
     const imageId = randomUUID()
     const fileExt = file.name.split('.').pop()
     const fileName = `${imageId}.${fileExt}`
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from('lost_images')
       .upload(fileName, file)
 
