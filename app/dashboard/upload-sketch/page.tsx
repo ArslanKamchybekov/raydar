@@ -102,7 +102,7 @@ export default function UploadSketchPage() {
   };
   
   return (
-    <div className="flex flex-col sm:flex-row w-full max-w-6xl mx-auto p-4 gap-8">
+    <div className="flex flex-col sm:flex-row w-full max-w-6xl mx-auto gap-4">
       <div className="sm:w-1/3 w-full">
         <Card>
           <CardHeader>

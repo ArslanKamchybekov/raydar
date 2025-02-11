@@ -25,6 +25,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { SlidersHorizontal } from "lucide-react";
 import debounce from "lodash/debounce";
 import { getUserData } from "@/app/actions/user";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
@@ -41,6 +43,7 @@ const FeedPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [claimModalOpen, setClaimModalOpen] = useState(false);
   const [selectedItemForClaim, setSelectedItemForClaim] = useState<any>(null);
+  const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
   const itemsPerPage = 9;
 
   useEffect(() => {
@@ -59,7 +62,6 @@ const FeedPage = () => {
     fetchItems();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Get unique categories from items
   const categories = [
     "all",
     ...Array.from(new Set(items.map((item) => item.category))),
@@ -67,6 +69,7 @@ const FeedPage = () => {
 
   const debouncedSetSearch = debounce((searchValue: string) => {
     setSearchQuery(searchValue);
+    setCurrentPage(1); // Reset to first page on search
   }, 300);
 
   const handleSearch = useCallback(
@@ -79,13 +82,9 @@ const FeedPage = () => {
   const sortItems = (items: any[]) => {
     return [...items].sort((a, b) => {
       if (sortBy === "newest") {
-        return (
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       } else if (sortBy === "oldest") {
-        return (
-          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-        );
+        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
       }
       return 0;
     });
@@ -118,8 +117,6 @@ const FeedPage = () => {
     setIsModalOpen(true);
   };
 
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
   const handleClaimClick = async (item: any) => {
     try {
       if (!item.user_id) {
@@ -131,18 +128,52 @@ const FeedPage = () => {
       setClaimModalOpen(true);
     } catch (error) {
       console.error("Error fetching user data:", error);
-      // You might want to show an error message to the user here
     }
   };
 
+  const FilterControls = () => (
+    <div className="space-y-4">
+      <Select onValueChange={setSortBy} defaultValue="oldest">
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Sort by date" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="newest">Newest First</SelectItem>
+          <SelectItem value="oldest">Oldest First</SelectItem>
+        </SelectContent>
+      </Select>
+
+      <Select onValueChange={setSelectedCategory} defaultValue="all">
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Filter by category" />
+        </SelectTrigger>
+        <SelectContent>
+          {categories.map((category) => (
+            <SelectItem key={category} value={category}>
+              {category.charAt(0).toUpperCase() + category.slice(1)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+
   if (loading) {
     return (
-      <div className="container mx-auto py-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div>
+        <div className="flex items-center gap-2">
+          <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">Feed</h1>
+        </div>
+        <p className="leading-7 text-sm text-gray-600 dark:text-gray-400 mb-6">
+          Browse through the items that have been found on campus.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {[...Array(6)].map((_, index) => (
             <Card key={index} className="animate-pulse">
               <CardHeader>
-                <CardTitle className="text-xl"></CardTitle>
+                <CardTitle className="text-xl">
+                  <div className="h-4 bg-gray-400 rounded"></div>
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="w-full h-48 bg-gray-700 rounded-md mb-4"></div>
@@ -164,53 +195,51 @@ const FeedPage = () => {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen p-4">
         <div className="text-lg text-red-500">Error: {error}</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="flex items-center gap-2 mb-2">
-        <h1 className="text-3xl font-semibold tracking-tight">Raydar Feed</h1>
+    <div>
+      <div className="flex items-center gap-2">
+        <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">Feed</h1>
       </div>
       <p className="leading-7 text-sm text-gray-600 dark:text-gray-400 mb-6">
         Browse through the items that have been found on campus.
       </p>
-      <div className="container mx-auto py-4">
-        <div className="flex gap-4 mb-4">
-          <Select onValueChange={setSortBy} defaultValue="oldest">
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Sort by date" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">Newest First</SelectItem>
-              <SelectItem value="oldest">Oldest First</SelectItem>
-            </SelectContent>
-          </Select>
 
-          <Select onValueChange={setSelectedCategory} defaultValue="all">
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by category" />
-            </SelectTrigger>
-            <SelectContent>
-              {categories.map((category) => (
-                <SelectItem key={category} value={category}>
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      <div className="space-y-4">
+        {/* Mobile Search and Filter UI */}
+        <div className="flex gap-2">
           <Input
             type="search"
             placeholder="Search items..."
             onChange={handleSearch}
             className="flex-1"
           />
+          <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon" className="md:hidden">
+                <SlidersHorizontal className="h-4 w-4" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px]">
+              <div className="mt-6">
+                <FilterControls />
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Desktop Filter Controls */}
+        <div className="hidden md:flex gap-4">
+          <FilterControls />
+        </div>
+
+        {/* Items Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {currentItems.map((item: any) => (
             <Card
               key={item.id}
@@ -219,7 +248,7 @@ const FeedPage = () => {
               }`}
             >
               <CardHeader>
-                <CardTitle className="text-xl">
+                <CardTitle className="text-lg md:text-xl">
                   {item.category[0].toUpperCase() + item.category.slice(1)}
                 </CardTitle>
               </CardHeader>
@@ -236,7 +265,7 @@ const FeedPage = () => {
                     Location: {item.location_name}
                   </p>
                   {item.description && (
-                    <p className="text-sm">{item.description}</p>
+                    <p className="text-sm line-clamp-2">{item.description}</p>
                   )}
                   {item.colors && item.colors.length > 0 && (
                     <p className="text-sm">Colors: {item.colors.join(", ")}</p>
@@ -244,16 +273,16 @@ const FeedPage = () => {
                   {item.brand && <p className="text-sm">Brand: {item.brand}</p>}
                 </div>
               </CardContent>
-              <CardFooter className="flex justify-between">
+              <CardFooter className="flex flex-col sm:flex-row gap-2">
                 <Button
                   onClick={() => handleItemClick(item)}
-                  className="flex-1 mr-2"
+                  className="w-full sm:flex-1"
                 >
                   View
                 </Button>
                 <Button
                   onClick={() => handleClaimClick(item)}
-                  className="flex-1 ml-2"
+                  className="w-full sm:flex-1"
                   variant="outline"
                 >
                   Claim
@@ -269,29 +298,31 @@ const FeedPage = () => {
           </div>
         )}
 
+        {/* Item Detail Modal */}
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-          <DialogContent className="max-w-3xl">
+          <DialogContent className="w-full max-w-full sm:max-w-3xl h-[90vh] overflow-auto p-4 sm:p-6">
             <DialogHeader>
               <VisuallyHidden>
-                <DialogTitle className="text-2xl">
-                  {selectedItem?.category}
-                </DialogTitle>
+                <DialogTitle className="text-2xl">{selectedItem?.category}</DialogTitle>
               </VisuallyHidden>
             </DialogHeader>
             {selectedItem && (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {selectedItem.image_url && (
+              <div className="space-y-6">
+                {/* Image Section */}
+                {selectedItem.image_url && (
+                  <div className="w-full">
                     <Image
                       src={selectedItem.image_url || "/logo.png"}
                       alt={selectedItem.description || "Found item"}
                       width={500}
                       height={500}
-                      className="w-full h-48 object-cover rounded-md mb-4"
+                      className="w-full max-w-full h-auto max-h-[300px] object-cover rounded-md"
                     />
-                  )}
-                </div>
-                <div className="space-y-4">
+                  </div>
+                )}
+                
+                {/* Details Section */}
+                <div className="space-y-4 text-sm sm:text-base">
                   <div>
                     <h3 className="font-semibold">Location</h3>
                     <p>{selectedItem.location_name}</p>
@@ -302,7 +333,7 @@ const FeedPage = () => {
                       <p>{selectedItem.description}</p>
                     </div>
                   )}
-                  {selectedItem.colors && selectedItem.colors.length > 0 && (
+                  {selectedItem.colors?.length > 0 && (
                     <div>
                       <h3 className="font-semibold">Colors</h3>
                       <p>{selectedItem.colors.join(", ")}</p>
@@ -332,20 +363,21 @@ const FeedPage = () => {
                       <p>{selectedItem.weather_found}</p>
                     </div>
                   )}
-                  {selectedItem.keywords &&
-                    selectedItem.keywords.length > 0 && (
-                      <div>
-                        <h3 className="font-semibold">Keywords</h3>
-                        <p>{selectedItem.keywords.join(", ")}</p>
-                      </div>
-                    )}
+                  {selectedItem.keywords?.length > 0 && (
+                    <div>
+                      <h3 className="font-semibold">Keywords</h3>
+                      <p>{selectedItem.keywords.join(", ")}</p>
+                    </div>
+                  )}
                 </div>
-              </>
+              </div>
             )}
           </DialogContent>
         </Dialog>
+
+        {/* Claim Modal */}
         <Dialog open={claimModalOpen} onOpenChange={setClaimModalOpen}>
-          <DialogContent>
+          <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <VisuallyHidden>
                 <DialogTitle>Claim Item</DialogTitle>
@@ -364,42 +396,36 @@ const FeedPage = () => {
                 {selectedItemForClaim.userData ? (
                   <>
                     <p>
-                      Name: {selectedItemForClaim.userData.firstName}{" "}
-                      {selectedItemForClaim.userData.lastName}
+                      Name: {selectedItemForClaim.userData.first_name}{" "}
+                      {selectedItemForClaim.userData.last_name}
                     </p>
-                    <p>
-                      Email:{" "}
-                      {selectedItemForClaim.userData.emailAddress ||
-                        "Not provided"}
-                    </p>
+                    <p>Email: {selectedItemForClaim.userData.email}</p>
                   </>
                 ) : (
-                  <p>User information not available</p>
+                  <p>Fetching user data...</p>
                 )}
-
-                <Button
-                  onClick={() => setClaimModalOpen(false)}
-                  className="w-full mt-4"
-                >
-                  Close
-                </Button>
               </div>
             )}
           </DialogContent>
         </Dialog>
+        
+        {/* Pagination */}
         <div className="flex justify-center mt-8">
-          {Array.from({
-            length: Math.ceil(filteredItems.length / itemsPerPage),
-          }).map((_, index) => (
-            <Button
-              key={index}
-              onClick={() => paginate(index + 1)}
-              variant={currentPage === index + 1 ? "default" : "outline"}
-              className="mx-1"
-            >
-              {index + 1}
-            </Button>
-          ))}
+          <Button
+            onClick={() => setCurrentPage((prev) => prev - 1)}
+            disabled={currentPage === 1}
+            variant="outline"
+            className="mr-2"
+          >
+            Previous
+          </Button>
+          <Button
+            onClick={() => setCurrentPage((prev) => prev + 1)}
+            disabled={currentItems.length < itemsPerPage}
+            variant="outline"
+          >
+            Next
+          </Button>
         </div>
       </div>
     </div>

@@ -8,10 +8,13 @@ export default function Settings() {
   const { resolvedTheme } = useTheme();
 
   return (
-    <div className="flex justify-start items-center flex-wrap px-4 pt-5 gap-4">
-      <h2 className="mt-10 scroll-m-20 border-b pb-2 w-full text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-        Profile
-      </h2>
+    <div>
+      <div className="flex items-center gap-2w">
+        <h1 className="text-3xl font-semibold tracking-tight">Settings</h1>
+      </div>
+      <p className="leading-7 text-sm text-muted-foreground mb-4">
+        Manage your account settings here.
+      </p>
       <UserProfile appearance={{ baseTheme: resolvedTheme === "dark" ? dark : undefined }} />
     </div>
   );

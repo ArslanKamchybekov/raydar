@@ -37,7 +37,7 @@ const LostItemUploadPage = () => {
         <div className="flex flex-col items-center justify-center w-full max-w-lg p-6 space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Report a Found Item</CardTitle>
+              <CardTitle>Report Found Item</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-center">You must be signed in to report a found item.</p>
@@ -117,10 +117,10 @@ const LostItemUploadPage = () => {
 
   // center the form
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-lg p-6 space-y-6 mx-auto">
+    <div className="flex flex-col items-center justify-center w-full max-w-lg mx-auto">
       <Card>
         <CardHeader>
-          <CardTitle>Report a Found Item</CardTitle>
+          <CardTitle>Report Found Item</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">

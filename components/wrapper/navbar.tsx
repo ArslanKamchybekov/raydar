@@ -6,6 +6,7 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import {
+  Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -24,172 +25,150 @@ import {
 import config from "@/config";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@clerk/nextjs";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogClose,
-} from "@radix-ui/react-dialog";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+
+interface NavItem {
+  title: string;
+  href: string;
+  description: string;
+}
+
+const navigationItems: NavItem[] = [
+  {
+    title: "Feed",
+    href: "/dashboard/feed",
+    description: "View all lost items found on campus.",
+  },
+  {
+    title: "Sketch",
+    href: "/dashboard/upload-sketch",
+    description: "Draw a sketch of the item you lost.",
+  },
+  {
+    title: "Upload",
+    href: "/dashboard/upload-lost",
+    description: "Upload a lost item to the database.",
+  },
+];
 
 export default function NavBar() {
-  const { isSignedIn, userId } = useAuth();
+  const { isSignedIn } = useAuth();
   const authEnabled = config?.auth?.enabled;
 
   const renderAuthItems = () => {
-    if (!authEnabled) return null;
+    if (!authEnabled || !isSignedIn) return null;
 
-    if (isSignedIn) {
-      return (
-        <>
-          <NavigationMenuItem className="hidden md:block ml-5">
-            <NavigationMenuTrigger className="dark:bg-black dark:bg-opacity-50">
-              Feed
-            </NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="flex flex-col w-[400px] gap-3 p-4 lg:w-[500px]">
-                <ListItem title="Feed" href="/dashboard/feed">
-                  View all lost items found on campus.
-                </ListItem>
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-
-          <NavigationMenuItem className="hidden md:block ml-5">
-            <NavigationMenuTrigger className="dark:bg-black dark:bg-opacity-50">
-              Sketch
-            </NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="flex flex-col w-[400px] gap-3 p-4 lg:w-[500px]">
-                <ListItem title="Sketch" href="/dashboard/upload-sketch">
-                  Draw a sketch of the item you lost.
-                </ListItem>
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-
-          <NavigationMenuItem className="hidden md:block ml-5">
-            <NavigationMenuTrigger className="dark:bg-black dark:bg-opacity-50">
-              Upload
-            </NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="flex flex-col w-[400px] gap-3 p-4 lg:w-[500px]">
-                <ListItem title="Upload" href="/dashboard/upload-lost">
-                  Upload a lost item to the database.
-                </ListItem>
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-        </>
-      );
-    }
+    return navigationItems.map((item) => (
+      <NavigationMenuItem key={item.href} className="ml-5">
+        <NavigationMenuTrigger className="dark:bg-black dark:bg-opacity-50">
+          {item.title}
+        </NavigationMenuTrigger>
+        <NavigationMenuContent>
+          <ul className="flex flex-col w-[400px] gap-3 p-4 lg:w-[500px]">
+            <ListItem title={item.title} href={item.href}>
+              {item.description}
+            </ListItem>
+          </ul>
+        </NavigationMenuContent>
+      </NavigationMenuItem>
+    ));
   };
 
   const renderMobileMenu = () => {
-    if (!authEnabled) return null;
+    if (!authEnabled || !isSignedIn) return (
+      <Link href="/sign-in">
+        <Button variant="outline" className="w-full">
+          Login
+        </Button>
+      </Link>
+    );
 
-    if (isSignedIn) {
-      return (
-        <>
-          <DialogClose asChild>
-            <Link href="/dashboard/feed">
-              <Button variant="outline" className="w-full">
-                Feed
-              </Button>
-            </Link>
-          </DialogClose>
-          <DialogClose asChild>
-            <Link href="/dashboard/upload-sketch">
-              <Button variant="outline" className="w-full">
-                Sketch
-              </Button>
-            </Link>
-          </DialogClose>
-          <DialogClose asChild>
-            <Link href="/dashboard/upload-lost">
-              <Button variant="outline" className="w-full">
-                Upload
-              </Button>
-            </Link>
-          </DialogClose>
-        </>
-      );
-    }
+    return navigationItems.map((item) => (
+      <Link key={item.href} href={item.href}>
+        <Button variant="outline" className="w-full">
+          {item.title}
+        </Button>
+      </Link>
+    ));
   };
 
   return (
-    <div className="flex min-w-full fixed top-0 left-0 right-0 z-50 justify-between p-2 border-b dark:bg-black bg-white shadow-md">
-      {/* Mobile and Desktop Menu */}
-      <div className="flex justify-between w-full min-[825px]:hidden">
-        <Dialog>
-          <SheetTrigger className="p-2 transition">
+    <nav className="flex min-w-full fixed top-0 left-0 right-0 z-50 justify-between p-2 border-b dark:bg-black bg-white shadow-md">
+      {/* Mobile Menu */}
+      <div className="flex justify-between w-full md:hidden">
+        <Sheet>
+          <SheetTrigger asChild>
             <Button
               size="icon"
               variant="ghost"
-              className="w-6 h-6"
+              className="h-9 w-9"
               aria-label="Open menu"
-              asChild
             >
               <GiHamburgerMenu />
             </Button>
           </SheetTrigger>
-          <DialogContent>
-            <VisuallyHidden>
-              <DialogTitle className="sr-only">Navigation Menu</DialogTitle>
-            </VisuallyHidden>
-            <SheetContent side="left" className="max-w-[75%]">
-              <SheetHeader>
+          <SheetContent side="left" className="max-w-[75%]">
+            <SheetHeader>
+              <div className="flex items-center gap-2">
                 <Image
                   src="/logo.png"
                   width={50}
                   height={50}
-                  alt={"App Logo"}
+                  alt="App Logo"
+                  priority
                 />
-                <SheetTitle id="mobile-menu-title">Raydar</SheetTitle>
-                <p
-                  id="mobile-menu-description"
-                  className="text-sm text-muted-foreground"
-                >
-                  Navigate through the app&apos;s sections.
-                </p>
-              </SheetHeader>
-              <div className="flex flex-col space-y-3 mt-[1rem]">
-                <DialogClose asChild>
-                  <Link href="/">
-                    <Button variant="outline" className="w-full">
-                      Home
-                    </Button>
-                  </Link>
-                </DialogClose>
-                {renderMobileMenu()}
+                <SheetTitle>Raydar</SheetTitle>
               </div>
-            </SheetContent>
-          </DialogContent>
-        </Dialog>
-        <ModeToggle />
+              <p className="text-sm text-muted-foreground">
+                Navigate through the app&apos;s sections.
+              </p>
+            </SheetHeader>
+            <div className="flex flex-col space-y-3 mt-4">
+              {renderMobileMenu()}
+            </div>
+          </SheetContent>
+        </Sheet>
+        <div className="flex justify-between items-center gap-2">
+          {isSignedIn && <UserProfile />}
+          <ModeToggle />
+        </div>
       </div>
 
       {/* Desktop Menu */}
-      <NavigationMenu className="hidden md:flex gap-3 w-[100%] justify-between">
-        <Link href="/" className="pl-2 flex items-center" aria-label="Home">
-          <Image src="/logo.png" width={50} height={50} alt="App Logo" />
-          <span className="text-xl font-bold">Raydar</span>
-        </Link>
-        <NavigationMenuList>{renderAuthItems()}</NavigationMenuList>
-      </NavigationMenu>
-
-      {/* User Profile and Mode Toggle (for Desktop) */}
-      <div className="items-center gap-2 hidden md:flex">
-        {isSignedIn && <UserProfile />}
-        <ModeToggle />
+      <div className="hidden md:flex w-full items-center justify-between">
+        <div className="flex items-center">
+          <Link href="/" className="pl-2 flex items-center gap-2" aria-label="Home">
+            <Image 
+              src="/logo.png" 
+              width={50} 
+              height={50} 
+              alt="App Logo" 
+              priority
+            />
+            <span className="text-xl font-bold">Raydar</span>
+          </Link>
+          <NavigationMenu className="ml-4">
+            <NavigationMenuList>
+              {renderAuthItems()}
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
+        <div className="flex items-center gap-2">
+          {!isSignedIn && authEnabled && (
+            <Link href="/sign-in">
+              <Button variant="outline">Login</Button>
+            </Link>
+          )}
+          {isSignedIn && <UserProfile />}
+          <ModeToggle />
+        </div>
       </div>
-    </div>
+    </nav>
   );
 }
 
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a">
+  React.ComponentPropsWithoutRef<"a"> & { title: string }
 >(({ className, title, children, ...props }, ref) => {
   return (
     <li>

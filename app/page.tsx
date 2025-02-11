@@ -7,7 +7,7 @@ import AutoplayVideo from "@/components/autoplay-video";
 export default async function Home() {
   return (
     <PageWrapper>
-      <div className="flex flex-col justify-center items-center w-full mt-[1rem] p-3">
+      <div className="flex flex-col justify-center items-center w-full mt-[1rem] p-4">
         <HeroSection />
       </div>
       <div className="flex my-[8rem] w-full justify-center items-center">

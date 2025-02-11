@@ -246,10 +246,10 @@ const LocationPage = () => {
 
   return (
     <div className="relative h-screen">
-      <div className="flex items-center gap-2 mb-2">
-        <h1 className="text-3xl font-semibold tracking-tight">Raydar Map</h1>
+      <div className="flex items-center gap-2w">
+        <h1 className="text-3xl font-semibold tracking-tight">Map</h1>
       </div>
-      <p className="leading-7 text-sm text-muted-foreground mb-6">
+      <p className="leading-7 text-sm text-muted-foreground mb-4">
         Find out where most items are lost in your area.
       </p>
 

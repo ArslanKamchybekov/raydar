@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { getFoundItem } from "@/app/actions/foundItems"; // assuming this is the server action to get the specific item
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
 
 const ItemPage = () => {
   const { id } = useParams();
@@ -31,7 +32,11 @@ const ItemPage = () => {
   }, [id]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+      </div>
+    );
   }
 
   if (error) {
@@ -39,7 +44,7 @@ const ItemPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <div className="container mx-auto py-4">
         {item ? (
           <Card>
