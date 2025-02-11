@@ -11,6 +11,11 @@ export const userCreate = async ({
   profile_image_url,
   user_id,
 }: userCreateProps) => {
+  // check that email is @uic.edu
+  // if (!email?.endsWith("@uic.edu")) {
+  //   throw new Error("Email must be a UIC email");
+  // }
+
   const cookieStore = await cookies();
 
   const supabase = createServerClient(
@@ -38,9 +43,6 @@ export const userCreate = async ({
         },
       ])
       .select();
-
-    console.log("data", data);
-    console.log("error", error);
 
     if (error?.code) return error;
     return data;

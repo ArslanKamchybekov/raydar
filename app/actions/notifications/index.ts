@@ -80,10 +80,10 @@ async function sendMatchNotification(alert: Alert, item: Item) {
               <li><strong>Category:</strong> ${item.category}</li>
               <li><strong>Location:</strong> ${item.location_name}</li>
               ${item.brand ? `<li><strong>Brand:</strong> ${item.brand}</li>` : ''}
-              ${item.color ? `<li><strong>Color:</strong> ${item.color}</li>` : ''}
+              ${item.colors ? `<li><strong>Color:</strong> ${item.colors}</li>` : ''}
               ${item.size ? `<li><strong>Size:</strong> ${item.size}</li>` : ''}
               ${item.material ? `<li><strong>Material:</strong> ${item.material}</li>` : ''}
-              ${item.weather ? `<li><strong>Weather:</strong> ${item.weather}</li>` : ''}
+              ${item.weather_found ? `<li><strong>Weather:</strong> ${item.weather_found}</li>` : ''}
             </ul>
             ${item.description ? `<p><strong>Description:</strong> ${item.description}</p>` : ''}
           </div>

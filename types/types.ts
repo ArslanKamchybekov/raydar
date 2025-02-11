@@ -71,3 +71,12 @@ export interface Item {
     weather_found: string | null;
     created_at: string;
 };
+
+export interface Claim {
+    id: string;
+    user_id: string
+    item_id: string;
+    date: string
+    status: "pending" | "approved" | "rejected";
+}
+  
