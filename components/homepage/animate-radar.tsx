@@ -8,7 +8,7 @@ export default function AnimatedRadar() {
     let frame: number;
 
     const animate = () => {
-      setRotation((prev) => (prev + 1.5) % 360);
+      setRotation((prev) => (prev + 1) % 360);
       frame = requestAnimationFrame(animate);
     };
 
