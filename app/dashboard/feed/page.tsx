@@ -30,14 +30,14 @@ import { SlidersHorizontal } from "lucide-react";
 import debounce from "lodash/debounce";
 import { getUserData } from "@/app/actions/user";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { ClerkUser } from "@/types/types";
+import { ClerkUser, Item } from "@/types/types";
 
 const FeedPage = () => {
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [selectedItem, setSelectedItem] = useState<Item>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState("oldest");
@@ -80,7 +80,7 @@ const FeedPage = () => {
     [debouncedSetSearch]
   );
 
-  const sortItems = (items: any[]) => {
+  const sortItems = (items: Item[]) => {
     return [...items].sort((a, b) => {
       if (sortBy === "newest") {
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
@@ -92,7 +92,7 @@ const FeedPage = () => {
   };
 
   const filteredItems = sortItems(
-    items.filter((item: any) => {
+    items.filter((item: Item) => {
       const searchLower = searchQuery.toLowerCase();
       const matchesSearch =
         item.description?.toLowerCase().includes(searchLower) ||
@@ -113,19 +113,18 @@ const FeedPage = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
 
-  const handleItemClick = (item: any) => {
+  const handleItemClick = (item: Item) => {
     setSelectedItem(item);
     setIsModalOpen(true);
   };
 
-  const handleClaimClick = async (item: any) => {
+  const handleClaimClick = async (item: Item) => {
     try {
-      if (!item.user_id) {
+      if (!item) {
         console.error("User ID is missing for this item");
         return;
       }
       const userData: ClerkUser = await getUserData(item.user_id);
-      console.log("User Data:", userData);
       setSelectedItemForClaim({ ...item, userData });
       setClaimModalOpen(true);
     } catch (error) {
@@ -242,7 +241,7 @@ const FeedPage = () => {
 
         {/* Items Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-          {currentItems.map((item: any) => (
+          {currentItems.map((item: Item) => (
             <Card
               key={item.id}
               className={`hover:shadow-lg transition-shadow ${
@@ -386,22 +385,29 @@ const FeedPage = () => {
               </VisuallyHidden>
             </DialogHeader>
             {selectedItemForClaim && (
-              <div className="mt-4">
-                <h3 className="font-semibold mb-2">Item Details</h3>
-                <p>Category: {selectedItemForClaim.category}</p>
-                <p>Location: {selectedItemForClaim.location_name}</p>
-                {selectedItemForClaim.description && (
-                  <p>Description: {selectedItemForClaim.description}</p>
-                )}
-
-                <h3 className="font-semibold mt-4 mb-2">Posted by</h3>
+              <div>
+                <h3 className="font-semibold mb-2">Posted by</h3>
                 {selectedItemForClaim.userData ? (
                   <>
-                    <p>
-                      Name: {selectedItemForClaim.userData.firstName}{" "}
-                      {selectedItemForClaim.userData.lastName}
-                    </p>
-                    <p>Email: {selectedItemForClaim.userData.emailAddress}</p>
+                    <div className="flex items-center space-x-4">
+                      <Image
+                        src={selectedItemForClaim.userData.profileImageUrl || "/logo.png"}
+                        alt="User Avatar"
+                        width={50}
+                        height={50}
+                        className="rounded-full"
+                      />
+                      <div>
+                        <p className="font-semibold">
+                          {selectedItemForClaim.userData.firstName}{" "}
+                          {selectedItemForClaim.userData.lastName}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {selectedItemForClaim.userData.emailAddress}
+                        </p>
+                        <p className="ml-auto font-semibold">{new Date(selectedItemForClaim.created_at).toLocaleDateString()}</p>
+                      </div>
+                    </div>
                   </>
                 ) : (
                   <p>Fetching user data...</p>

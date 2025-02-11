@@ -56,13 +56,18 @@ export interface RelevantItem {
 
 export interface Item {
     id: string;
+    user_id: string; // user_id of the person who uploaded the item
+    title: string;
+    description: string;
+    image_url: string;
+    claimed: boolean;
+    keywords: string[];
     category: string;
     location_name: string;
     brand: string | null;
-    color: string | null;
+    colors: string[];
     size: string | null;
     material: string | null;
-    weather: string | null;
-    title: string;
-    description: string;
+    weather_found: string | null;
+    created_at: string;
 };
