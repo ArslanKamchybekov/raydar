@@ -78,7 +78,7 @@ export default function PrivacyPage() {
                 Privacy and Terms of Service
               </h2>
               <p className="text-gray-600 dark:text-gray-300 mt-4 max-w-2xl mx-auto">
-                Everything you need to know about Raydar's Privacy Policy and
+                Everything you need to know about Raydar&apos;s Privacy Policy and
                 Terms of Service. Can&apos;t find the answer you&apos;re looking
                 for? Reach out to our team.
               </p>
