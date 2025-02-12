@@ -48,8 +48,8 @@ async function sendMatchNotification(alert: Alert, item: Item) {
       port: 587,
       secure: false,
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
+        user: process.env.CONTACT_USER,
+        pass: process.env.CONTACT_PASSWORD,
       },
     });
 
