@@ -54,7 +54,6 @@ const FeedPage = () => {
 
   return (
     <>
-      <NavBar />
       <div>
         <div className="space-y-4">
           <h1 className="text-2xl md:text-3xl font-semibold tracking-tight mb-2">
