@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 import { prisma } from "@/lib/prisma";
 import { checkMatch } from "../notifications";
 import { randomUUID } from "crypto";
+import { Item } from "@/types/types";
 
 export async function getFoundItems() {
   try {
@@ -14,7 +15,7 @@ export async function getFoundItems() {
     });
 
     const itemsWithImages = await Promise.all(
-      items.map(async (item: { image: string }) => {
+      items.map(async (item: Item) => {
         const { data: imageUrl } = await supabase.storage
           .from("found_images")
           .getPublicUrl("/" + item.image + "." + "jpg");
