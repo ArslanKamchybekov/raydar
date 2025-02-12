@@ -1,55 +1,55 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/components/ui/use-toast";
-import { Card } from "@/components/ui/card";
-import { Mail, User, MessageSquare, Send } from "lucide-react";
-import { sendEmail } from "@/app/actions/contact";
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { toast } from "@/components/ui/use-toast"
+import { Card } from "@/components/ui/card"
+import { Mail, User, MessageSquare, Send } from "lucide-react"
+import { sendEmail } from "@/app/actions/contact"
 
 export default function ContactForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsSubmitting(true);
+    event.preventDefault()
+    setIsSubmitting(true)
 
     try {
-      const formData = new FormData(event.currentTarget);
+      const formData = new FormData(event.currentTarget)
       const data = {
         name: formData.get("name") as string,
         email: formData.get("email") as string,
         message: formData.get("message") as string,
-      };
+      }
 
-      const result = await sendEmail(data);
+      const result = await sendEmail(data)
 
       toast({
         title: "Message sent!",
         description: "We'll get back to you as soon as possible.",
-      });
+      })
 
-      event.currentTarget.reset();
+      event.currentTarget.reset()
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to send message. Please try again.",
         variant: "destructive",
-      });
+      })
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   return (
-    <Card className="p-6 shadow-lg backdrop-blur-sm bg-black/40">
+    <Card className="p-6 shadow-lg backdrop-blur-sm bg-white/40 dark:bg-black/40">
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
           <label
             htmlFor="name"
-            className="block text-sm font-medium text-gray-200 items-center gap-2"
+            className="text-sm font-medium text-gray-700 dark:text-gray-200 flex items-center gap-2"
           >
             <User className="h-4 w-4" />
             Name
@@ -57,15 +57,16 @@ export default function ContactForm() {
           <Input
             id="name"
             name="name"
+            type="text"
             required
-            className="bg-gray-900/50 border-gray-800 focus:border-blue-500 text-white"
-            placeholder="Your name"
+            className="bg-white/50 dark:bg-gray-900/50 border-gray-300 dark:border-gray-700 focus:border-primary dark:focus:border-primary"
+            placeholder="Your Name"
           />
         </div>
         <div className="space-y-2">
           <label
             htmlFor="email"
-            className=" text-sm font-medium text-gray-200 flex items-center gap-2"
+            className="text-sm font-medium text-gray-700 dark:text-gray-200 flex items-center gap-2"
           >
             <Mail className="h-4 w-4" />
             Email
@@ -75,14 +76,14 @@ export default function ContactForm() {
             name="email"
             type="email"
             required
-            className="bg-gray-900/50 border-gray-800 focus:border-blue-500 text-white"
+            className="bg-white/50 dark:bg-gray-900/50 border-gray-300 dark:border-gray-700 focus:border-primary dark:focus:border-primary"
             placeholder="your@email.com"
           />
         </div>
         <div className="space-y-2">
           <label
             htmlFor="message"
-            className="text-sm font-medium text-gray-200 flex items-center gap-2"
+            className="text-sm font-medium text-gray-700 dark:text-gray-200 flex items-center gap-2"
           >
             <MessageSquare className="h-4 w-4" />
             Message
@@ -91,14 +92,14 @@ export default function ContactForm() {
             id="message"
             name="message"
             required
-            className="bg-gray-900/50 border-gray-800 focus:border-blue-500 text-white min-h-[120px]"
+            className="bg-white/50 dark:bg-gray-900/50 border-gray-300 dark:border-gray-700 focus:border-primary dark:focus:border-primary min-h-[120px]"
             placeholder="How can we help you?"
           />
         </div>
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 flex items-center justify-center gap-2"
+          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-all duration-200 flex items-center justify-center gap-2"
         >
           {isSubmitting ? (
             "Sending..."
@@ -111,5 +112,6 @@ export default function ContactForm() {
         </Button>
       </form>
     </Card>
-  );
+  )
 }
+
