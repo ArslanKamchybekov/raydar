@@ -13,24 +13,28 @@ import {
   Paintbrush,
   Settings,
   UploadCloud,
-  LucideIcon
+  LucideIcon,
+  Award,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { ReactNode, useState } from "react";
 import { Separator } from "@/components/ui/separator";
+import { useUser } from "@/utils/hook/useUser";
 
 interface NavItem {
   href: string;
   label: string;
   icon: LucideIcon;
   group?: string;
+  adminOnly?: boolean;
 }
 
 const navigationLinks: NavItem[] = [
   { href: "/dashboard/feed", label: "Feed", icon: HomeIcon, group: "main" },
   { href: "/dashboard/map", label: "Map", icon: Map, group: "main" },
   { href: "/dashboard/alerts", label: "Alerts", icon: Bell, group: "main" },
+  { href: "/dashboard/claims", label: "Claims", icon: Award, group: "main", adminOnly: true },
   { href: "/dashboard/upload-lost", label: "Upload", icon: UploadCloud, group: "actions" },
   { href: "/dashboard/upload-sketch", label: "Sketch", icon: Paintbrush, group: "actions" },
   { href: "/dashboard/settings", label: "Settings", icon: Settings, group: "system" },
@@ -42,31 +46,35 @@ interface DashboardTopNavProps {
 
 export default function DashboardTopNav({ children }: DashboardTopNavProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { user } = useUser();
+  const isAdmin = user?.role === 'admin';
 
   const renderNavigationLinks = () => {
     let currentGroup = "";
     
-    return navigationLinks.map((item, index) => {
-      const { href, label, icon: Icon, group = "" } = item;
-      const showSeparator = group !== currentGroup && index !== 0;
-      currentGroup = group;
-
-      return (
-        <div key={href}>
-          {showSeparator && <Separator className="my-2" />}
-          <Link href={href} onClick={() => setIsOpen(false)}>
-            <Button
-              variant="ghost"
-              className="w-full justify-start gap-2 px-2 h-10"
-            >
-              <Icon className="h-4 w-4 shrink-0" />
-              <span className="truncate">{label}</span>
-            </Button>
-          </Link>
-        </div>
-      );
-    });
-  };
+    return navigationLinks
+      .filter((item) => !item.adminOnly || isAdmin)
+      .map((item, index) => {
+        const { href, label, icon: Icon, group = "" } = item;
+        const showSeparator = group !== currentGroup && index !== 0;
+        currentGroup = group;
+  
+        return (
+          <div key={href}>
+            {showSeparator && <Separator className="my-2" />}
+            <Link href={href} onClick={() => setIsOpen(false)}>
+              <Button
+                variant="ghost"
+                className="w-full justify-start gap-2 px-2 h-10"
+              >
+                <Icon className="h-4 w-4 shrink-0" />
+                <span className="truncate">{label}</span>
+              </Button>
+            </Link>
+          </div>
+        );
+      });
+  };  
 
   return (
     <div className="flex flex-col min-h-screen">
