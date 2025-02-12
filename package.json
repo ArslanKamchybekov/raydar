@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
-    "build": "next build",
+    "build": "next build && npm run db:generate",
     "start": "next start",
     "lint": "next lint",
     "db:generate": "dotenv -e .env.local -- npx prisma generate",
@@ -12,7 +12,8 @@
     "db:studio": "dotenv -e .env.local -- npx prisma studio",
     "db:pull": "dotenv -e .env.local -- npx prisma db pull",
     "db:migrate": "dotenv -e .env.local -- npx prisma migrate dev",
-    "db:validate": "dotenv -e .env.local -- npx prisma validate"
+    "db:validate": "dotenv -e .env.local -- npx prisma validate",
+    "postinstall": "npm run db:generate"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.0.2",
