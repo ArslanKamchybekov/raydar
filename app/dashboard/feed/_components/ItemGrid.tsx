@@ -40,7 +40,7 @@ const ItemGrid: React.FC<ItemGridProps> = ({ items, isLoading, error, onItemClic
     )
   }
 
-  if (error || items.length === 0) {
+  if (error) {
     return <div className="text-center text-muted-foreground mt-8">No items found. Try adjusting your search.</div>
   }
 
