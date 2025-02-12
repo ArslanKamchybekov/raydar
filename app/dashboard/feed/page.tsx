@@ -61,7 +61,7 @@ const FeedPage = () => {
               <Loader2 className="animate-spin h-6 w-6 text-gray-500" />
               </div>
           ) : (
-            <>
+            <div className="flex flex-col gap-4">
               <SearchAndFilter items={items} setFilteredItems={setFilteredItems} />
 
               <ItemGrid
@@ -90,7 +90,7 @@ const FeedPage = () => {
                 onOpenChange={setIsClaimModalOpen}
                 item={selectedItem}
               />
-            </>
+            </div>
           )}
         </div>
       </div>
