@@ -12,7 +12,7 @@ interface ItemGridProps {
   onClaimClick: (item: Item) => void
 }
 
-const ItemGrid: React.FC<ItemGridProps> = ({ items, isLoading, error, onItemClick, onClaimClick }) => {
+const ItemGrid: React.FC<ItemGridProps> = ({ items, isLoading, onItemClick, onClaimClick }) => {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
@@ -38,10 +38,6 @@ const ItemGrid: React.FC<ItemGridProps> = ({ items, isLoading, error, onItemClic
         ))}
       </div>
     )
-  }
-
-  if (error) {
-    return <div className="text-center text-muted-foreground mt-8">No items found. Try adjusting your search.</div>
   }
 
   return (

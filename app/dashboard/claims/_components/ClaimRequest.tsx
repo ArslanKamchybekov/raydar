@@ -111,6 +111,11 @@ export function ClaimRequest({ claim }: { claim: Claim }) {
           </div>
         </div>
 
+        <div>
+          <h3 className="font-medium text-sm mb-2">Claim Message</h3>
+          <p className="p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">{claim.reason}</p>
+        </div>
+
         {status === "pending" && (
           <div>
             <h3 className="font-medium text-sm mb-2">Admin Notes</h3>

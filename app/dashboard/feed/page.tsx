@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getFoundItems } from "@/app/actions/foundItems";
 import { Item } from "@/types/types";
 import SearchAndFilter from "./_components/SearchAndFilter";
 import ItemGrid from "./_components/ItemGrid";
 import Pagination from "./_components/Pagination";
 import ItemDetailModal from "./_components/ItemDetailModal";
 import ClaimModal from "./_components/ClaimModal";
-import NavBar from "@/components/wrapper/navbar";
+import { useItems } from "@/utils/hook/useItem";
+import { Loader2 } from "lucide-react";
 
 const FeedPage = () => {
   const [items, setItems] = useState<Item[]>([]);
@@ -21,22 +21,15 @@ const FeedPage = () => {
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
   const itemsPerPage = 9;
 
-  useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        setIsLoading(true);
-        const data = await getFoundItems();
-        setItems(data);
-        setFilteredItems(data);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const { items: fetchedItems, isLoading: isItemsLoading, error: itemsError } = useItems();
 
-    fetchItems();
-  }, []);
+  useEffect(() => {
+    if (fetchedItems) {
+      setItems(fetchedItems);
+      setFilteredItems(fetchedItems);
+      setIsLoading(false);
+    }
+  }, [fetchedItems]);
 
   const handleItemClick = (item: Item) => {
     setSelectedItem(item);
@@ -51,6 +44,14 @@ const FeedPage = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+
+  if (isLoading || isItemsLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="animate-spin h-12 w-12 text-gray-500" />
+      </div>
+    );
+  }
 
   return (
     <>
