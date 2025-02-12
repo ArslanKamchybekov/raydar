@@ -1,29 +1,28 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { ClaimRequest } from "./ClaimRequest"
-import { Input } from "@/components/ui/input"
-import { useClaim } from "@/utils/hook/useClaim"
-import { Loader2 } from "lucide-react"
+import { useState } from "react";
+import { ClaimRequest } from "./ClaimRequest";
+import { Input } from "@/components/ui/input";
+import { useClaim } from "@/utils/hook/useClaim";
+import { Loader2 } from "lucide-react";
 
 export function ClaimsList() {
-  const [searchTerm, setSearchTerm] = useState("")    
-  
-  const { claims, isLoading } = useClaim()
+  const [searchTerm, setSearchTerm] = useState("");    
+  const { claims, isLoading } = useClaim();
 
   if (isLoading || !claims) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
       </div>
-    )
+    );
   }
 
   const filteredClaims = claims.filter(
     (claim) =>
       claim.user_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       claim.item_id.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  );
 
   return (
     <div className="space-y-4">
@@ -35,11 +34,14 @@ export function ClaimsList() {
         className="mb-4"
       />
       {filteredClaims.length > 0 ? (
-        filteredClaims.map((claim) => <ClaimRequest key={claim.id} claim={claim} />)
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {filteredClaims.map((claim) => (
+            <ClaimRequest key={claim.id} claim={claim} />
+          ))}
+        </div>
       ) : (
         <p className="text-center text-gray-500">No claims found.</p>
       )}
     </div>
-  )
+  );
 }
-
