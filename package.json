@@ -15,7 +15,7 @@
     "db:validate": "dotenv -e .env.local -- npx prisma validate",
     "postinstall": "npm run db:generate"
   },
-  "dependencies": {
+    "dependencies": {
     "@clerk/nextjs": "^6.0.2",
     "@clerk/themes": "^2.2.16",
     "@dnd-kit/core": "^6.1.0",
@@ -60,6 +60,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
+    "cross-env": "^7.0.3",
     "date-fns": "^3.6.0",
     "encoding": "^0.1.13",
     "framer-motion": "^11.1.9",
