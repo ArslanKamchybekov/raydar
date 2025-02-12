@@ -114,13 +114,8 @@ export default function Footer() {
                     <div className="mt-8 border-t pt-8">
                         <ul className="flex flex-wrap gap-4 text-xs sm:text-sm">
                             <li>
-                                <Link href="/terms" className="transition hover:opacity-75">
-                                    Terms & Conditions
-                                </Link>
-                            </li>
-                            <li>
                                 <Link href="/privacy" className="transition hover:opacity-75">
-                                    Privacy Policy
+                                    Privacy Policy & Terms
                                 </Link>
                             </li>
                             <li>
