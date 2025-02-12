@@ -1,15 +1,15 @@
-"use server"
+"use server";
 
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
 interface UserCreateProps {
-  full_name?: string
-  username?: string
-  emailAddress: string
-  image: string
-  subscription?: string
-  user_id: string
-  role?: string
+  full_name?: string;
+  username?: string;
+  emailAddress: string;
+  image: string;
+  subscription?: string;
+  user_id: string;
+  role?: string;
 }
 
 export async function userCreate({
@@ -32,14 +32,16 @@ export async function userCreate({
         user_id,
         role,
       },
-    })
+    });
 
-    return { data: user }
+    console.log(user);
+
+    return { data: user };
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error creating user:", error)
-      return { error: error.message }
+      console.error("Error creating user:", error);
+      return { error: error.message };
     }
-    return { error: "An unknown error occurred" }
+    return { error: "An unknown error occurred" };
   }
 }

@@ -9,21 +9,21 @@ export async function getFoundItems() {
   try {
     const items = await prisma.foundItem.findMany({
       orderBy: {
-        created_at: 'desc'
-      }
+        created_at: "desc",
+      },
     });
 
     const itemsWithImages = await Promise.all(
-      items.map(async (item) => {
+      items.map(async (item: { image: string }) => {
         const { data: imageUrl } = await supabase.storage
           .from("found_images")
           .getPublicUrl("/" + item.image + "." + "jpg");
-    
+
         const isValidUrl = await checkImageUrl(imageUrl.publicUrl);
-    
+
         return {
           ...item,
-          image: isValidUrl ? imageUrl.publicUrl : null
+          image: isValidUrl ? imageUrl.publicUrl : null,
         };
       })
     );
@@ -37,7 +37,7 @@ export async function getFoundItems() {
 
 async function checkImageUrl(url: string): Promise<boolean> {
   try {
-    const response = await fetch(url, { method: 'HEAD' });
+    const response = await fetch(url, { method: "HEAD" });
     return response.ok;
   } catch (error) {
     console.error("Error checking URL:", error);
@@ -56,13 +56,12 @@ export async function uploadFoundItem(
   material: string,
   weather: string,
   description: string,
-  keywords: string[],
+  keywords: string[]
 ) {
   const image = randomUUID();
   const fileExt = file.name.split(".").pop();
   const fileName = `${image}.${fileExt}`;
   try {
-
     // Upload image to Supabase storage
     const { data: storageData, error: storageError } = await supabase.storage
       .from("found_images")
@@ -114,7 +113,7 @@ export async function deleteFoundItem(id: string) {
     // First get the item to know the image ID
     const item = await prisma.foundItem.findUnique({
       where: { id },
-      select: { image: true }
+      select: { image: true },
     });
 
     if (!item) {
@@ -133,7 +132,7 @@ export async function deleteFoundItem(id: string) {
 
     // Delete the database record using Prisma
     await prisma.foundItem.delete({
-      where: { id }
+      where: { id },
     });
   } catch (error) {
     console.error("Error deleting found item:", error);
@@ -144,7 +143,7 @@ export async function deleteFoundItem(id: string) {
 export async function getFoundItem(id: string) {
   try {
     const item = await prisma.foundItem.findUnique({
-      where: { id }
+      where: { id },
     });
 
     if (!item) {

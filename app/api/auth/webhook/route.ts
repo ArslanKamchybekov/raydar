@@ -60,7 +60,7 @@ export async function POST(req: Request) {
           image: payload?.data?.profile_image_url,
           user_id: payload?.data?.id,
         });
-
+          
         return NextResponse.json({
           status: 200,
           message: "User info inserted",

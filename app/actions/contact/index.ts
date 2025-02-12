@@ -35,12 +35,12 @@ export async function sendEmail(data: EmailData) {
 
   try {
     const transporter = nodemailer.createTransport({
-      host: process.env.CONTACT_HOST,
-      port: 465,
-      secure: true, 
+      host: "smtp.zoho.com",
+      port: 587,
+      secure: false,
       auth: {
-        user: "contact@raydar.tech",
-        pass: "SparkHackWinner12?",
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
       },
     });
 
@@ -51,8 +51,9 @@ export async function sendEmail(data: EmailData) {
     });
 
     const mailOptions = {
-      from: primaryEmail.emailAddress,
-      to: process.env.CONTACT_EMAIL,
+      from: process.env.SMTP_USER,
+      replyTo: email,
+      to: process.env.SMTP_USER,
       subject: `New message from ${name}`,
       text: `Name: ${name}\nEmail: ${email}\n\nMessage: ${message}`,
       html: `<p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Message:</strong><br>${message}</p>`,
