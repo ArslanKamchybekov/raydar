@@ -21,6 +21,11 @@ export async function userCreate({
   user_id,
   role = "user",
 }: UserCreateProps) {
+  // check if email has @uic.edu
+  // if (!emailAddress.includes("@uic.edu")) {
+  //   throw new Error("Email must be a UIC email")
+  // }
+
   try {
     const user = await prisma.user.create({
       data: {
