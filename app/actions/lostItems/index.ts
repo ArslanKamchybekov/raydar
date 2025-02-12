@@ -1,4 +1,4 @@
-"use server"
+"use server";
 
 import { supabase } from "@/lib/supabase"
 import { prisma } from "@/lib/prisma"
@@ -12,10 +12,10 @@ export async function uploadLostItemSketch(file: File, description: string) {
     
     // Upload file to Supabase storage
     const { error } = await supabase.storage
-      .from('lost_images')
-      .upload(fileName, file)
+      .from("lost_images")
+      .upload(fileName, file);
 
-    if (error) throw error
+    if (error) throw error;
 
     const newLostItem = await prisma.lostItem.create({
       data: {
@@ -26,8 +26,8 @@ export async function uploadLostItemSketch(file: File, description: string) {
 
     return newLostItem
   } catch (error) {
-    console.error('Error uploading sketch:', error)
-    throw error
+    console.error("Error uploading sketch:", error);
+    throw error;
   }
 }
 
