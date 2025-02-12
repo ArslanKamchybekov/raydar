@@ -36,13 +36,13 @@ const SearchAndFilter: React.FC<SearchAndFilterProps> = ({ items, setFilteredIte
       result = result.filter((item: Item) => {
         const searchableFields = [
           item.description,
-          item.location_name,
+          item.location,
           item.category,
           ...(item.keywords || []),
           item.brand,
           item.material,
           item.size
-        ].filter(Boolean) // Remove null/undefined values
+        ].filter(Boolean)
 
         return searchableFields.some(field => 
           field?.toLowerCase().includes(searchLower)

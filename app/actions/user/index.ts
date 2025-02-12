@@ -1,21 +1,38 @@
 "use server"
 
-import { clerkClient } from "@/lib/clerk"
-import { ClerkUser } from "@/types/types"
+import { prisma } from "@/lib/prisma";
+import { currentUser } from "@clerk/nextjs/server";
 
-export async function getUserData(id: string): Promise<ClerkUser> {
-  try {
-    const user = await clerkClient.users.getUser(id)
-    return {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      emailAddress: user.emailAddresses[0]?.emailAddress,
-      profileImageUrl: user.imageUrl,
-    }
-  } catch (error) {
-    console.error("Error fetching user data:", error)
-    throw new Error("Failed to fetch user data")
-  }
+export async function getUserData(user_id: string) {
+    const user = await currentUser();
+    if (!user) throw new Error("User not found");
+    const userData = await prisma.user.findUnique({
+        where: { user_id: user_id },
+        select: {
+            id: true,
+            user_id: true,
+            full_name: true,
+            emailAddress: true,
+            image: true,
+            role: true,
+        },
+    });
+    return userData;
 }
 
+export async function getCurrentUserData() {
+    const user = await currentUser();
+    if (!user) throw new Error("User not found");
+    const userData = await prisma.user.findUnique({
+        where: { user_id: user.id },
+        select: {
+            id: true,
+            user_id: true,
+            full_name: true,
+            emailAddress: true,
+            image: true,
+            role: true,
+        },
+    });
+    return userData;
+}

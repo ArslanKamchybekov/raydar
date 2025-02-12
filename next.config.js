@@ -8,6 +8,6 @@ module.exports = {
     },
     // utsf.io
     images : {
-        domains : ['utfs.io', 'seo-heist.s3.amazonaws.com', 'ykyccstnnkxdmwembakk.supabase.co', 'img.clerk.com']
+        domains : ['utfs.io', 'seo-heist.s3.amazonaws.com', 'ykyccstnnkxdmwembakk.supabase.co', 'img.clerk.com', 'images.clerk.dev']
     },
   }

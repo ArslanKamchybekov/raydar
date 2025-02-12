@@ -1,23 +1,25 @@
 "use client"
 
 import { useState } from "react"
-import { ClaimItem } from "./Claim"
+import { ClaimRequest } from "./ClaimRequest"
 import { Input } from "@/components/ui/input"
-
-const mockClaims = [
-  { 
-    id: "id", 
-    user_id: "John Doe", 
-    item_id: "item_id",
-    date: "2025-02-10", 
-    status: "pending" as "pending" | "approved" | "rejected"
-  },
-]
+import { useClaim } from "@/utils/hook/useClaim"
+import { Loader2 } from "lucide-react"
 
 export function ClaimsList() {
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState("")    
+  
+  const { claims, isLoading } = useClaim()
 
-  const filteredClaims = mockClaims.filter(
+  if (isLoading || !claims) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+      </div>
+    )
+  }
+
+  const filteredClaims = claims.filter(
     (claim) =>
       claim.user_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       claim.item_id.toLowerCase().includes(searchTerm.toLowerCase())
@@ -33,9 +35,9 @@ export function ClaimsList() {
         className="mb-4"
       />
       {filteredClaims.length > 0 ? (
-        filteredClaims.map((claim) => <ClaimItem key={claim.id} claim={claim} />)
+        filteredClaims.map((claim) => <ClaimRequest key={claim.id} claim={claim} />)
       ) : (
-        <p className="text-center text-gray-500">No matching claims found.</p>
+        <p className="text-center text-gray-500">No claims found.</p>
       )}
     </div>
   )

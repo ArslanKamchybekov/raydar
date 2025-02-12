@@ -1,110 +1,96 @@
-'use server'
+"use server";
 
-import { supabase } from "@/lib/supabase";
+import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 
 export async function createAlert(
   category: string,
   location: string,
-  brand: string | null,
-  color: string | null,
-  size: string | null,
-  material: string | null,
-  weather: string | null,
+  brand: string,
+  color: string,
+  size: string,
+  material: string,
+  weather: string
 ) {
   const user = await currentUser();
   if (!user) {
     throw new Error("User not found");
   }
-  const { data, error } = await supabase
-    .from("alerts")
-    .insert([
-      {
-        userid: user.id,
-        category: category.toLowerCase(),
-        location: location.toLowerCase(),
-        brand: brand?.toLowerCase() || null,
-        color: color?.toLowerCase() || null,
-        size: size?.toLowerCase() || null,
-        material: material?.toLowerCase() || null,
-        weather: weather?.toLowerCase() || null,
-        enabled: true,
+
+  try {
+    const alert = await prisma.alert.create({
+      data: {
+        user_id: user.id,
+        category,
+        location,
+        brand: brand,
+        colors: color ? color.split(",") : [],
+        size: size,
+        material: material,
+        weather: weather,
       },
-    ]);
+    });
 
-  if (error) {
-    throw error;
+    return alert;
+  } catch (error) {
+    throw new Error("Failed to create alert: " + error);
   }
-
-  return data;
 }
 
 export async function deleteAlert(id: string) {
   const user = await currentUser();
-
   if (!user) {
     throw new Error("User not found");
   }
-  const { error } = await supabase
-    .from("alerts")
-    .delete()
-    .eq("userid", user.id)
-    .eq("id", id);
 
-  if (error) {
-    throw error;
+  try {
+    await prisma.alert.deleteMany({
+      where: {
+        id,
+        user_id: user.id,
+      },
+    });
+  } catch (error) {
+    throw new Error("Failed to delete alert: " + error);
   }
 }
 
 export async function getAlerts() {
   const user = await currentUser();
-
   if (!user) {
     throw new Error("User not found");
   }
-  const { data, error } = await supabase
-    .from("alerts")
-    .select("*")
-    .eq("userid", user.id);
 
-  if (error) {
-    throw error;
+  try {
+    return await prisma.alert.findMany({
+      where: { user_id: user.id },
+    });
+  } catch (error) {
+    throw new Error("Failed to fetch alerts: " + error);
   }
-
-  return data;
 }
 
 export async function toggleAlert(id: string) {
   const user = await currentUser();
-
   if (!user) {
     throw new Error("User not found");
   }
 
-  // Fetch the current state of the alert
-  const { data: alert, error: fetchError } = await supabase
-    .from("alerts")
-    .select("enabled")
-    .eq("userid", user.id)
-    .eq("id", id)
-    .single();
+  try {
+    const alert = await prisma.alert.findUnique({
+      where: { id },
+      select: { enabled: true },
+    });
 
-  if (fetchError || !alert) {
-    throw new Error("Failed to fetch alert");
+    if (!alert) {
+      throw new Error("Alert not found");
+    }
+
+    return await prisma.alert.update({
+      where: { id },
+      data: { enabled: !alert.enabled },
+    });
+  } catch (error) {
+    throw new Error("Failed to toggle alert: " + error);
   }
-
-  // Toggle the enabled state
-  const { data, error } = await supabase
-    .from("alerts")
-    .update({ enabled: !alert.enabled }) // Toggle the value
-    .eq("userid", user.id)
-    .eq("id", id);
-
-  if (error) {
-    throw error;
-  }
-
-  return data;
 }
-
-

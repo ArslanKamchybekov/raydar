@@ -7,24 +7,24 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/components/ui/use-toast"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Locations, Categories, Brands, Colors, Size, Materials, Weather } from "@/types/enums"
+import { Locations, Categories, Brands, Colors, Materials, Weather, Keywords } from "@/utils/constants"
+import { Size } from "@/types/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { uploadFoundItem } from "../../actions/foundItems"
 import { useUser } from "@clerk/nextjs"
 import Image from "next/image"
-import { keywords_list } from "@/constants/keywords"
 import KeywordSearch from "./_components/KeywordSearch"
 
 const LostItemUploadPage = () => {
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
-  const [locationName, setLocationName] = useState<Locations | "">("")
-  const [category, setCategory] = useState<Categories | "">("")
-  const [brand, setBrand] = useState<Brands | "">("")
-  const [colors, setColors] = useState<Colors[]>([])
-  const [size, setSize] = useState<Size | "">("")
-  const [material, setMaterial] = useState<Materials | "">("")
-  const [weatherFound, setWeatherFound] = useState<Weather | "">("")
+  const [location, setLocation] = useState<string>("")
+  const [category, setCategory] = useState<string>("")
+  const [brand, setBrand] = useState<string>("")
+  const [colors, setColors] = useState<string[]>([])
+  const [size, setSize] = useState<string>("")
+  const [material, setMaterial] = useState<string>("")
+  const [weather, setWeather] = useState<string>("")
   const [description, setDescription] = useState("")
   const [keywords, setKeywords] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -42,7 +42,7 @@ const LostItemUploadPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!file || !locationName || !category) {
+    if (!file || !location || !category) {
       toast({
         title: "Error",
         description: "Please fill in all required fields and upload an image.",
@@ -57,14 +57,14 @@ const LostItemUploadPage = () => {
       await uploadFoundItem(
         user.user?.id || "",
         file,
-        locationName as Locations,
-        category as Categories,
-        brand || null,
+        location,
+        category,
+        brand,
         colors,
-        size || null,
-        material || null,
-        weatherFound || null,
-        description || null,
+        size,
+        material,
+        weather,
+        description,
         keywords,
       )
 
@@ -76,13 +76,13 @@ const LostItemUploadPage = () => {
       // Reset form
       setFile(null)
       setPreview(null)
-      setLocationName("")
+      setLocation("")
       setCategory("")
       setBrand("")
       setColors([])
       setSize("")
       setMaterial("")
-      setWeatherFound("")
+      setWeather("")
       setDescription("")
       setKeywords([])
     } catch (error) {
@@ -126,29 +126,26 @@ const LostItemUploadPage = () => {
                 <div>
                   <h3 className="text-lg font-semibold mb-2">File Details</h3>
                   <p>
-                    <strong>Name:</strong> {file.name.toLowerCase()}
+                    <strong>Name:</strong> {file.name}
                   </p>
                   <p>
                     <strong>Size:</strong> {(file.size / 1024 / 1024).toFixed(2)} MB
                   </p>
                   <p>
-                    <strong>Type:</strong> {file.type.toLowerCase()}
+                    <strong>Type:</strong> {file.type}
                   </p>
                 </div>
               )}
               <div>
-                <Label htmlFor="locationName">Location</Label>
-                <Select
-                  value={locationName}
-                  onValueChange={(value) => setLocationName(value.toLowerCase() as Locations)}
-                >
+                <Label htmlFor="location">Location</Label>
+                <Select value={location} onValueChange={(value) => setLocation(value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select location" />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(Locations).map(([key, value]) => (
-                      <SelectItem key={key} value={key.toLowerCase()}>
-                        {value}
+                    {Locations.map((location) => (
+                      <SelectItem key={location.name} value={location.name}>
+                        {location.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -156,14 +153,14 @@ const LostItemUploadPage = () => {
               </div>
               <div>
                 <Label htmlFor="category">Category</Label>
-                <Select value={category} onValueChange={(value) => setCategory(value.toLowerCase() as Categories)}>
+                <Select value={category} onValueChange={(value) => setCategory(value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(Categories).map(([key, value]) => (
-                      <SelectItem key={key} value={key.toLowerCase()}>
-                        {value}
+                    {Categories.map((category) => (
+                      <SelectItem key={category} value={category}>
+                        {category}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -171,14 +168,14 @@ const LostItemUploadPage = () => {
               </div>
               <div>
                 <Label htmlFor="brand">Brand</Label>
-                <Select value={brand} onValueChange={(value) => setBrand(value.toLowerCase() as Brands)}>
+                <Select value={brand} onValueChange={(value) => setBrand(value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select brand" />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(Brands).map(([key, value]) => (
-                      <SelectItem key={key} value={key.toLowerCase()}>
-                        {value}
+                    {Brands.map((brand) => (
+                      <SelectItem key={brand} value={brand}>
+                        {brand}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -188,15 +185,15 @@ const LostItemUploadPage = () => {
                 <Label htmlFor="colors">Colors</Label>
                 <Select
                   value={colors.join(", ")}
-                  onValueChange={(value) => setColors(value.split(", ").map((color) => color.toLowerCase() as Colors))}
+                  onValueChange={(value) => setColors(value.split(", "))}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select colors" />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(Colors).map(([key, value]) => (
-                      <SelectItem key={key} value={key.toLowerCase()}>
-                        {value}
+                    {Colors.map((color) => (
+                      <SelectItem key={color} value={color}>
+                        {color}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -204,14 +201,14 @@ const LostItemUploadPage = () => {
               </div>
               <div>
                 <Label htmlFor="size">Size</Label>
-                <Select value={size} onValueChange={(value) => setSize(value.toLowerCase() as Size)}>
+                <Select value={size} onValueChange={(value) => setSize(value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select size" />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(Size).map(([key, value]) => (
-                      <SelectItem key={key} value={key.toLowerCase()}>
-                        {value}
+                    {Object.values(Size).map((size) => (
+                      <SelectItem key={size} value={size}>
+                        {size}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -219,29 +216,29 @@ const LostItemUploadPage = () => {
               </div>
               <div>
                 <Label htmlFor="material">Material</Label>
-                <Select value={material} onValueChange={(value) => setMaterial(value.toLowerCase() as Materials)}>
+                <Select value={material} onValueChange={(value) => setMaterial(value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select material" />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(Materials).map(([key, value]) => (
-                      <SelectItem key={key} value={key.toLowerCase()}>
-                        {value}
+                    {Materials.map((material) => (
+                      <SelectItem key={material} value={material}>
+                        {material}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
               <div>
-                <Label htmlFor="weatherFound">Weather Found</Label>
-                <Select value={weatherFound} onValueChange={(value) => setWeatherFound(value.toLowerCase() as Weather)}>
+                <Label htmlFor="weather">Weather Found</Label>
+                <Select value={weather} onValueChange={(value) => setWeather(value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select weather" />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(Weather).map(([key, value]) => (
-                      <SelectItem key={key} value={key.toLowerCase()}>
-                        {value}
+                    {Weather.map((weather) => (
+                      <SelectItem key={weather} value={weather}>
+                        {weather}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -252,7 +249,7 @@ const LostItemUploadPage = () => {
                 <Textarea
                   id="description"
                   value={description}
-                  onChange={(e) => setDescription(e.target.value.toLowerCase())}
+                  onChange={(e) => setDescription(e.target.value)}
                   placeholder="Provide any additional details about the item..."
                 />
               </div>
@@ -261,7 +258,7 @@ const LostItemUploadPage = () => {
                 <KeywordSearch
                   selectedKeywords={keywords}
                   setSelectedKeywords={setKeywords}
-                  availableKeywords={keywords_list}
+                  availableKeywords={Keywords}
                 />
               </div>
             </div>

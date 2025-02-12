@@ -1,33 +1,30 @@
 "use server"
 
 import { supabase } from "@/lib/supabase"
+import { prisma } from "@/lib/prisma"
 import { randomUUID } from "crypto"
 
 export async function uploadLostItemSketch(file: File, description: string) {
   try {
-    const imageId = randomUUID()
+    const image = randomUUID()
     const fileExt = file.name.split('.').pop()
-    const fileName = `${imageId}.${fileExt}`
+    const fileName = `${image}.${fileExt}`
+    
+    // Upload file to Supabase storage
     const { error } = await supabase.storage
       .from('lost_images')
       .upload(fileName, file)
 
     if (error) throw error
 
-    // Now insert the record into the database
-    const { data: insertData, error: insertError } = await supabase
-      .from('lost_items')
-      .insert([
-        {
-          image_id: imageId,
-          description: description,
-        },
-      ])
-      .select()
+    const newLostItem = await prisma.lostItem.create({
+      data: {
+        image: image,
+        description: description,
+      },
+    })
 
-    if (insertError) throw insertError
-
-    return insertData[0]
+    return newLostItem
   } catch (error) {
     console.error('Error uploading sketch:', error)
     throw error
@@ -35,12 +32,11 @@ export async function uploadLostItemSketch(file: File, description: string) {
 }
 
 export async function getLostItems() {
-  const { data, error } = await supabase
-    .from('lost_items')
-    .select('*')
-    .order('created_at', { ascending: false })
+  const lostItems = await prisma.lostItem.findMany({
+    orderBy: {
+      created_at: 'desc',
+    },
+  })
 
-  if (error) throw error
-
-  return data
+  return lostItems
 }

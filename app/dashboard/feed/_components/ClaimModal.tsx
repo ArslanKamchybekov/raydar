@@ -6,9 +6,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { getUserData } from "@/app/actions/user"
-import type { ClerkUser, Item } from "@/types/types"
+import type { User, Item } from "@/types/types"
 import { Loader2, Upload, X } from "lucide-react"
+import { createClaim } from "@/app/actions/claims"
+import { ClaimStatus } from "@/types/types"
+import { useUser } from "@/utils/hook/useUser"
 
 interface ClaimModalProps {
   isOpen: boolean
@@ -16,57 +18,46 @@ interface ClaimModalProps {
   item: Item | null
 }
 
-const ClaimModal: React.FC<ClaimModalProps> = ({ isOpen, onOpenChange, item }) => {
-  const [userData, setUserData] = useState<ClerkUser | null>(null)
+const ClaimModal = ({ isOpen, onOpenChange, item }: ClaimModalProps) => {
+  const [userData, setUserData] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [claimReason, setClaimReason] = useState("")
-  const [contactInfo, setContactInfo] = useState("")
-  const [images, setImages] = useState<File[]>([])
-  const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([])
+  const [image, setImage] = useState<File | null>(null)
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null)
+
+  const { user } = useUser(item?.user_id || "")
 
   useEffect(() => {
-    if (item?.user_id) {
-      const fetchUserData = async () => {
-        try {
-          setIsLoading(true)
-          const data = await getUserData(item.user_id)
-          setUserData(data)
-        } catch (error) {
-          console.error("Error fetching user data:", error)
-        } finally {
-          setIsLoading(false)
-        }
-      }
-      fetchUserData()
+    setIsLoading(true)
+    if (user) {
+      setUserData(user)
+      setIsLoading(false)
     }
-  }, [item])
-
+  }, [user])
+  
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || [])
-    const newImages = [...images, ...files].slice(0, 5) // Limit to 5 images
-    setImages(newImages)
-
-    // Create preview URLs for the images
-    const newPreviewUrls = files.map(file => URL.createObjectURL(file))
-    setImagePreviewUrls(prev => [...prev, ...newPreviewUrls].slice(0, 5))
+    const file = e.target.files?.[0]
+    if (file) {
+      setImage(file)
+      setImagePreviewUrl(URL.createObjectURL(file))
+    }
   }
 
-  const removeImage = (index: number) => {
-    const newImages = images.filter((_, i) => i !== index)
-    const newPreviewUrls = imagePreviewUrls.filter((_, i) => i !== index)
-    setImages(newImages)
-    setImagePreviewUrls(newPreviewUrls)
+  const removeImage = () => {
+    setImage(null)
+    setImagePreviewUrl(null)
   }
 
   const handleSubmitClaim = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Implement claim submission logic with images
-    console.log("Claim submitted:", { 
-      itemId: item?.id, 
-      claimReason, 
-      contactInfo,
-      images 
-    })
+    
+    await createClaim(
+      item?.id || "",
+      claimReason,
+      image,
+      ClaimStatus.PENDING
+    )
+
     onOpenChange(false)
   }
 
@@ -94,7 +85,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({ isOpen, onOpenChange, item }) =
             ) : userData ? (
               <div className="flex items-center space-x-4">
                 <Image
-                  src={userData.profileImageUrl || "/logo.png"}
+                  src={userData.image || "/logo.png"}
                   alt="User Avatar"
                   width={50}
                   height={50}
@@ -102,7 +93,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({ isOpen, onOpenChange, item }) =
                 />
                 <div>
                   <p className="font-semibold">
-                    {userData.firstName} {userData.lastName}
+                    {userData.full_name}
                   </p>
                   <p className="text-sm text-muted-foreground">{userData.emailAddress}</p>
                 </div>
@@ -125,58 +116,40 @@ const ClaimModal: React.FC<ClaimModalProps> = ({ isOpen, onOpenChange, item }) =
               />
             </div>
             <div>
-              <label htmlFor="contactInfo" className="block text-sm font-medium text-gray-700">
-                Contact Information
-              </label>
-              <Input
-                id="contactInfo"
-                type="text"
-                value={contactInfo}
-                onChange={(e) => setContactInfo(e.target.value)}
-                placeholder="Phone number or email address"
-                required
-              />
-            </div>
-            <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Upload Evidence (Optional)
               </label>
               <div className="space-y-2">
-                {imagePreviewUrls.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {imagePreviewUrls.map((url, index) => (
-                      <div key={index} className="relative">
-                        <Image
-                          src={url}
-                          alt={`Preview ${index + 1}`}
-                          width={80}
-                          height={80}
-                          className="rounded-md object-cover"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removeImage(index)}
-                          className="absolute -top-2 -right-2 bg-red-500 rounded-full p-1"
-                        >
-                          <X className="h-4 w-4 text-white" />
-                        </button>
-                      </div>
-                    ))}
+                {imagePreviewUrl && (
+                  <div className="relative">
+                    <Image
+                      src={imagePreviewUrl}
+                      alt="Preview"
+                      width={100}
+                      height={100}
+                      className="rounded-md object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="absolute -top-2 -right-2 bg-gray-500 rounded-full p-1"
+                    >
+                      <X className="h-4 w-4 text-white" />
+                    </button>
                   </div>
                 )}
-                {images.length < 5 && (
+                {!image && (
                   <div className="flex items-center justify-center w-full">
                     <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
                         <Upload className="h-8 w-8 text-gray-500 mb-2" />
-                        <p className="text-sm text-gray-500">Upload evidence images</p>
-                        <p className="text-xs text-gray-500">PNG, JPG up to 5MB (max 5 images)</p>
+                        <p className="text-sm text-gray-500">Upload an evidence image</p>
+                        <p className="text-xs text-gray-500">PNG, JPG up to 5MB</p>
                       </div>
                       <Input
                         type="file"
                         className="hidden"
                         accept="image/*"
-                        multiple
                         onChange={handleImageUpload}
                       />
                     </label>

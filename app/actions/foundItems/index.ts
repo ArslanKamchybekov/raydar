@@ -1,79 +1,69 @@
 "use server";
 
 import { supabase } from "@/lib/supabase";
-import {
-  Locations,
-  Categories,
-  Brands,
-  Colors,
-  Size,
-  Materials,
-  Weather,
-} from "@/types/enums";
-import { randomUUID } from "crypto";
+import { prisma } from "@/lib/prisma";
 import { checkMatch } from "../notifications";
+import { randomUUID } from "crypto";
 
 export async function getFoundItems() {
-  const { data, error } = await supabase
-    .from("found_items")
-    .select("*")
-    .order("created_at", { ascending: false });
+  try {
+    const items = await prisma.foundItem.findMany({
+      orderBy: {
+        created_at: 'desc'
+      }
+    });
 
-  if (error) {
+    const itemsWithImages = await Promise.all(
+      items.map(async (item) => {
+        const { data: imageUrl } = await supabase.storage
+          .from("found_images")
+          .getPublicUrl("/" + item.image + "." + "jpg");
+    
+        const isValidUrl = await checkImageUrl(imageUrl.publicUrl);
+    
+        return {
+          ...item,
+          image: isValidUrl ? imageUrl.publicUrl : null
+        };
+      })
+    );
+
+    return itemsWithImages;
+  } catch (error) {
+    console.error("Error fetching found items:", error);
     throw error;
   }
-
-  // Get signed URLs for all images
-  const itemsWithImages = await Promise.all(
-    data.map(async (item) => {
-      const { data: imageUrl } = await supabase.storage
-        .from("found_images")
-        .getPublicUrl("/" + item.image_id + "." + "jpg");
-  
-      // Check if the image URL is valid by making an HTTP request
-      const isValidUrl = await checkImageUrl(imageUrl.publicUrl);
-  
-      return {
-        ...item,
-        image_url: isValidUrl ? imageUrl.publicUrl : null
-      };
-    })
-  );
-
-  return itemsWithImages;
 }
 
-// Function to check if the URL is valid
 async function checkImageUrl(url: string): Promise<boolean> {
   try {
     const response = await fetch(url, { method: 'HEAD' });
-    return response.ok; // Return true if the status is 2xx
+    return response.ok;
   } catch (error) {
     console.error("Error checking URL:", error);
-    return false; // Return false if the URL check fails
+    return false;
   }
 }
-
 
 export async function uploadFoundItem(
   user_id: string,
   file: File,
-  location_name: Locations,
-  category: Categories,
-  brand: Brands | null,
-  colors: Colors[],
-  size: Size | null,
-  material: Materials | null,
-  weather_found: Weather | null,
-  description: string | null,
-  keywords: string[]
+  location: string,
+  category: string,
+  brand: string,
+  colors: string[],
+  size: string,
+  material: string,
+  weather: string,
+  description: string,
+  keywords: string[],
 ) {
+  const image = randomUUID();
+  const fileExt = file.name.split(".").pop();
+  const fileName = `${image}.${fileExt}`;
   try {
-    const imageId = randomUUID();
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${imageId}.${fileExt}`;
 
-    // Upload image to storage
+    // Upload image to Supabase storage
     const { data: storageData, error: storageError } = await supabase.storage
       .from("found_images")
       .upload(fileName, file);
@@ -85,99 +75,95 @@ export async function uploadFoundItem(
       .from("found_images")
       .getPublicUrl(fileName);
 
-    // Create database record
-    const { data: insertData, error: insertError } = await supabase
-      .from("found_items")
-      .insert([
-        {
-          user_id: user_id,
-          image_id: imageId,
-          location_name: location_name.toLowerCase(),
-          category: category.toLowerCase(),
-          brand: brand?.toLowerCase() || null,
-          colors: colors.map((c) => c.toLowerCase()),
-          size: size?.toLowerCase() || null,
-          material: material?.toLowerCase() || null,
-          weather_found: weather_found?.toLowerCase() || null,
-          description: description?.toLowerCase() || null,
-          keywords: keywords.map((k) => k.toLowerCase()),
-        },
-      ])
-      .select();
+    // Create database record using Prisma
+    const item = await prisma.foundItem.create({
+      data: {
+        user_id,
+        image,
+        title: file.name,
+        location: location,
+        category: category,
+        brand: brand,
+        colors: colors,
+        size: size,
+        material: material,
+        weather: weather,
+        description: description,
+        keywords: keywords,
+      },
+    });
 
-    if (insertError) {
-      // If database insert fails, try to clean up the uploaded file
-      await supabase.storage.from("found_images").remove([fileName]);
-      throw insertError;
-    }
-
-    // Notify users of any matching alerts
-    await checkMatch(insertData[0]);
+    await checkMatch(item);
 
     return {
-      ...insertData[0],
-      image_url: urlData.publicUrl,
+      ...item,
+      image: urlData.publicUrl,
     };
   } catch (error) {
     console.error("Error uploading found item:", error);
+    // If there was an error, try to clean up the uploaded file
+    if (image) {
+      await supabase.storage.from("found_images").remove([fileName]);
+    }
     throw error;
   }
 }
 
-export async function deleteFoundItem(id: number) {
-  // First get the item to know the image ID
-  const { data: item, error: fetchError } = await supabase
-    .from("found_items")
-    .select("image_id")
-    .eq("id", id)
-    .single();
+export async function deleteFoundItem(id: string) {
+  try {
+    // First get the item to know the image ID
+    const item = await prisma.foundItem.findUnique({
+      where: { id },
+      select: { image: true }
+    });
 
-  if (fetchError) {
-    throw fetchError;
-  }
+    if (!item) {
+      throw new Error("Item not found");
+    }
 
-  // Delete the image from storage
-  const fileName = `${item.image_id}.${item.image_id.split(".").pop()}`;
-  const { error: storageError } = await supabase.storage
-    .from("found_images")
-    .remove([fileName]);
+    // Delete the image from Supabase storage
+    const fileName = `${item.image}.jpg`;
+    const { error: storageError } = await supabase.storage
+      .from("found_images")
+      .remove([fileName]);
 
-  if (storageError) {
-    throw storageError;
-  }
+    if (storageError) {
+      throw storageError;
+    }
 
-  // Delete the database record
-  const { error: deleteError } = await supabase
-    .from("found_items")
-    .delete()
-    .eq("id", id);
-
-  if (deleteError) {
-    throw deleteError;
+    // Delete the database record using Prisma
+    await prisma.foundItem.delete({
+      where: { id }
+    });
+  } catch (error) {
+    console.error("Error deleting found item:", error);
+    throw error;
   }
 }
 
-export async function getFoundItem(id: number) {
-  const { data, error } = await supabase
-    .from("found_items")
-    .select("*")
-    .eq("id", id)
-    .single();
+export async function getFoundItem(id: string) {
+  try {
+    const item = await prisma.foundItem.findUnique({
+      where: { id }
+    });
 
-  if (error) {
+    if (!item) {
+      throw new Error("Item not found");
+    }
+
+    // Get the image URL from Supabase storage
+    const { data: imageUrl } = await supabase.storage
+      .from("found_images")
+      .getPublicUrl(`${item.image}.jpg`);
+
+    const isValidUrl = await checkImageUrl(imageUrl.publicUrl);
+
+    return {
+      ...item,
+      image: isValidUrl ? imageUrl.publicUrl : null,
+    };
+  } catch (error) {
+    console.error("Error fetching found item:", error);
     throw error;
   }
-
-  // Get the image URL
-  const { data: imageUrl } = await supabase.storage
-    .from("found_images")
-    .getPublicUrl(`${data.image_id}.${data.image_id.split(".").pop()}`);
-
-  const isValidUrl = await checkImageUrl(imageUrl.publicUrl);
-
-  return {
-    ...data,
-    image_url: isValidUrl ? imageUrl.publicUrl : null,
-  };
-
 }

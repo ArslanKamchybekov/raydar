@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Trash2, Bell, Plus, Loader2 } from 'lucide-react';
-import { Categories, Locations, Brands, Colors, Size, Materials, Weather } from '@/types/enums';
+import { Categories, Locations, Brands, Colors, Materials, Weather } from '@/utils/constants';
 import { createAlert, deleteAlert, toggleAlert, getAlerts } from "@/app/actions/alerts";
 import { toast } from '@/components/ui/use-toast';
 import { Alert } from '@/types/types';
@@ -15,14 +15,17 @@ const AlertsPage = () => {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [newAlert, setNewAlert] = useState<any>({
-    category: '' as keyof typeof Categories,
-    location: '' as keyof typeof Locations,
-    brand: '' as keyof typeof Brands,
-    color: '' as keyof typeof Colors,
-    size: '' as keyof typeof Size,
-    material: '' as keyof typeof Materials,
-    weather: '' as keyof typeof Weather
+  const [newAlert, setNewAlert] = useState<Alert>({
+    id: '',
+    user_id: '',
+    enabled: false,
+    category: '',
+    location: '',
+    brand: '',
+    colors: [],
+    size: '',
+    material: '',
+    weather: '',
   });
 
   useEffect(() => {
@@ -45,26 +48,40 @@ const AlertsPage = () => {
   };
 
   const handleAddAlert = async () => {
+    if (!newAlert.category || !newAlert.location) {
+      toast({
+        title: "Error",
+        description: "Category and Location are required",
+        variant: "destructive"
+      });
+      return;
+    }
+
     try {
       setIsSubmitting(true);
+      const colorsString = Array.isArray(newAlert.colors) ? newAlert.colors.join(',') : newAlert.colors || '';
+      
       await createAlert(
         newAlert.category,
         newAlert.location,
-        newAlert.brand || null,
-        newAlert.color || null,
-        newAlert.size || null,
-        newAlert.material || null,
-        newAlert.weather || null
+        newAlert.brand || '',
+        colorsString,
+        newAlert.size || '',
+        newAlert.material || '',
+        newAlert.weather || ''
       );
       
       setNewAlert({
-        category: '' as keyof typeof Categories,
-        location: '' as keyof typeof Locations,
+        id: '',
+        user_id: '',
+        enabled: false,
+        category: '',
+        location: '',
         brand: '',
-        color: '',
+        colors: [],
         size: '',
         material: '',
-        weather: ''
+        weather: '',
       });
       
       toast({
@@ -74,6 +91,7 @@ const AlertsPage = () => {
       
       fetchAlerts();
     } catch (error) {
+      console.error("Error creating alert:", error);
       toast({
         title: "Error",
         description: "Failed to create alert",
@@ -114,20 +132,19 @@ const AlertsPage = () => {
     }
   };
 
-  const enumTypes = [
-    { enum: Categories, key: 'category', label: 'Category', required: true },
-    { enum: Locations, key: 'location', label: 'Location', required: true },
-    { enum: Brands, key: 'brand', label: 'Brand', required: false },
-    { enum: Colors, key: 'color', label: 'Color', required: false },
-    { enum: Size, key: 'size', label: 'Size', required: false },
-    { enum: Materials, key: 'material', label: 'Material', required: false },
-    { enum: Weather, key: 'weather', label: 'Weather', required: false }
+  const selectFields = [
+    { options: Categories, key: 'category', label: 'Category', required: true },
+    { options: Locations.map(location => location.name), key: 'location', label: 'Location', required: true },
+    { options: Brands, key: 'brand', label: 'Brand', required: false },
+    { options: Colors, key: 'colors', label: 'Color', required: false },
+    { options: Materials, key: 'material', label: 'Material', required: false },
+    { options: Weather, key: 'weather', label: 'Weather', required: false }
   ];
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+        <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
   }
@@ -150,19 +167,22 @@ const AlertsPage = () => {
             </div>
           </CardHeader>
           <CardContent className="grid grid-cols-2 gap-4">
-            {enumTypes.map(({ enum: enumType, key, label, required }) => (
+            {selectFields.map(({ options, key, label, required }) => (
               <Select
                 key={key}
-                value={newAlert[key]}
+                value={newAlert[key as keyof Alert]?.toString() || ''}
                 onValueChange={(value) => 
-                  setNewAlert({ ...newAlert, [key]: value })}
+                  setNewAlert(prev => ({
+                    ...prev,
+                    [key]: key === 'colors' ? [value] : value
+                  }))}
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder={`${label}${required ? ' *' : ''}`} />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.entries(enumType).map(([enumKey, value]) => (
-                    <SelectItem key={enumKey} value={enumKey}>
+                  {options.map((value) => (
+                    <SelectItem key={value} value={value}>
                       {value}
                     </SelectItem>
                   ))}
@@ -217,16 +237,13 @@ const AlertsPage = () => {
                           {alert.category}
                         </p>
                         <p className="text-sm text-gray-600">
-                          {alert.location.toUpperCase()}
+                          {alert.location}
                         </p>
                         {alert.brand && (
                           <p className="text-sm text-gray-600">Brand: {alert.brand}</p>
                         )}
-                        {alert.color && (
-                          <p className="text-sm text-gray-600">Color: {alert.color}</p>
-                        )}
-                        {alert.size && (
-                          <p className="text-sm text-gray-600">Size: {alert.size}</p>
+                        {alert.colors && alert.colors.length > 0 && (
+                          <p className="text-sm text-gray-600">Color: {Array.isArray(alert.colors) ? alert.colors.join(', ') : alert.colors}</p>
                         )}
                         {alert.material && (
                           <p className="text-sm text-gray-600">Material: {alert.material}</p>

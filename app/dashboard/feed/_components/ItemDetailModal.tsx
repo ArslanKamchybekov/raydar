@@ -21,10 +21,10 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({ isOpen, onOpenChange,
           </VisuallyHidden>
         </DialogHeader>
         <div className="space-y-6">
-          {item.image_url && (
+          {item.image && (
             <div className="w-full">
               <Image
-                src={item.image_url || "/placeholder.svg"}
+                src={item.image || "/placeholder.svg"}
                 alt={item.description || "Found item"}
                 width={500}
                 height={500}
@@ -36,7 +36,7 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({ isOpen, onOpenChange,
           <div className="space-y-4 text-sm sm:text-base">
             <div>
               <h3 className="font-semibold">Location</h3>
-              <p>{item.location_name}</p>
+              <p>{item.location}</p>
             </div>
             {item.description && (
               <div>
@@ -68,10 +68,10 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({ isOpen, onOpenChange,
                 <p>{item.material}</p>
               </div>
             )}
-            {item.weather_found && (
+            {item.weather && (
               <div>
                 <h3 className="font-semibold">Weather When Found</h3>
-                <p>{item.weather_found}</p>
+                <p>{item.weather}</p>
               </div>
             )}
             {item.keywords?.length > 0 && (

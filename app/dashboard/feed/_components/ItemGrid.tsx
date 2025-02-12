@@ -2,7 +2,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import type { Item } from "@/types/types"
-import type React from "react" // Import React
+import type React from "react"
 
 interface ItemGridProps {
   items: Item[]
@@ -40,11 +40,7 @@ const ItemGrid: React.FC<ItemGridProps> = ({ items, isLoading, error, onItemClic
     )
   }
 
-  if (error) {
-    return <div className="text-center text-red-500 mt-8">Error: {error}</div>
-  }
-
-  if (items.length === 0) {
+  if (error || items.length === 0) {
     return <div className="text-center text-muted-foreground mt-8">No items found. Try adjusting your search.</div>
   }
 
@@ -59,14 +55,14 @@ const ItemGrid: React.FC<ItemGridProps> = ({ items, isLoading, error, onItemClic
           </CardHeader>
           <CardContent>
             <Image
-              src={item.image_url || "/logo.png"}
+              src={item.image || "/logo.png"}
               alt={item.description || "Found item"}
               width={500}
               height={500}
               className="w-full h-48 object-cover rounded-md mb-4"
             />
             <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">Location: {item.location_name}</p>
+              <p className="text-sm text-muted-foreground">Location: {item.location}</p>
               {item.description && <p className="text-sm line-clamp-2">{item.description}</p>}
               {item.colors && item.colors.length > 0 && <p className="text-sm">Colors: {item.colors.join(", ")}</p>}
               {item.brand && <p className="text-sm">Brand: {item.brand}</p>}

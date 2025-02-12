@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id           String      @id @default(cuid())
+  user_id      String      @unique
+  full_name    String?
+  username     String?
+  role         String      @default("user")
+  emailAddress String
+  image        String
+  subscription String?
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @updatedAt
+  alerts       Alert[]
+  claims       Claim[]
+  items        FoundItem[]
+
+  @@index([user_id])
+}
+
+model FoundItem {
+  id          String   @id @default(cuid())
+  user_id     String
+  title       String
+  description String
+  image       String
+  claimed     Boolean  @default(false)
+  keywords    String[]
+  category    String
+  location    String
+  brand       String
+  colors      String[]
+  size        String
+  material    String
+  weather     String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  claims      Claim[]
+  user        User     @relation(fields: [user_id], references: [user_id])
+
+  @@index([user_id])
+  @@index([category])
+  @@index([location])
+}
+
+model Alert {
+  id         String   @id @default(cuid())
+  user_id    String
+  category   String
+  location   String
+  brand      String
+  size       String
+  material   String
+  weather    String
+  colors     String[]
+  keywords   String[]
+  enabled    Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user       User     @relation(fields: [user_id], references: [user_id])
+
+  @@index([user_id])
+  @@index([category])
+  @@index([location])
+}
+
+model Claim {
+  id         String      @id @default(cuid())
+  user_id    String
+  item_id    String
+  reason     String
+  image      String?
+  status     ClaimStatus @default(pending)
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+  notes      String?
+  item       FoundItem   @relation(fields: [item_id], references: [id])
+  user       User        @relation(fields: [user_id], references: [user_id])
+
+  @@index([user_id])
+  @@index([item_id])
+  @@index([status])
+}
+
+model LostItem {
+  id          String   @id @default(cuid())
+  image       String
+  description String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+enum ClaimStatus {
+  pending
+  approved
+  rejected
+}

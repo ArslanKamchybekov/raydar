@@ -19,7 +19,7 @@ const ItemPage = () => {
     const fetchItem = async () => {
       try {
         setIsLoading(true);
-        const data = await getFoundItem(Number(id)); // Use the getFoundItem action to fetch the specific item
+        const data = await getFoundItem(Array.isArray(id) ? id[0] : id); // Ensure id is a string
         setItem(data);
       } catch (err: any) {
         setError("Error fetching item");
@@ -53,7 +53,7 @@ const ItemPage = () => {
             </CardHeader>
             <CardContent>
               <Image
-                src={item.image_url || "/logo.png"}
+                src={item.image || "/logo.png"}
                 alt={item.description || "Found item"}
                 width={500}
                 height={500}

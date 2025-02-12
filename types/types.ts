@@ -1,39 +1,43 @@
-import { Brands, Categories, Colors, Locations, Materials, Size, Weather } from "./enums";
-
 export enum Threshold {
     LOW = 0.3,
     MEDIUM = 0.5,
     HIGH = 0.7,
 }
 
+export enum Size {
+    XS = "XS",
+    S = "S",
+    M = "M",
+    L = "L",
+    XL = "XL",
+    XXL = "XXL",
+}
+
+export enum ClaimStatus {
+    PENDING = "pending",
+    APPROVED = "approved",
+    REJECTED = "rejected",
+}
+
 export interface User {
     id: string;
     user_id: string;
-    first_name: string | null;
-    last_name: string | null;
-    emailAddress: string | null;
-    profile_image_url: string;
-    subscription: string;
-}
-
-export interface ClerkUser {
-    id: string;
-    firstName: string | null;
-    lastName: string | null;
-    emailAddress: string | null;
-    profileImageUrl: string;
+    full_name: string | null;
+    emailAddress: string;
+    image: string;
+    role: string;
 }
 
 export interface Alert {
     id: string;
-    userid: string;
-    category: keyof typeof Categories;
-    location: keyof typeof Locations;
-    brand: keyof typeof Brands | null;
-    color: keyof typeof Colors | null;
-    size: keyof typeof Size | null;
-    material: keyof typeof Materials | null;
-    weather: keyof typeof Weather | null;
+    user_id: string;
+    category: string
+    location: string
+    colors: string[] | null;
+    brand: string | null;
+    material: string | null;
+    weather: string | null;
+    size: string | null;
     enabled: boolean;
 }
 
@@ -56,27 +60,29 @@ export interface RelevantItem {
 
 export interface Item {
     id: string;
-    user_id: string; // user_id of the person who uploaded the item
+    user_id: string;
     title: string;
     description: string;
-    image_url: string;
+    image: string | null;
     claimed: boolean;
     keywords: string[];
     category: string;
-    location_name: string;
+    location: string;
     brand: string | null;
     colors: string[];
     size: string | null;
     material: string | null;
-    weather_found: string | null;
-    created_at: string;
+    weather: string | null;
+    created_at: Date;
 };
 
 export interface Claim {
     id: string;
     user_id: string
     item_id: string;
-    date: string
+    reason: string;
+    image: string | null;
     status: "pending" | "approved" | "rejected";
+    created_at: Date;
 }
   

@@ -6,13 +6,10 @@ import { NextResponse } from "next/server";
 import { Webhook } from "svix";
 
 export async function POST(req: Request) {
-  // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
   const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
 
   if (!WEBHOOK_SECRET) {
-    throw new Error(
-      "Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local"
-    );
+    throw new Error("Missing Clerk Webhook Secret");
   }
 
   // Get the headers
@@ -53,21 +50,16 @@ export async function POST(req: Request) {
 
   const eventType = evt.type;
 
-  console.log("🔹 Webhook received:", JSON.stringify(payload, null, 2));
-  console.log("🔹 Headers:", JSON.stringify(headerPayload, null, 2));
-
   switch (eventType) {
     case "user.created":
       try {
         await userCreate({
-          email: payload?.data?.email_addresses?.[0]?.email_address,
-          first_name: payload?.data?.first_name,
-          last_name: payload?.data?.last_name,
-          profile_image_url: payload?.data?.profile_image_url,
+          emailAddress: payload?.data?.email_addresses?.[0]?.email_address,
+          full_name: payload?.data?.first_name + " " +payload?.data?.last_name,
+          username: payload?.data?.username,
+          image: payload?.data?.profile_image_url,
           user_id: payload?.data?.id,
         });
-
-        console.log("🔹 User info inserted")
 
         return NextResponse.json({
           status: 200,

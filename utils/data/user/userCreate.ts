@@ -1,52 +1,45 @@
-"server only"
+"use server"
 
-import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/ssr";
-import { userCreateProps } from "@/utils/types";
+import { prisma } from "@/lib/prisma"
 
-export const userCreate = async ({
-  email,
-  first_name,
-  last_name,
-  profile_image_url,
+interface UserCreateProps {
+  full_name?: string
+  username?: string
+  emailAddress: string
+  image: string
+  subscription?: string
+  user_id: string
+  role?: string
+}
+
+export async function userCreate({
+  full_name,
+  username,
+  emailAddress,
+  image,
+  subscription,
   user_id,
-}: userCreateProps) => {
-  // check that email is @uic.edu
-  // if (!email?.endsWith("@uic.edu")) {
-  //   throw new Error("Email must be a UIC email");
-  // }
-
-  const cookieStore = await cookies();
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
-        },
-      },
-    }
-  );
-
+  role = "user",
+}: UserCreateProps) {
   try {
-    const { data, error } = await supabase
-      .from("user")
-      .insert([
-        {
-          email,
-          first_name,
-          last_name,
-          profile_image_url,
-          user_id,
-        },
-      ])
-      .select();
+    const user = await prisma.user.create({
+      data: {
+        emailAddress,
+        full_name: full_name ?? null,
+        username: username ?? null,
+        image,
+        subscription: subscription ?? null,
+        user_id,
+        role,
+      },
+    })
 
-    if (error?.code) return error;
-    return data;
-  } catch (error: any) {
-    throw new Error(error.message);
+    return { data: user }
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error creating user:", error)
+      return { error: error.message }
+    }
+    return { error: "An unknown error occurred" }
   }
-};
+}

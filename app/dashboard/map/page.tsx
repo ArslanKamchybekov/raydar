@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
-import { defaultLocation, locations } from "constants/locations";
+import { defaultLocation, Locations as locations } from "@/utils/constants";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getFoundItems } from "@/app/actions/foundItems";
@@ -143,12 +143,12 @@ const LocationPage = () => {
 
         const locationCounts = locations.map((location) => {
           const itemsAtLocation = fetchItems.filter(
-            (item) => item.location_name === location.name
+            (item) => item.location === location.name
           );
 
           const weatherCounts = itemsAtLocation.reduce<Record<string, number>>(
             (acc, item) => {
-              const weather = item.weather_found || "unknown";
+              const weather = item.weather || "unknown";
               acc[weather] = (acc[weather] || 0) + 1;
               return acc;
             },

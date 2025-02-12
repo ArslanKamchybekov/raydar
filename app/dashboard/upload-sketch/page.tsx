@@ -49,7 +49,7 @@ export default function UploadSketchPage() {
     setIsUploading(true);
   
     try {
-      const image = await uploadLostItemSketch(file, description);
+      const item = await uploadLostItemSketch(file, description);
   
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/get_images`, {
         method: "POST",
@@ -57,9 +57,9 @@ export default function UploadSketchPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          image_id: image.image_id,
-          description: description,
-          threshold: threshold,
+          image_id: item.image,
+          description,
+          threshold,
         }),
       });
   
