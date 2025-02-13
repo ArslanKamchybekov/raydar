@@ -1,4 +1,3 @@
-// app/actions/notifications.ts
 'use server'
 
 import { clerkClient } from "@/lib/clerk";
