@@ -20,7 +20,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ReactNode, useState } from "react";
 import { Separator } from "@/components/ui/separator";
-import { useUser } from "@/utils/hook/useUser";
+import { useUserData } from "@/utils/hook/useUserData";
 
 interface NavItem {
   href: string;
@@ -46,7 +46,7 @@ interface DashboardTopNavProps {
 
 export default function DashboardTopNav({ children }: DashboardTopNavProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { user } = useUser();
+  const { user } = useUserData();
   const isAdmin = user?.role === 'admin';
 
   const renderNavigationLinks = () => {
