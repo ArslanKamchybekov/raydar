@@ -80,6 +80,17 @@ export async function updateClaimStatus(claimId: string, status: ClaimStatus, ad
                 notes: adminNote || null
             },
         });
+
+        if (status === ClaimStatus.APPROVED) {
+            await prisma.foundItem.update({
+                where: {
+                    id: updatedClaim.item_id
+                },
+                data: {
+                    claimed: true
+                }
+            });
+        }
         return updatedClaim;
     } catch (error) {
         console.error("Error updating claim status:", error);

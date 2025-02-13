@@ -9,7 +9,8 @@ import { motion } from "framer-motion"
 import { useUser } from "@clerk/nextjs"
 
 export default function HeroSection() {
-  const user = useUser()
+  const { user } = useUser()
+  console.log(user)
   return (
     <section
       className="flex flex-col items-center justify-center leading-6 mt-12 px-4 sm:px-6"
