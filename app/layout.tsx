@@ -1,24 +1,25 @@
-import Provider from '@/app/provider'
-import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "@/components/ui/sonner"
-import AuthWrapper from '@/components/wrapper/auth-wrapper'
-import { Analytics } from "@vercel/analytics/react"
-import { GeistSans } from 'geist/font/sans'
-import type { Metadata } from 'next'
-import './globals.css'
+import Provider from "@/app/provider";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
+import AuthWrapper from "@/components/wrapper/auth-wrapper";
+import { Analytics } from "@vercel/analytics/react";
+import { GeistSans } from "geist/font/sans";
+import type { Metadata } from "next";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: 'Raydar - Find lost items with ease',
-    template: '%s | Raydar',
+    default: "Raydar - Find lost items with ease",
+    template: "%s | Raydar",
   },
-  description: 'Raydar is a platform that helps you find lost items with ease. It uses a combination of technologies to help you find your lost items.',
-}
+  description:
+    "Raydar is a platform that helps you find lost items with ease. It uses a combination of technologies to help you find your lost items.",
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <AuthWrapper>
@@ -51,5 +52,5 @@ export default function RootLayout({
         </body>
       </html>
     </AuthWrapper>
-  )
+  );
 }

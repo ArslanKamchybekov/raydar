@@ -1,57 +1,73 @@
-"use client"
-import type React from "react"
-import { useState } from "react"
-import { DragDropUpload } from "./_components/DragDropUpload"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { toast } from "@/components/ui/use-toast"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Locations, Categories, Brands, Colors, Materials, Weather, Keywords } from "@/utils/constants"
-import { Size } from "@/types/types"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { uploadFoundItem } from "../../actions/foundItems"
-import { useUser } from "@clerk/nextjs"
-import Image from "next/image"
-import KeywordSearch from "./_components/KeywordSearch"
+"use client";
+import type React from "react";
+import { useState } from "react";
+import { DragDropUpload } from "./_components/DragDropUpload";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { toast, useToast } from "@/components/ui/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Locations,
+  Categories,
+  Brands,
+  Colors,
+  Materials,
+  Weather,
+  Keywords,
+} from "@/utils/constants";
+import { Size } from "@/types/types";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { uploadFoundItem } from "../../actions/foundItems";
+import { useUser } from "@clerk/nextjs";
+import Image from "next/image";
+import KeywordSearch from "./_components/KeywordSearch";
 
 const LostItemUploadPage = () => {
-  const [file, setFile] = useState<File | null>(null)
-  const [preview, setPreview] = useState<string | null>(null)
-  const [location, setLocation] = useState<string>("")
-  const [category, setCategory] = useState<string>("")
-  const [brand, setBrand] = useState<string>("")
-  const [colors, setColors] = useState<string[]>([])
-  const [size, setSize] = useState<string>("")
-  const [material, setMaterial] = useState<string>("")
-  const [weather, setWeather] = useState<string>("")
-  const [description, setDescription] = useState("")
-  const [keywords, setKeywords] = useState<string[]>([])
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const user = useUser()
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [location, setLocation] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
+  const [brand, setBrand] = useState<string>("");
+  const [colors, setColors] = useState<string[]>([]);
+  const [size, setSize] = useState<string>("");
+  const [material, setMaterial] = useState<string>("");
+  const [weather, setWeather] = useState<string>("");
+  const [description, setDescription] = useState("");
+  const [keywords, setKeywords] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const user = useUser();
+
+  const { toast } = useToast();
 
   const handleFileUpload = (uploadedFile: File) => {
-    setFile(uploadedFile)
-    const reader = new FileReader()
+    setFile(uploadedFile);
+    const reader = new FileReader();
     reader.onloadend = () => {
-      setPreview(reader.result as string)
-    }
-    reader.readAsDataURL(uploadedFile)
-  }
+      setPreview(reader.result as string);
+    };
+    reader.readAsDataURL(uploadedFile);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!file || !location || !category) {
       toast({
         title: "Error",
         description: "Please fill in all required fields and upload an image.",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
     try {
       await uploadFoundItem(
@@ -65,37 +81,37 @@ const LostItemUploadPage = () => {
         material,
         weather,
         description,
-        keywords,
-      )
+        keywords
+      );
 
       toast({
         title: "Success",
         description: "Your found item report has been submitted.",
-      })
+      });
 
       // Reset form
-      setFile(null)
-      setPreview(null)
-      setLocation("")
-      setCategory("")
-      setBrand("")
-      setColors([])
-      setSize("")
-      setMaterial("")
-      setWeather("")
-      setDescription("")
-      setKeywords([])
+      setFile(null);
+      setPreview(null);
+      setLocation("");
+      setCategory("");
+      setBrand("");
+      setColors([]);
+      setSize("");
+      setMaterial("");
+      setWeather("");
+      setDescription("");
+      setKeywords([]);
     } catch (error) {
-      console.error("Error submitting found item report:", error)
+      console.error("Error submitting found item report:", error);
       toast({
         title: "Error",
         description: "Failed to submit found item report. Please try again.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center w-full max-w-lg mx-auto">
@@ -129,7 +145,8 @@ const LostItemUploadPage = () => {
                     <strong>Name:</strong> {file.name}
                   </p>
                   <p>
-                    <strong>Size:</strong> {(file.size / 1024 / 1024).toFixed(2)} MB
+                    <strong>Size:</strong>{" "}
+                    {(file.size / 1024 / 1024).toFixed(2)} MB
                   </p>
                   <p>
                     <strong>Type:</strong> {file.type}
@@ -138,7 +155,10 @@ const LostItemUploadPage = () => {
               )}
               <div>
                 <Label htmlFor="location">Location</Label>
-                <Select value={location} onValueChange={(value) => setLocation(value)}>
+                <Select
+                  value={location}
+                  onValueChange={(value) => setLocation(value)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select location" />
                   </SelectTrigger>
@@ -153,7 +173,10 @@ const LostItemUploadPage = () => {
               </div>
               <div>
                 <Label htmlFor="category">Category</Label>
-                <Select value={category} onValueChange={(value) => setCategory(value)}>
+                <Select
+                  value={category}
+                  onValueChange={(value) => setCategory(value)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
@@ -168,7 +191,10 @@ const LostItemUploadPage = () => {
               </div>
               <div>
                 <Label htmlFor="brand">Brand</Label>
-                <Select value={brand} onValueChange={(value) => setBrand(value)}>
+                <Select
+                  value={brand}
+                  onValueChange={(value) => setBrand(value)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select brand" />
                   </SelectTrigger>
@@ -216,7 +242,10 @@ const LostItemUploadPage = () => {
               </div>
               <div>
                 <Label htmlFor="material">Material</Label>
-                <Select value={material} onValueChange={(value) => setMaterial(value)}>
+                <Select
+                  value={material}
+                  onValueChange={(value) => setMaterial(value)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select material" />
                   </SelectTrigger>
@@ -231,7 +260,10 @@ const LostItemUploadPage = () => {
               </div>
               <div>
                 <Label htmlFor="weather">Weather Found</Label>
-                <Select value={weather} onValueChange={(value) => setWeather(value)}>
+                <Select
+                  value={weather}
+                  onValueChange={(value) => setWeather(value)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select weather" />
                   </SelectTrigger>
@@ -269,7 +301,7 @@ const LostItemUploadPage = () => {
         </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default LostItemUploadPage
+export default LostItemUploadPage;

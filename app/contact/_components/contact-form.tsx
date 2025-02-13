@@ -1,47 +1,48 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { toast } from "@/components/ui/use-toast"
-import { Card } from "@/components/ui/card"
-import { Mail, User, MessageSquare, Send } from "lucide-react"
-import { sendEmail } from "@/app/actions/contact"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/use-toast";
+import { Card } from "@/components/ui/card";
+import { Mail, User, MessageSquare, Send } from "lucide-react";
+import { sendEmail } from "@/app/actions/contact";
 
 export default function ContactForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setIsSubmitting(true)
+    event.preventDefault();
+    setIsSubmitting(true);
 
     try {
-      const formData = new FormData(event.currentTarget)
+      const formData = new FormData(event.currentTarget);
       const data = {
         name: formData.get("name") as string,
         email: formData.get("email") as string,
         message: formData.get("message") as string,
-      }
+      };
 
-      const result = await sendEmail(data)
+      const result = await sendEmail(data);
 
       toast({
         title: "Message sent!",
         description: "We'll get back to you as soon as possible.",
-      })
+        duration: 2000, // 2 seconds
+      });
 
-      event.currentTarget.reset()
+      event.currentTarget.reset();
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to send message. Please try again.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <Card className="p-6 shadow-lg backdrop-blur-sm bg-white/40 dark:bg-black/40">
@@ -112,6 +113,5 @@ export default function ContactForm() {
         </Button>
       </form>
     </Card>
-  )
+  );
 }
-

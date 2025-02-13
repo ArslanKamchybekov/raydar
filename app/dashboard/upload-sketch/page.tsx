@@ -17,7 +17,6 @@ import {
 import RelevantItems from "./_components/RelevantItems";
 import { RelevantItem, Threshold } from "@/types/types";
 
-
 export default function UploadSketchPage() {
   const [file, setFile] = useState<File | null>(null);
   const [description, setDescription] = useState("");
@@ -45,34 +44,38 @@ export default function UploadSketchPage() {
       });
       return;
     }
-  
+
     setIsUploading(true);
-  
+
     try {
       const item = await uploadLostItemSketch(file, description);
-  
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/get_images`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          image_id: item.image,
-          description,
-          threshold,
-        }),
-      });
-  
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/get_images`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            image_id: item.image,
+            description,
+            threshold,
+          }),
+        }
+      );
+
       if (!response.ok) {
         throw new Error("Failed to send data to the server");
       }
-  
+
       const data = await response.json();
       setRelevantItems(data.images || []);
-  
+
       toast({
         title: "Success",
         description: "Your sketch has been uploaded successfully.",
+        duration: 2000, // 2 seconds
       });
     } catch (error) {
       console.error("Error:", error);
@@ -85,7 +88,7 @@ export default function UploadSketchPage() {
       setIsUploading(false);
     }
   };
-  
+
   return (
     <div className="flex flex-col sm:flex-row w-full max-w-6xl mx-auto gap-4">
       <div className="sm:w-1/3 w-full">
@@ -115,20 +118,28 @@ export default function UploadSketchPage() {
                   required
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="threshold">Threshold</Label>
                 <Select
                   value={threshold.toString()}
-                  onValueChange={(value) => handleThresholdChange(value as unknown as Threshold)}
+                  onValueChange={(value) =>
+                    handleThresholdChange(value as unknown as Threshold)
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select threshold" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value={Threshold.LOW.toString()}>Low</SelectItem>
-                    <SelectItem value={Threshold.MEDIUM.toString()}>Medium</SelectItem>
-                    <SelectItem value={Threshold.HIGH.toString()}>High</SelectItem>
+                    <SelectItem value={Threshold.LOW.toString()}>
+                      Low
+                    </SelectItem>
+                    <SelectItem value={Threshold.MEDIUM.toString()}>
+                      Medium
+                    </SelectItem>
+                    <SelectItem value={Threshold.HIGH.toString()}>
+                      High
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>

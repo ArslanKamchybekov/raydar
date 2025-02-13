@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { HelpCircle } from "lucide-react";
 import Navbar from "@/components/wrapper/navbar";
@@ -12,40 +12,49 @@ import { motion } from "framer-motion";
 
 const faqs = [
   {
+    question: "Contact Information",
+    answer:
+      "For questions about our Privacy Policy, Terms of Service, or general inquiries, contact us at: contact@raydar.tech",
+  },
+  {
     question: "Privacy Policy Overview",
-    answer: "Last Updated: February 11, 2025. This Privacy Policy explains how Raydar collects, uses, and protects your personal information when you use our lost and found service platform.",
+    answer:
+      "Last Updated: February 11, 2025. This Privacy Policy explains how Raydar collects, uses, and protects your personal information when you use our lost and found service platform.",
   },
   {
     question: "1. Information Collection",
-    answer: "We collect: (1) Authentication data through Google, GitHub, Facebook, or email sign-in, (2) Item data including images, descriptions, and location information, (3) Device information for service optimization, and (4) Usage data to improve our platform.",
+    answer:
+      "We collect: (1) Authentication data through Google, GitHub, Facebook, or email sign-in, (2) Item data including images, descriptions, and location information, (3) Device information for service optimization, and (4) Usage data to improve our platform.",
   },
   {
     question: "2. Data Usage & Storage",
-    answer: "Your information helps us: (1) Manage lost and found items, (2) Improve user experience, (3) Send relevant notifications, and (4) Maintain platform security. We retain data only as long as necessary or required by law.",
+    answer:
+      "Your information helps us: (1) Manage lost and found items, (2) Improve user experience, (3) Send relevant notifications, and (4) Maintain platform security. We retain data only as long as necessary or required by law.",
   },
   {
     question: "3. Information Sharing",
-    answer: "We may share data with: (1) Trusted service providers, (2) Legal authorities when required, and (3) Other parties during business transfers. We implement security measures to protect your data.",
+    answer:
+      "We may share data with: (1) Trusted service providers, (2) Legal authorities when required, and (3) Other parties during business transfers. We implement security measures to protect your data.",
   },
   {
     question: "Terms of Service Overview",
-    answer: "These Terms of Service govern your use of Raydar's lost and found platform. By using our service, you agree to these terms and must be at least 13 years old.",
+    answer:
+      "These Terms of Service govern your use of Raydar's lost and found platform. By using our service, you agree to these terms and must be at least 13 years old.",
   },
   {
     question: "1. User Responsibilities",
-    answer: "Users must: (1) Provide accurate information, (2) Maintain account security, (3) Report items truthfully, and (4) Respect other users' privacy and rights.",
+    answer:
+      "Users must: (1) Provide accurate information, (2) Maintain account security, (3) Report items truthfully, and (4) Respect other users' privacy and rights.",
   },
   {
     question: "2. Platform Rules",
-    answer: "Prohibited activities include: (1) Posting false or misleading information, (2) Harassing other users, (3) Attempting unauthorized access, and (4) Using the platform for illegal purposes.",
+    answer:
+      "Prohibited activities include: (1) Posting false or misleading information, (2) Harassing other users, (3) Attempting unauthorized access, and (4) Using the platform for illegal purposes.",
   },
   {
     question: "3. Service Limitations",
-    answer: "Raydar: (1) Does not guarantee item recovery, (2) Is not responsible for user interactions, (3) May modify or terminate service at any time, and (4) Reserves the right to remove content or accounts that violate our terms.",
-  },
-  {
-    question: "Contact Information",
-    answer: "For questions about our Privacy Policy or Terms of Service, contact us at: contact@raydar.tech",
+    answer:
+      "Raydar: (1) Does not guarantee item recovery, (2) Is not responsible for user interactions, (3) May modify or terminate service at any time, and (4) Reserves the right to remove content or accounts that violate our terms.",
   },
 ];
 
@@ -68,9 +77,9 @@ export default function PrivacyPage() {
                 Privacy and Terms of Service
               </h2>
               <p className="text-gray-600 dark:text-gray-400 mt-4 max-w-2xl mx-auto">
-                Everything you need to know about Raydar&apos;s Privacy Policy and
-                Terms of Service. Can&apos;t find the answer you&apos;re looking
-                for? Reach out to our team.
+                Everything you need to know about Raydar&apos;s Privacy Policy
+                and Terms of Service. Can&apos;t find the answer you&apos;re
+                looking for? Reach out to our team.
               </p>
             </div>
 
