@@ -39,8 +39,6 @@ export async function userCreate({
       },
     });
 
-    console.log(user);
-
     return { data: user };
   } catch (error) {
     if (error instanceof Error) {

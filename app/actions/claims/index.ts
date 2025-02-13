@@ -71,7 +71,6 @@ export async function createClaim(
 
 export async function updateClaimStatus(claimId: string, status: ClaimStatus, adminNote: string) {
     try {
-        console.log("Updating claim status:", claimId, status, adminNote);
         const updatedClaim = await prisma.claim.update({
             where: {
                 id: claimId
