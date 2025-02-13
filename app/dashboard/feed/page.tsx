@@ -9,6 +9,7 @@ import ItemDetailModal from "./_components/ItemDetailModal";
 import ClaimModal from "./_components/ClaimModal";
 import { useItems } from "@/utils/hook/useItem";
 import { Loader2 } from "lucide-react";
+import { Chatbot } from "./_components/Chatbot";
 
 const FeedPage = () => {
   const [items, setItems] = useState<Item[]>([]);
@@ -90,6 +91,7 @@ const FeedPage = () => {
                 onOpenChange={setIsClaimModalOpen}
                 item={selectedItem}
               />
+              <Chatbot />
             </div>
           )}
         </div>

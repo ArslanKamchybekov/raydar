@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^1.1.10",
     "@clerk/nextjs": "^6.0.2",
     "@clerk/themes": "^2.2.16",
     "@dnd-kit/core": "^6.1.0",
@@ -49,6 +50,7 @@
     "@upstash/redis": "^1.31.6",
     "@vercel/analytics": "^1.2.2",
     "@vis.gl/react-mapbox": "^8.0.1",
+    "ai": "^4.1.36",
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -68,6 +70,7 @@
     "next-themes": "^0.3.0",
     "nodemailer": "^6.10.0",
     "npm": "^11.1.0",
+    "openai": "^4.84.0",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
