@@ -27,7 +27,27 @@ function isItemMatch(item: Item, alert: Alert): boolean {
   if (item.category !== alert.category || item.location !== alert.location) {
     return false;
   }
-  console.log("Match found!");
+
+  if (alert.brand && item.brand !== alert.brand) {
+    return false;
+  }
+
+  if (alert.colors && item.colors !== alert.colors) {
+    return false;
+  }
+
+   if (alert.size && item.size !== alert.size) {
+    return false;
+  }
+
+  if (alert.material && item.material !== alert.material) {
+    return false;
+  }
+
+    if (alert.weather && item.weather !== alert.weather) {
+    return false;
+  }
+
   return true;
 }
 
