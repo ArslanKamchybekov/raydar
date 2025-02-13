@@ -1,18 +1,18 @@
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import type { Item } from "@/types/types"
-import type React from "react"
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import type { Item } from "@/types/types";
+import type React from "react";
 
 interface ItemGridProps {
-  items: Item[]
-  isLoading: boolean
-  error: string | null
-  onItemClick: (item: Item) => void
-  onClaimClick: (item: Item) => void
+  items: Item[];
+  isLoading: boolean;
+  error: string | null;
+  onItemClick: (item: Item) => void;
+  onClaimClick: (item: Item) => void;
 }
 
-const ItemGrid: React.FC<ItemGridProps> = ({ items, isLoading, onItemClick, onClaimClick }) => {
+const ItemGrid = ({ items, isLoading, error, onItemClick, onClaimClick }: ItemGridProps) => {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
@@ -37,30 +37,39 @@ const ItemGrid: React.FC<ItemGridProps> = ({ items, isLoading, onItemClick, onCl
           </Card>
         ))}
       </div>
-    )
+    );
+  }
+
+  if (error) {
+    return <p className="text-red-500 text-center">Error: {error}</p>;
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
       {items.map((item: Item) => (
         <Card key={item.id} className={`hover:shadow-lg transition-shadow ${item.claimed ? "opacity-50" : ""}`}>
           <CardHeader>
             <CardTitle className="text-lg md:text-xl">
-              {item.category[0].toUpperCase() + item.category.slice(1)}
+              {item.category}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Image
-              src={item.image || "/logo.png"}
-              alt={item.description || "Found item"}
-              width={500}
-              height={500}
-              className="w-full h-48 object-cover rounded-md mb-4"
-            />
-            <div className="space-y-2">
+            <div className="relative w-full h-48">
+              <Image
+                src={item.image || "/logo.png"}
+                alt={item.description || "Found item"}
+                fill
+                className="object-cover rounded-md"
+                loading="lazy"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "/logo.png";
+                }}
+              />
+            </div>
+            <div className="space-y-2 mt-4">
               <p className="text-sm text-muted-foreground">Location: {item.location}</p>
               {item.description && <p className="text-sm line-clamp-2">{item.description}</p>}
-              {item.colors && item.colors.length > 0 && <p className="text-sm">Colors: {item.colors.join(", ")}</p>}
+              {item.colors?.length > 0 && <p className="text-sm">Colors: {item.colors.join(", ")}</p>}
               {item.brand && <p className="text-sm">Brand: {item.brand}</p>}
             </div>
           </CardContent>
@@ -75,8 +84,7 @@ const ItemGrid: React.FC<ItemGridProps> = ({ items, isLoading, onItemClick, onCl
         </Card>
       ))}
     </div>
-  )
-}
+  );
+};
 
-export default ItemGrid
-
+export default ItemGrid;

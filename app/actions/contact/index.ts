@@ -1,7 +1,5 @@
 "use server";
 
-import { clerkClient } from "@/lib/clerk";
-import { currentUser } from "@clerk/nextjs/server";
 import nodemailer from "nodemailer";
 
 interface EmailData {
@@ -11,24 +9,9 @@ interface EmailData {
 }
 
 export async function sendEmail(data: EmailData) {
-  // Get user from Clerk
-  const user = await currentUser();
-
-  // Check if user is authenticated
-  if (!user) {
-    throw new Error("You must be logged in to send messages");
-  }
 
   const { name, email, message } = data;
 
-  // Get primary email address
-  const primaryEmail = user.emailAddresses.find(
-    (email) => email.id === user.primaryEmailAddressId
-  );
-
-  if (!primaryEmail) {
-    throw new Error("No primary email address found for user");
-  }
   if (!name || !email || !message) {
     throw new Error("Missing required fields");
   }
@@ -44,7 +27,6 @@ export async function sendEmail(data: EmailData) {
       },
     });
 
-    // Add connection verification
     await transporter.verify().catch((error) => {
       console.error("SMTP Verification Error:", error);
       throw new Error("SMTP configuration error");

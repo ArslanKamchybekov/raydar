@@ -24,19 +24,17 @@ export default function ContactForm() {
         message: formData.get("message") as string,
       };
 
-      const result = await sendEmail(data);
+      await sendEmail(data);
 
       toast({
         title: "Message sent!",
         description: "We'll get back to you as soon as possible.",
-        duration: 2000, // 2 seconds
+        duration: 2000,
       });
-
-      event.currentTarget.reset();
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to send message. Please try again.",
+        description: "Failed to send message. Please try again later: " + error,
         variant: "destructive",
       });
     } finally {
