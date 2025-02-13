@@ -14,7 +14,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useUser } from "@/utils/hook/useUser";
+import { useUserData } from "@/utils/hook/useUserData";
 
 type NavLink = {
   href: string;
@@ -36,7 +36,7 @@ const navigationLinks: NavLink[] = [
 
 export default function DashboardSideBar() {
   const pathname = usePathname();
-  const { user } = useUser();
+  const { user } = useUserData();
   const isAdmin = user?.role === 'admin';
 
   const NavLink = ({ href, label, icon: Icon, adminOnly }: NavLink) => {

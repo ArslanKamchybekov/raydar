@@ -56,8 +56,7 @@ const RelevantItems = ({ items }: { items: RelevantItem[] }) => {
                 <div className="flex-1 space-y-2">
                   <div className="flex items-center justify-between">
                     <h3 className="font-semibold text-lg">
-                      {item.brand[0].toUpperCase() + item.brand.slice(1)}{" "}
-                      {item.category[0].toUpperCase() + item.category.slice(1)}
+                      {item.brand}{" "}{item.category}
                     </h3>
                     <Badge variant="secondary">
                       {(item.similarity_score * 100).toFixed(1)}% match

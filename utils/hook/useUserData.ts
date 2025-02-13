@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getUserData, getCurrentUserData } from "@/app/actions/user";
 
-export const useUser = (user_id?: string) => {
+export const useUserData = (user_id?: string) => {
   const { data: user, isLoading, error } = useQuery({
     queryKey: user_id ? ["user", user_id] : ["currentUser"],
     queryFn: async () => {

@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, Check, Clock, X } from "lucide-react";
 import { Claim, ClaimStatus } from "@/types/types";
-import { useUser } from "@/utils/hook/useUser";
+import { useUserData } from "@/utils/hook/useUserData";
 import { useItem } from "@/utils/hook/useItem";
 import { Textarea } from "@/components/ui/textarea";
 import ImageWithZoom from "@/components/image-zoom";
@@ -19,7 +19,7 @@ export function ClaimRequest({ claim }: { claim: Claim }) {
   const [adminNote, setAdminNote] = useState("");
   const [error, setError] = useState("");
   
-  const { user, isLoading: isUserLoading } = useUser(claim.user_id);
+  const { user, isLoading: isUserLoading } = useUserData(claim.user_id);
   const { item, isLoading: isItemLoading } = useItem(claim.item_id);
 
   const handleApprove = async () => {

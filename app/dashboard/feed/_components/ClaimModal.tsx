@@ -1,16 +1,24 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Image from "next/image"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import type { User, Item } from "@/types/types"
-import { Loader2, Upload, X } from "lucide-react"
+import { Loader2, Upload, X, MessageCircle, Send } from "lucide-react"
 import { createClaim } from "@/app/actions/claims"
-import { ClaimStatus } from "@/types/types"
-import { useUser } from "@/utils/hook/useUser"
+import { ClaimStatus, Item } from "@/types/types"
+import { useUserData  } from "@/utils/hook/useUserData"
+import { useUser } from "@clerk/nextjs"
+import { ScrollArea } from "@/components/ui/scroll-area"
+
+interface Message {
+  id: string
+  content: string
+  senderId: string
+  timestamp: Date
+}
 
 interface ClaimModalProps {
   isOpen: boolean
@@ -19,21 +27,14 @@ interface ClaimModalProps {
 }
 
 const ClaimModal = ({ isOpen, onOpenChange, item }: ClaimModalProps) => {
-  const [userData, setUserData] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
   const [claimReason, setClaimReason] = useState("")
   const [image, setImage] = useState<File | null>(null)
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null)
-
-  const { user } = useUser(item?.user_id || "")
-
-  useEffect(() => {
-    setIsLoading(true)
-    if (user) {
-      setUserData(user)
-      setIsLoading(false)
-    }
-  }, [user])
+  const [isChatOpen, setIsChatOpen] = useState(false)
+  const [message, setMessage] = useState("")
+  const [messages, setMessages] = useState<Message[]>([])
+  const currentUser = useUser()
+  const { user, isLoading } = useUserData(item?.user_id || "")
   
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -61,15 +62,22 @@ const ClaimModal = ({ isOpen, onOpenChange, item }: ClaimModalProps) => {
     onOpenChange(false)
   }
 
-  if (!item) return null
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!message.trim()) return
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
-      </div>
-    )
+    const newMessage: Message = {
+      id: Date.now().toString(),
+      content: message,
+      senderId: currentUser.user?.id || "",
+      timestamp: new Date()
+    }
+
+    setMessages([...messages, newMessage])
+    setMessage("")
   }
+
+  if (!item) return null
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -81,11 +89,11 @@ const ClaimModal = ({ isOpen, onOpenChange, item }: ClaimModalProps) => {
           <div>
             <h3 className="font-semibold mb-2">Posted by</h3>
             {isLoading ? (
-              <p>Fetching user data...</p>
-            ) : userData ? (
+              <Loader2 className="animate-spin h-6 w-6 text-gray-500" />
+            ) : user ? (
               <div className="flex items-center space-x-4">
                 <Image
-                  src={userData.image || "/logo.png"}
+                  src={user.image || "/logo.png"}
                   alt="User Avatar"
                   width={50}
                   height={50}
@@ -93,15 +101,16 @@ const ClaimModal = ({ isOpen, onOpenChange, item }: ClaimModalProps) => {
                 />
                 <div>
                   <p className="font-semibold">
-                    {userData.full_name}
+                    {user.full_name}
                   </p>
-                  <p className="text-sm text-muted-foreground">{userData.emailAddress}</p>
+                  <p className="text-sm text-muted-foreground">{user.emailAddress}</p>
                 </div>
               </div>
             ) : (
               <p>No user data available</p>
             )}
           </div>
+
           <form onSubmit={handleSubmitClaim} className="space-y-4">
             <div>
               <label htmlFor="claimReason" className="block text-sm font-medium text-gray-700">
@@ -161,6 +170,54 @@ const ClaimModal = ({ isOpen, onOpenChange, item }: ClaimModalProps) => {
               Submit Claim
             </Button>
           </form>
+
+          <Button
+            onClick={() => setIsChatOpen(!isChatOpen)}
+            variant="outline"
+            className="w-full flex items-center justify-center gap-2"
+          >
+            <MessageCircle className="h-4 w-4" />
+            Send a Message
+          </Button>
+
+          {isChatOpen && (
+            <div className="border rounded-lg p-4 space-y-4">
+              <ScrollArea className="h-[200px] w-full pr-4">
+                <div className="space-y-4">
+                  {messages.map((msg) => (
+                    <div
+                      key={msg.id}
+                      className={`flex ${
+                        msg.senderId === "currentUser" ? "justify-end" : "justify-start"
+                      }`}
+                    >
+                      <div
+                        className={`rounded-lg px-4 py-2 max-w-[80%] ${
+                          msg.senderId === "currentUser"
+                            ? "bg-blue-500 text-white"
+                            : "bg-gray-100"
+                        }`}
+                      >
+                        {msg.content}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
+
+              <form onSubmit={handleSendMessage} className="flex gap-2">
+                <Input
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Type your message..."
+                  className="flex-1"
+                />
+                <Button type="submit" size="icon">
+                  <Send className="h-4 w-4" />
+                </Button>
+              </form>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>

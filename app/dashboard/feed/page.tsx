@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Item } from "@/types/types";
 import SearchAndFilter from "./_components/SearchAndFilter";
 import ItemGrid from "./_components/ItemGrid";
@@ -12,25 +12,13 @@ import { Loader2 } from "lucide-react";
 import { Chatbot } from "./_components/Chatbot";
 
 const FeedPage = () => {
-  const [items, setItems] = useState<Item[]>([]);
+  const { items, isLoading, error } = useItems();
   const [filteredItems, setFilteredItems] = useState<Item[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
   const itemsPerPage = 9;
-
-  const { items: fetchedItems, isLoading: isItemsLoading, error: itemsError } = useItems();
-
-  useEffect(() => {
-    if (fetchedItems) {
-      setItems(fetchedItems);
-      setFilteredItems(fetchedItems);
-      setIsLoading(false);
-    }
-  }, [fetchedItems]);
 
   const handleItemClick = (item: Item) => {
     setSelectedItem(item);
@@ -44,7 +32,9 @@ const FeedPage = () => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredItems.length > 0 
+    ? filteredItems.slice(indexOfFirstItem, indexOfLastItem)
+    : items?.slice(indexOfFirstItem, indexOfLastItem) || [];
 
   return (
     <>
@@ -60,10 +50,13 @@ const FeedPage = () => {
           {isLoading ? (
             <div className="flex justify-center items-center h-screen">
               <Loader2 className="animate-spin h-6 w-6 text-gray-500" />
-              </div>
+            </div>
           ) : (
             <div className="flex flex-col gap-4">
-              <SearchAndFilter items={items} setFilteredItems={setFilteredItems} />
+              <SearchAndFilter 
+                items={items || []} 
+                setFilteredItems={setFilteredItems} 
+              />
 
               <ItemGrid
                 items={currentItems}
@@ -76,7 +69,7 @@ const FeedPage = () => {
               <Pagination
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
-                totalItems={filteredItems.length}
+                totalItems={(filteredItems.length > 0 ? filteredItems : items || []).length}
                 itemsPerPage={itemsPerPage}
               />
 

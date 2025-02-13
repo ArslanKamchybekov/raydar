@@ -177,7 +177,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({
       <SelectContent>
         {categories.map((category) => (
           <SelectItem key={category} value={category}>
-            {category.charAt(0).toUpperCase() + category.slice(1)}
+            {category}
           </SelectItem>
         ))}
       </SelectContent>
