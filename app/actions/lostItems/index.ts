@@ -10,7 +10,6 @@ export async function uploadLostItemSketch(file: File, description: string) {
     const fileExt = file.name.split('.').pop()
     const fileName = `${image}.${fileExt}`
     
-    // Upload file to Supabase storage
     const { error } = await supabase.storage
       .from("lost_images")
       .upload(fileName, file);
