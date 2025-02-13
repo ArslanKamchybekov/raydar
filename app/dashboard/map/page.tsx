@@ -189,7 +189,7 @@ const LocationPage = () => {
                 ? "text-white bg-gray-800"
                 : "text-gray-800 bg-white"
             }">
-              <h3 class="font-bold text-lg mb-2">${location.name.toUpperCase()}</h3>
+              <h3 class="font-bold text-lg mb-2">${location.name}</h3>
               <div class="space-y-1">
                 ${
                   categoryCounts && Object.entries(categoryCounts).length > 0
@@ -197,7 +197,7 @@ const LocationPage = () => {
                         .map(
                           ([category, count]) => `
                         <div class="flex justify-between">
-                          <span>${category.toUpperCase()}:</span>
+                          <span>${category}:</span>
                           <span class="font-semibold">${count}</span>
                         </div>
                       `
@@ -220,7 +220,7 @@ const LocationPage = () => {
           markersRef.current.push(marker);
 
           return {
-            name: location.name.toString().toUpperCase(),
+            name: location.name,
             itemsLost: itemsAtLocation.length,
             weatherMostLost,
             categoryMostLost,
@@ -273,15 +273,13 @@ const LocationPage = () => {
               <p className="text-xs sm:text-sm flex justify-between items-center">
                 <span className="font-semibold">Weather:</span>
                 <span>
-                  {topLocation.weatherMostLost[0].toUpperCase() +
-                    topLocation.weatherMostLost.slice(1)}
+                  {topLocation.weatherMostLost}
                 </span>
               </p>
               <p className="text-xs sm:text-sm flex justify-between items-center">
                 <span className="font-semibold">Category:</span>
                 <span>
-                  {topLocation.categoryMostLost[0].toUpperCase() +
-                    topLocation.categoryMostLost.slice(1)}
+                  {topLocation.categoryMostLost}
                 </span>
               </p>
             </CardContent>

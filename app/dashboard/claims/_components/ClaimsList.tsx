@@ -40,7 +40,7 @@ export function ClaimsList() {
           ))}
         </div>
       ) : (
-        <p className="text-center text-gray-500">No claims found.</p>
+        <p className="text-center text-gray-500">No claim requests found.</p>
       )}
     </div>
   );

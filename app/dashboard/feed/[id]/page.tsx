@@ -64,7 +64,7 @@ const ItemPage = () => {
                   Location: {item.location_name}
                 </p>
                 {item.description && (
-                  <p className="text-sm">{item.description.toString().toUpperCase()}</p>
+                  <p className="text-sm">{item.description}</p>
                 )}
                 {item.brand && <p className="text-sm">Brand: {item.brand}</p>}
                 {item.colors && item.colors.length > 0 && (
