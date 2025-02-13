@@ -7,7 +7,7 @@ import type React from "react";
 interface ItemGridProps {
   items: Item[];
   isLoading: boolean;
-  error: string | null;
+  error: Error | null;
   onItemClick: (item: Item) => void;
   onClaimClick: (item: Item) => void;
 }
@@ -41,7 +41,7 @@ const ItemGrid = ({ items, isLoading, error, onItemClick, onClaimClick }: ItemGr
   }
 
   if (error) {
-    return <p className="text-red-500 text-center">Error: {error}</p>;
+    return <p className="text-red-500 text-center">Error: {error.message}</p>;
   }
 
   return (

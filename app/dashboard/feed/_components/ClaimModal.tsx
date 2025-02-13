@@ -1,12 +1,12 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Image from "next/image"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import type { User, Item } from "@/types/types"
+import type { Item } from "@/types/types"
 import { Loader2, Upload, X } from "lucide-react"
 import { createClaim } from "@/app/actions/claims"
 import { ClaimStatus } from "@/types/types"
@@ -19,21 +19,11 @@ interface ClaimModalProps {
 }
 
 const ClaimModal = ({ isOpen, onOpenChange, item }: ClaimModalProps) => {
-  const [userData, setUserData] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
   const [claimReason, setClaimReason] = useState("")
   const [image, setImage] = useState<File | null>(null)
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null)
 
-  const { user } = useUser(item?.user_id || "")
-
-  useEffect(() => {
-    setIsLoading(true)
-    if (user) {
-      setUserData(user)
-      setIsLoading(false)
-    }
-  }, [user])
+  const { user, isLoading } = useUser(item?.user_id || "")
   
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -63,14 +53,6 @@ const ClaimModal = ({ isOpen, onOpenChange, item }: ClaimModalProps) => {
 
   if (!item) return null
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
-      </div>
-    )
-  }
-
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
@@ -81,11 +63,11 @@ const ClaimModal = ({ isOpen, onOpenChange, item }: ClaimModalProps) => {
           <div>
             <h3 className="font-semibold mb-2">Posted by</h3>
             {isLoading ? (
-              <p>Fetching user data...</p>
-            ) : userData ? (
+              <Loader2 className="animate-spin h-6 w-6 text-gray-500" />
+            ) : user ? (
               <div className="flex items-center space-x-4">
                 <Image
-                  src={userData.image || "/logo.png"}
+                  src={user.image || "/logo.png"}
                   alt="User Avatar"
                   width={50}
                   height={50}
@@ -93,9 +75,9 @@ const ClaimModal = ({ isOpen, onOpenChange, item }: ClaimModalProps) => {
                 />
                 <div>
                   <p className="font-semibold">
-                    {userData.full_name}
+                    {user.full_name}
                   </p>
-                  <p className="text-sm text-muted-foreground">{userData.emailAddress}</p>
+                  <p className="text-sm text-muted-foreground">{user.emailAddress}</p>
                 </div>
               </div>
             ) : (

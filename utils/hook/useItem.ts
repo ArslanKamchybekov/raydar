@@ -16,6 +16,8 @@ export const useItems = () => {
     const { data: items, isLoading, error } = useQuery({
         queryKey: ["items"],
         queryFn: getFoundItems,
+        staleTime: 5 * 60 * 1000,
+        refetchOnWindowFocus: false,
     });
 
     return { items, isLoading, error };
