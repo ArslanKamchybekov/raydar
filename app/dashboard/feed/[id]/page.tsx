@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { getFoundItem } from "@/app/actions/foundItems"; // assuming this is the server action to get the specific item
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import Spinner from "@/components/spinner";
 
 const ItemPage = () => {
   const { id } = useParams();
@@ -32,11 +32,7 @@ const ItemPage = () => {
   }, [id]);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
-      </div>
-    );
+    return <Spinner />
   }
 
   if (error) {

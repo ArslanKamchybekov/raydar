@@ -11,6 +11,7 @@ import { createAlert, deleteAlert, toggleAlert, getAlerts } from "@/app/actions/
 import { toast } from "@/components/ui/use-toast";
 import { Alert } from "@/types/types";
 import { useUser } from "@clerk/nextjs";
+import Spinner from "@/components/spinner";
 
 const AlertsPage = () => {
   const { user } = useUser();
@@ -140,14 +141,6 @@ const AlertsPage = () => {
     { options: Materials, key: "material", label: "Material", required: false },
     { options: Weather, key: "weather", label: "Weather", required: false },
   ];
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
 
   return (
     <main className="flex-1">

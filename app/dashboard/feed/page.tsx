@@ -9,8 +9,8 @@ import ItemDetailModal from "./_components/ItemDetailModal";
 import ClaimModal from "./_components/ClaimModal";
 import ReportModal from "./_components/ReportModal";
 import { useItems } from "@/utils/hook/useItem";
-import { Loader2 } from "lucide-react";
 import { Chatbot } from "./_components/Chatbot";
+import Spinner from "@/components/spinner";
 
 const FeedPage = () => {
   const { items, isLoading, error } = useItems();
@@ -56,9 +56,7 @@ const FeedPage = () => {
           </p>
 
           {isLoading ? (
-            <div className="flex justify-center items-center h-screen">
-              <Loader2 className="animate-spin h-6 w-6 text-gray-500" />
-            </div>
+            <Spinner />
           ) : (
             <div className="flex flex-col gap-4">
               <SearchAndFilter

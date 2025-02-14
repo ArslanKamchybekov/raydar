@@ -4,21 +4,16 @@ import { useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { useReports } from "@/utils/hook/useReports";
-import { Loader2 } from "lucide-react";
 import { ReportRequest } from "./ReportRequest";
-import { $Enums } from "@prisma/client";
 import { ReportStatus as CustomReportStatus } from "@/types/types";
+import Spinner from "@/components/spinner";
 
 export function ReportsList() {
   const [searchTerm, setSearchTerm] = useState("");
   const { data: reports, isLoading, error } = useReports();
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
-      </div>
-    );
+    return <Spinner />
   }
 
   if (error) {

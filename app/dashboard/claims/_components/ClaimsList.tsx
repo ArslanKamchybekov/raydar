@@ -4,18 +4,14 @@ import { useState } from "react";
 import { ClaimRequest } from "./ClaimRequest";
 import { Input } from "@/components/ui/input";
 import { useClaim } from "@/utils/hook/useClaim";
-import { Loader2 } from "lucide-react";
+import Spinner from "@/components/spinner";
 
 export function ClaimsList() {
   const [searchTerm, setSearchTerm] = useState("");    
   const { claims, isLoading } = useClaim();
 
   if (isLoading || !claims) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
-      </div>
-    );
+    return <Spinner/>
   }
 
   const filteredClaims = claims.filter(
