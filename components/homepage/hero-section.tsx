@@ -56,16 +56,16 @@ export default function HeroSection() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="flex flex-wrap justify-center gap-4 mt-6"
         >
-          {user ? (
+          {/* {user ? ( */}
             <Link href="/dashboard/upload-lost">
               <Button size="lg" className="flex items-center gap-2">
                 <UploadCloud size={20} />
                 Upload Lost Item
               </Button>
             </Link>
-          ) : (
-            <GuestReportModal />
-          )}
+          {/* // ) : (
+          //   <GuestReportModal />
+          // )} */}
           <Link href="/dashboard/feed">
             <Button size="lg" variant="outline" className="flex items-center gap-2">
               <Search size={20} />
