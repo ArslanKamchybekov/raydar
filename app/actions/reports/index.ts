@@ -21,8 +21,6 @@ export async function getReports() {
         item: true,
       },
     });
-
-    console.log("Fetched reports:", reports); // Add this for debugging
     return reports;
   } catch (error) {
     console.error("Error fetching reports:", error);
@@ -62,8 +60,6 @@ export async function createReport(
         item: true,
       },
     });
-
-    console.log("Created report:", newReport); // Add this for debugging
     return newReport;
   } catch (error) {
     console.error("Error creating report:", error);
