@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, Check, Clock, X } from "lucide-react";
 import { Report, ReportStatus } from "@/types/types";
 import { useUserData } from "@/utils/hook/useUserData";
@@ -24,7 +23,6 @@ export function ReportRequest({ report }: { report: Report }) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [adminNote, setAdminNote] = useState("");
   const [error, setError] = useState("");
-
   const { user, isLoading: isUserLoading } = useUserData(report.user_id);
   const { item, isLoading: isItemLoading } = useItem(report.item_id);
 
@@ -53,20 +51,6 @@ export function ReportRequest({ report }: { report: Report }) {
       setIsProcessing(false);
     }
   };
-
-  if (isUserLoading || isItemLoading) {
-    return (
-      <Card className="max-w-2xl w-full">
-        <CardContent className="p-6">
-          <div className="space-y-4">
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-4 w-2/3" />
-            <Skeleton className="h-4 w-1/2" />
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
 
   return (
     <Card className="max-w-2xl w-full">

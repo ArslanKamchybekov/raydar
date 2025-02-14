@@ -10,7 +10,7 @@ import ClaimModal from "./_components/ClaimModal";
 import ReportModal from "./_components/ReportModal";
 import { useItems } from "@/utils/hook/useItem";
 import { Chatbot } from "./_components/Chatbot";
-import Spinner from "@/components/spinner";
+import ItemGridSkeleton from "./_components/ItemGridSkeleton";
 
 const FeedPage = () => {
   const { items, isLoading, error } = useItems();
@@ -56,7 +56,7 @@ const FeedPage = () => {
           </p>
 
           {isLoading ? (
-            <Spinner />
+            <ItemGridSkeleton />
           ) : (
             <div className="flex flex-col gap-4">
               <SearchAndFilter
@@ -66,8 +66,6 @@ const FeedPage = () => {
 
               <ItemGrid
                 items={currentItems}
-                isLoading={isLoading}
-                error={error}
                 onItemClick={handleItemClick}
                 onClaimClick={handleClaimClick}
                 onReportClick={handleReportClick}

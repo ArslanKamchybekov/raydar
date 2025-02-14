@@ -13,8 +13,6 @@ import type React from "react";
 
 interface ItemGridProps {
   items: Item[];
-  isLoading: boolean;
-  error: Error | null;
   onItemClick: (item: Item) => void;
   onClaimClick: (item: Item) => void;
   onReportClick: (item: Item) => void;
@@ -22,43 +20,10 @@ interface ItemGridProps {
 
 const ItemGrid = ({
   items,
-  isLoading,
-  error,
   onItemClick,
   onClaimClick,
   onReportClick,
 }: ItemGridProps) => {
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-        {[...Array(6)].map((_, index) => (
-          <Card key={index} className="animate-pulse">
-            <CardHeader>
-              <CardTitle className="text-xl">
-                <div className="h-4 bg-gray-400 rounded"></div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="w-full h-48 bg-gray-700 rounded-md mb-4"></div>
-              <div className="space-y-2">
-                <div className="h-4 bg-gray-400 rounded"></div>
-                <div className="h-4 bg-gray-400 rounded"></div>
-                <div className="h-4 bg-gray-400 rounded"></div>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full" disabled></Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-    );
-  }
-
-  if (error) {
-    return <p className="text-red-500 text-center">Error: {error.message}</p>;
-  }
-
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
       {items.map((item: Item) => (

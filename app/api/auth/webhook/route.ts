@@ -55,7 +55,7 @@ export async function POST(req: Request) {
       try {
         await userCreate({
           emailAddress: payload?.data?.email_addresses?.[0]?.email_address,
-          full_name: payload?.data?.first_name + " " +payload?.data?.last_name,
+          full_name: payload?.data?.first_name + " " + (payload?.data?.last_name || ""),
           username: payload?.data?.username,
           image: payload?.data?.profile_image_url,
           user_id: payload?.data?.id,
