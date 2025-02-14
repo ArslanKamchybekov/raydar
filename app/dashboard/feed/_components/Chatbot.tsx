@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { MessageCircle, Send, X } from 'lucide-react'
 
-export function Chatbot() {
+export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false)
   const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat()
 

@@ -9,7 +9,7 @@ import ItemDetailModal from "./_components/ItemDetailModal";
 import ClaimModal from "./_components/ClaimModal";
 import ReportModal from "./_components/ReportModal";
 import { useItems } from "@/utils/hook/useItem";
-import { Chatbot } from "./_components/Chatbot";
+import Chatbot from "./_components/Chatbot";
 import ItemGridSkeleton from "./_components/ItemGridSkeleton";
 
 const FeedPage = () => {
