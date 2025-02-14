@@ -7,6 +7,7 @@ import ItemGrid from "./_components/ItemGrid";
 import Pagination from "./_components/Pagination";
 import ItemDetailModal from "./_components/ItemDetailModal";
 import ClaimModal from "./_components/ClaimModal";
+import ReportModal from "./_components/ReportModal";
 import { useItems } from "@/utils/hook/useItem";
 import { Loader2 } from "lucide-react";
 import { Chatbot } from "./_components/Chatbot";
@@ -18,6 +19,7 @@ const FeedPage = () => {
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const itemsPerPage = 9;
 
   const handleItemClick = (item: Item) => {
@@ -30,11 +32,17 @@ const FeedPage = () => {
     setIsClaimModalOpen(true);
   };
 
+  const handleReportClick = (item: Item) => {
+    setSelectedItem(item);
+    setIsReportModalOpen(true);
+  };
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredItems.length > 0 
-    ? filteredItems.slice(indexOfFirstItem, indexOfLastItem)
-    : items?.slice(indexOfFirstItem, indexOfLastItem) || [];
+  const currentItems =
+    filteredItems.length > 0
+      ? filteredItems.slice(indexOfFirstItem, indexOfLastItem)
+      : items?.slice(indexOfFirstItem, indexOfLastItem) || [];
 
   return (
     <>
@@ -53,9 +61,9 @@ const FeedPage = () => {
             </div>
           ) : (
             <div className="flex flex-col gap-4">
-              <SearchAndFilter 
-                items={items || []} 
-                setFilteredItems={setFilteredItems} 
+              <SearchAndFilter
+                items={items || []}
+                setFilteredItems={setFilteredItems}
               />
 
               <ItemGrid
@@ -64,12 +72,16 @@ const FeedPage = () => {
                 error={error}
                 onItemClick={handleItemClick}
                 onClaimClick={handleClaimClick}
+                onReportClick={handleReportClick}
               />
 
               <Pagination
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
-                totalItems={(filteredItems.length > 0 ? filteredItems : items || []).length}
+                totalItems={
+                  (filteredItems.length > 0 ? filteredItems : items || [])
+                    .length
+                }
                 itemsPerPage={itemsPerPage}
               />
 
@@ -84,6 +96,13 @@ const FeedPage = () => {
                 onOpenChange={setIsClaimModalOpen}
                 item={selectedItem}
               />
+
+              <ReportModal
+                isOpen={isReportModalOpen}
+                onOpenChange={setIsReportModalOpen}
+                itemId={selectedItem?.id || null}
+              />
+
               <Chatbot />
             </div>
           )}

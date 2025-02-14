@@ -58,6 +58,15 @@ const guidelines = [
       "Admins reserve the right to remove any posts that violate guidelines.",
     ],
   },
+  {
+    section: "7. Reporting Items and Users",
+    details: [
+      "Report inappropriate items or users through the report button",
+      "Provide clear reasons for reporting",
+      "False reports may result in account restrictions",
+      "Reports are reviewed by moderators within 24 hours",
+    ],
+  },
 ];
 
 export default function GuidelinesFAQ() {

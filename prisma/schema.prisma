@@ -22,6 +22,7 @@ model User {
   alerts       Alert[]
   claims       Claim[]
   items        FoundItem[]
+  reports      Report[]
 
   @@index([user_id])
 }
@@ -44,6 +45,7 @@ model FoundItem {
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
   claims      Claim[]
+  reports     Report[]
   user        User     @relation(fields: [user_id], references: [user_id])
 
   @@index([user_id])
@@ -98,8 +100,31 @@ model LostItem {
   updated_at  DateTime @updatedAt
 }
 
+model Report {
+  id         String       @id @default(cuid())
+  user_id    String
+  item_id    String 
+  reason     String
+  status     ReportStatus @default(pending)
+  notes      String?
+  created_at DateTime     @default(now())
+  updated_at DateTime     @updatedAt
+  item       FoundItem    @relation(fields: [item_id], references: [id])
+  user       User         @relation(fields: [user_id], references: [user_id])
+
+  @@index([user_id])
+  @@index([item_id])
+  @@index([status])
+}
+
 enum ClaimStatus {
   pending
   approved
   rejected
+}
+
+enum ReportStatus { 
+  pending
+  resolved
+  dismissed
 }

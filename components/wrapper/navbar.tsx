@@ -74,13 +74,14 @@ export default function NavBar() {
   };
 
   const renderMobileMenu = () => {
-    if (!authEnabled || !isSignedIn) return (
-      <Link href="/sign-in">
-        <Button variant="outline" className="w-full">
-          Login
-        </Button>
-      </Link>
-    );
+    if (!authEnabled || !isSignedIn)
+      return (
+        <Link href="/sign-in">
+          <Button variant="outline" className="w-full">
+            Login
+          </Button>
+        </Link>
+      );
 
     return navigationItems.map((item) => (
       <Link key={item.href} href={item.href}>
@@ -136,20 +137,22 @@ export default function NavBar() {
       {/* Desktop Menu */}
       <div className="hidden md:flex w-full items-center justify-between">
         <div className="flex items-center">
-          <Link href="/" className="pl-2 flex items-center gap-2" aria-label="Home">
-            <Image 
-              src="/logo.png" 
-              width={50} 
-              height={50} 
-              alt="App Logo" 
+          <Link
+            href="/"
+            className="pl-2 flex items-center gap-2"
+            aria-label="Home"
+          >
+            <Image
+              src="/logo.png"
+              width={50}
+              height={50}
+              alt="App Logo"
               priority
             />
             <span className="text-xl font-bold">Raydar</span>
           </Link>
           <NavigationMenu className="ml-4">
-            <NavigationMenuList>
-              {renderAuthItems()}
-            </NavigationMenuList>
+            <NavigationMenuList>{renderAuthItems()}</NavigationMenuList>
           </NavigationMenu>
         </div>
         <div className="flex items-center gap-2">

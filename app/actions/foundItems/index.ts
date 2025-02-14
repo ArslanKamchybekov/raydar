@@ -9,8 +9,34 @@ import { Item } from "@/types/types";
 export async function getFoundItems() {
   try {
     const items = await prisma.foundItem.findMany({
-      orderBy: { created_at: "desc" },
-      where: { claimed: false },
+      where: {
+        AND: [
+          {
+            claimed: false, // Only get unclaimed items
+          },
+          {
+            reports: {
+              none: {
+                status: "resolved", 
+              },
+            },
+          },
+        ],
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+      include: {
+        user: {
+          select: {
+            full_name: true,
+            emailAddress: true,
+            image: true,
+          },
+        },
+        reports: true,
+        claims: true,
+      },
     });
 
     const itemsWithImages = await Promise.all(
