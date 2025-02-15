@@ -48,20 +48,6 @@ export function ClaimRequest({ claim }: { claim: Claim }) {
     }
   };
 
-  if (isUserLoading || isItemLoading) {
-    return (
-      <Card className="max-w-2xl w-full">
-        <CardContent className="p-6">
-          <div className="space-y-4">
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-4 w-2/3" />
-            <Skeleton className="h-4 w-1/2" />
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
     <Card className="max-w-2xl w-full">
       <CardHeader>
@@ -139,10 +125,10 @@ export function ClaimRequest({ claim }: { claim: Claim }) {
       {status === "pending" && (
         <CardFooter className="flex flex-col md:flex-row justify-end gap-2">
           <Button onClick={handleReject} variant="outline" disabled={isProcessing} className="w-full md:w-auto">
-            {isProcessing ? "Processing..." : "Reject Claim"}
+            {isProcessing ? "Processing..." : "Reject"}
           </Button>
           <Button onClick={handleApprove} variant="default" disabled={isProcessing} className="w-full md:w-auto">
-            {isProcessing ? "Processing..." : "Approve Claim"}
+            {isProcessing ? "Processing..." : "Approve"}
           </Button>
         </CardFooter>
       )}

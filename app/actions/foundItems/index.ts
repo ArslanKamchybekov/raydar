@@ -12,7 +12,7 @@ export async function getFoundItems() {
       where: {
         AND: [
           {
-            claimed: false, // Only get unclaimed items
+            claimed: false,
           },
           {
             reports: {
@@ -71,8 +71,8 @@ export async function uploadFoundItem(
   description: string,
   keywords: string[]
 ) {
-  const fileExt = file.name.split(".").pop(); // Get actual file extension
-  const fileName = `${randomUUID()}.${fileExt}`; // Keep full filename
+  const fileExt = file.name.split(".").pop();
+  const fileName = `${randomUUID()}.${fileExt}`;
 
   try {
     // Upload image to Supabase storage
@@ -82,16 +82,14 @@ export async function uploadFoundItem(
 
     if (storageError) throw storageError;
 
-    // Get the public URL for the uploaded image
     const { data: urlData } = await supabase.storage
       .from("found_images")
       .getPublicUrl(fileName);
 
-    // Create database record using Prisma
     const item = await prisma.foundItem.create({
       data: {
         user_id,
-        image: fileName, // Store full filename instead of just UUID
+        image: fileName,
         title: file.name,
         location,
         category,
@@ -110,7 +108,6 @@ export async function uploadFoundItem(
     return { ...item, image: urlData.publicUrl };
   } catch (error) {
     console.error("Error uploading found item:", error);
-    // If there was an error, try to clean up the uploaded file
     await supabase.storage.from("found_images").remove([fileName]);
     throw error;
   }
@@ -118,7 +115,6 @@ export async function uploadFoundItem(
 
 export async function deleteFoundItem(id: string) {
   try {
-    // Retrieve the item's image filename
     const item = await prisma.foundItem.findUnique({
       where: { id },
       select: { image: true },
@@ -126,14 +122,12 @@ export async function deleteFoundItem(id: string) {
 
     if (!item || !item.image) throw new Error("Item or image not found");
 
-    // Delete the image from Supabase storage
     const { error: storageError } = await supabase.storage
       .from("found_images")
-      .remove([item.image]); // Use full filename
+      .remove([item.image]);
 
     if (storageError) throw storageError;
 
-    // Delete the database record
     await prisma.foundItem.delete({ where: { id } });
   } catch (error) {
     console.error("Error deleting found item:", error);
@@ -147,7 +141,6 @@ export async function getFoundItem(id: string) {
 
     if (!item || !item.image) throw new Error("Item not found");
 
-    // Retrieve image URL using full stored filename
     const { data: imageUrl } = await supabase.storage
       .from("found_images")
       .getPublicUrl(item.image);

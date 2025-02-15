@@ -21,7 +21,7 @@ export function ClaimsList() {
   );
 
   return (
-    <div className="space-y-4">
+    <div>
       <Input
         type="text"
         placeholder="Search by user or item..."

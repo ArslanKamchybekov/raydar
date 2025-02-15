@@ -8,7 +8,7 @@ import { SlidersHorizontal } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import debounce from "lodash/debounce"
 import { Item } from "@/types/types"
-import type React from "react"
+import React from "react"
 
 interface SearchAndFilterProps {
   items: Item[]
@@ -18,19 +18,17 @@ interface SearchAndFilterProps {
 const SearchAndFilter: React.FC<SearchAndFilterProps> = ({ items, setFilteredItems }) => {
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false)
   const [sortBy, setSortBy] = useState("oldest")
-  const [selectedCategory, setSelectedCategory] = useState("all")
+  const [selectedCategory, setSelectedCategory] = useState("All")
   const [searchQuery, setSearchQuery] = useState("")
 
-  // Get unique categories once when items change
   const categories = useMemo(() => 
-    ["all", ...Array.from(new Set(items.map((item) => item.category)))].sort(),
+    ["All", ...Array.from(new Set(items.map((item) => item.category)))].sort(),
     [items]
   )
 
   const filterAndSortItems = useCallback(() => {
     let result = [...items]
 
-    // Apply search filter if there's a query
     if (searchQuery) {
       const searchLower = searchQuery.toLowerCase()
       result = result.filter((item: Item) => {
@@ -50,12 +48,10 @@ const SearchAndFilter: React.FC<SearchAndFilterProps> = ({ items, setFilteredIte
       })
     }
 
-    // Apply category filter
-    if (selectedCategory !== "all") {
+    if (selectedCategory !== "All") {
       result = result.filter(item => item.category === selectedCategory)
     }
 
-    // Apply sorting
     result.sort((a, b) => {
       const dateA = new Date(a.created_at).getTime()
       const dateB = new Date(b.created_at).getTime()
@@ -65,7 +61,6 @@ const SearchAndFilter: React.FC<SearchAndFilterProps> = ({ items, setFilteredIte
     setFilteredItems(result)
   }, [items, searchQuery, selectedCategory, sortBy, setFilteredItems])
 
-  // Effect to trigger filtering when dependencies change
   useEffect(() => {
     filterAndSortItems()
   }, [filterAndSortItems])
@@ -89,7 +84,6 @@ const SearchAndFilter: React.FC<SearchAndFilterProps> = ({ items, setFilteredIte
     setSelectedCategory(value)
   }
 
-  // Cleanup debounce on unmount
   useEffect(() => {
     return () => {
       debouncedSearch.cancel()

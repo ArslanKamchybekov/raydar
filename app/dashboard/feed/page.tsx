@@ -45,66 +45,62 @@ const FeedPage = () => {
       : items?.slice(indexOfFirstItem, indexOfLastItem) || [];
 
   return (
-    <>
-      <div>
-        <div>
-          <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">
-            Feed
-          </h1>
-          <p className="leading-7 text-sm text-gray-600 dark:text-gray-400 mb-6">
-            Browse through the items that have been found on campus.
-          </p>
+    <div>
+      <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">
+        Feed
+      </h1>
+      <p className="leading-7 text-sm text-gray-600 dark:text-gray-400 mb-6">
+        Browse through the items that have been found on campus.
+      </p>
 
-          {isLoading ? (
-            <ItemGridSkeleton />
-          ) : (
-            <div className="flex flex-col gap-4">
-              <SearchAndFilter
-                items={items || []}
-                setFilteredItems={setFilteredItems}
-              />
+      {isLoading ? (
+        <ItemGridSkeleton />
+      ) : (
+        <div className="flex flex-col gap-4">
+          <SearchAndFilter
+            items={items || []}
+            setFilteredItems={setFilteredItems}
+          />
 
-              <ItemGrid
-                items={currentItems}
-                onItemClick={handleItemClick}
-                onClaimClick={handleClaimClick}
-                onReportClick={handleReportClick}
-              />
+          <ItemGrid
+            items={currentItems}
+            onItemClick={handleItemClick}
+            onClaimClick={handleClaimClick}
+            onReportClick={handleReportClick}
+          />
 
-              <Pagination
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                totalItems={
-                  (filteredItems.length > 0 ? filteredItems : items || [])
-                    .length
-                }
-                itemsPerPage={itemsPerPage}
-              />
+          <Pagination
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            totalItems={
+              (filteredItems.length > 0 ? filteredItems : items || [])
+                .length
+            }
+            itemsPerPage={itemsPerPage}
+          />
 
-              <ItemDetailModal
-                isOpen={isDetailModalOpen}
-                onOpenChange={setIsDetailModalOpen}
-                item={selectedItem}
-              />
+          <ItemDetailModal
+            isOpen={isDetailModalOpen}
+            onOpenChange={setIsDetailModalOpen}
+            item={selectedItem}
+          />
 
-              <ClaimModal
-                isOpen={isClaimModalOpen}
-                onOpenChange={setIsClaimModalOpen}
-                item={selectedItem}
-              />
+          <ClaimModal
+            isOpen={isClaimModalOpen}
+            onOpenChange={setIsClaimModalOpen}
+            item={selectedItem}
+          />
 
-              <ReportModal
-                isOpen={isReportModalOpen}
-                onOpenChange={setIsReportModalOpen}
-                itemId={selectedItem?.id || null}
-              />
+          <ReportModal
+            isOpen={isReportModalOpen}
+            onOpenChange={setIsReportModalOpen}
+            itemId={selectedItem?.id || null}
+          />
 
-              <Chatbot />
-            </div>
-          )}
+          <Chatbot />
         </div>
-      </div>
-    </>
+      )}
+    </div>
   );
 };
 

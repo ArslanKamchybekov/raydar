@@ -1,23 +1,22 @@
-"use client";
+"use client"
 
-import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Trash2, Bell, Plus, Loader2 } from "lucide-react";
-import { Categories, Locations, Brands, Colors, Materials, Weather } from "@/utils/constants";
-import { createAlert, deleteAlert, toggleAlert, getAlerts } from "@/app/actions/alerts";
-import { toast } from "@/components/ui/use-toast";
-import { Alert } from "@/types/types";
-import { useUser } from "@clerk/nextjs";
-import Spinner from "@/components/spinner";
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Plus, Loader2 } from "lucide-react"
+import { Categories, Locations, Brands, Colors, Materials, Weather } from "@/utils/constants"
+import { createAlert, deleteAlert, toggleAlert, getAlerts } from "@/app/actions/alerts"
+import { toast } from "@/components/ui/use-toast"
+import type { Alert } from "@/types/types"
+import { useUser } from "@clerk/nextjs"
+import AlertList from "./_components/AlertList"
 
 const AlertsPage = () => {
-  const { user } = useUser();
-  const [alerts, setAlerts] = useState<Alert[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user } = useUser()
+  const [alerts, setAlerts] = useState<Alert[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const [newAlert, setNewAlert] = useState<Alert>({
     id: "",
@@ -30,23 +29,23 @@ const AlertsPage = () => {
     size: "",
     material: "",
     weather: "",
-  });
+  })
 
   useEffect(() => {
-    fetchAlerts();
-  }, []);
+    fetchAlerts()
+  }, [])
 
   const fetchAlerts = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      const data = await getAlerts();
-      setAlerts(data);
+      const data = await getAlerts()
+      setAlerts(data)
     } catch (error) {
-      console.error("Error fetching alerts:", error);
+      console.error("Error fetching alerts:", error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleAddAlert = async () => {
     if (!newAlert.category || !newAlert.location) {
@@ -54,13 +53,13 @@ const AlertsPage = () => {
         title: "Error",
         description: "Category and Location are required",
         variant: "destructive",
-      });
-      return;
+      })
+      return
     }
 
     try {
-      setIsSubmitting(true);
-      const colorsString = Array.isArray(newAlert.colors) ? newAlert.colors.join(",") : newAlert.colors || "";
+      setIsSubmitting(true)
+      const colorsString = Array.isArray(newAlert.colors) ? newAlert.colors.join(",") : newAlert.colors || ""
 
       await createAlert(
         newAlert.category,
@@ -69,8 +68,8 @@ const AlertsPage = () => {
         colorsString,
         newAlert.size || "",
         newAlert.material || "",
-        newAlert.weather || ""
-      );
+        newAlert.weather || "",
+      )
 
       setNewAlert({
         id: "",
@@ -83,55 +82,55 @@ const AlertsPage = () => {
         size: "",
         material: "",
         weather: "",
-      });
+      })
 
       toast({
         title: "Success",
         description: "Alert created successfully",
-      });
+      })
 
-      fetchAlerts();
+      fetchAlerts()
     } catch (error) {
-      console.error("Error creating alert:", error);
+      console.error("Error creating alert:", error)
       toast({
         title: "Error",
         description: "Failed to create alert",
         variant: "destructive",
-      });
+      })
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   const handleDeleteAlert = async (id: string) => {
     try {
-      await deleteAlert(id);
+      await deleteAlert(id)
       toast({
         title: "Success",
         description: "Alert deleted successfully",
-      });
-      fetchAlerts();
+      })
+      fetchAlerts()
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to delete alert",
         variant: "destructive",
-      });
+      })
     }
-  };
+  }
 
   const handleToggleAlert = async (id: string) => {
     try {
-      await toggleAlert(id);
-      fetchAlerts();
+      await toggleAlert(id)
+      fetchAlerts()
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to toggle alert",
         variant: "destructive",
-      });
+      })
     }
-  };
+  }
 
   const selectFields = [
     { options: Categories, key: "category", label: "Category", required: true },
@@ -140,7 +139,7 @@ const AlertsPage = () => {
     { options: Colors, key: "colors", label: "Color", required: false },
     { options: Materials, key: "material", label: "Material", required: false },
     { options: Weather, key: "weather", label: "Weather", required: false },
-  ];
+  ]
 
   return (
     <main className="flex-1">
@@ -197,41 +196,11 @@ const AlertsPage = () => {
         </Card>
 
         {/* Active Alerts */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Active Alerts ({alerts.length})</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {alerts.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-8 text-gray-500">
-                <Bell className="h-12 w-12 mb-4 text-gray-300" />
-                <p className="text-sm">No alerts created yet.</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {alerts.map((alert) => (
-                  <div key={alert.id} className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <Switch checked={alert.enabled} onCheckedChange={() => handleToggleAlert(alert.id)} />
-                      <div className="grid grid-cols-2 gap-x-8 gap-y-1">
-                        <p className="text-sm font-semibold">{alert.category}</p>
-                        <p className="text-sm text-gray-600">{alert.location}</p>
-                        {alert.brand && <p className="text-sm text-gray-600">Brand: {alert.brand}</p>}
-                        {alert.colors && alert.colors.length > 0 && <p className="text-sm text-gray-600">Color: {alert.colors.join(", ")}</p>}
-                      </div>
-                    </div>
-                    <Button variant="ghost" size="icon" onClick={() => handleDeleteAlert(alert.id)} className="text-gray-500 hover:text-red-500">
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <AlertList alerts={alerts} onToggle={handleToggleAlert} onDelete={handleDeleteAlert} />
       </div>
     </main>
-  );
-};
+  )
+}
 
-export default AlertsPage;
+export default AlertsPage
+

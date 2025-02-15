@@ -12,6 +12,7 @@ import { ClaimStatus, Item } from "@/types/types"
 import { useUserData  } from "@/utils/hook/useUserData"
 import { useUser } from "@clerk/nextjs"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { toast } from "@/components/ui/use-toast"
 
 interface Message {
   id: string
@@ -58,8 +59,11 @@ const ClaimModal = ({ isOpen, onOpenChange, item }: ClaimModalProps) => {
       image,
       ClaimStatus.PENDING
     )
-
     onOpenChange(false)
+
+    toast({ title: "Success",
+      description: "Claim request submitted successfully"
+     })
   }
 
   const handleSendMessage = (e: React.FormEvent) => {
