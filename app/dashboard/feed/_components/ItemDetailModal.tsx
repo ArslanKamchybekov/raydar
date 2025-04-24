@@ -14,7 +14,7 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({ isOpen, onOpenChange,
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="w-full max-w-full sm:max-w-3xl h-[90vh] overflow-auto p-4 sm:p-6">
+      <DialogContent className="w-full max-w-full sm:max-w-3xl h-auto overflow-auto p-4 sm:p-6">
         <DialogHeader>
           <VisuallyHidden>
             <DialogTitle className="text-2xl">{item.category}</DialogTitle>
@@ -72,12 +72,6 @@ const ItemDetailModal: React.FC<ItemDetailModalProps> = ({ isOpen, onOpenChange,
               <div>
                 <h3 className="font-semibold">Weather When Found</h3>
                 <p>{item.weather}</p>
-              </div>
-            )}
-            {item.keywords?.length > 0 && (
-              <div>
-                <h3 className="font-semibold">Keywords</h3>
-                <p>{item.keywords.join(", ")}</p>
               </div>
             )}
           </div>

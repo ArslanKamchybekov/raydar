@@ -103,6 +103,8 @@ export async function uploadFoundItem(
       },
     });
 
+    console.log("Item created:", item);
+
     await checkMatch(item);
 
     return { ...item, image: urlData.publicUrl };

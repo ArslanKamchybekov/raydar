@@ -21,6 +21,8 @@ const FeedPage = () => {
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const itemsPerPage = 9;
+  
+  console.log("Items:", items);
 
   const handleItemClick = (item: Item) => {
     setSelectedItem(item);
