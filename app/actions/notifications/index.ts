@@ -14,6 +14,7 @@ export async function checkMatch(item: Item) {
 
     for (const alert of alerts) {
       if (isItemMatch(item, alert)) {
+        console.log("Item matches alert");
         await sendMatchNotification(alert, item);
       }
     }
@@ -23,8 +24,9 @@ export async function checkMatch(item: Item) {
 }
 
 function isItemMatch(item: Item, alert: Alert): boolean {
-  if (item.category !== alert.category || item.location !== alert.location) {
-    return false;
+  if (item.category === alert.category && item.location === alert.location) {
+    console.log("Item matches alert");
+    return true;
   }
 
   if (alert.brand && item.brand !== alert.brand) {
@@ -35,7 +37,7 @@ function isItemMatch(item: Item, alert: Alert): boolean {
     return false;
   }
 
-   if (alert.size && item.size !== alert.size) {
+  if (alert.size && item.size !== alert.size) {
     return false;
   }
 
@@ -43,11 +45,10 @@ function isItemMatch(item: Item, alert: Alert): boolean {
     return false;
   }
 
-    if (alert.weather && item.weather !== alert.weather) {
+  if (alert.weather && item.weather !== alert.weather) {
     return false;
   }
-
-  return true;
+  return false;
 }
 
 async function sendMatchNotification(alert: Alert, item: Item) {
@@ -64,16 +65,22 @@ async function sendMatchNotification(alert: Alert, item: Item) {
 
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
-      port: 587,
-      secure: false,
+      port: 465,
+      secure: true,
       auth: {
-        user: process.env.CONTACT_USER,
-        pass: process.env.CONTACT_PASSWORD,
+        user: "arslankamcybekov7@gmail.com",
+        pass: "hvxg mdfs bekl shfu",
       },
     });
 
+    // Verify SMTP connection before sending
+    await transporter.verify().catch((error) => {
+      console.error("SMTP Verification Error:", error);
+      throw new Error("SMTP configuration error");
+    });
+
     const mailOptions = {
-      from: `"Lost & Found" <${process.env.SMTP_USER}>`,
+      from: `"Lost & Found" <arslankamcybekov7@gmail.com>`,
       to: primaryEmail.emailAddress,
       subject: `Match Found: ${item.category} at ${item.location}`,
       html: `
@@ -114,8 +121,11 @@ async function sendMatchNotification(alert: Alert, item: Item) {
       `,
     };
 
-    await transporter.sendMail(mailOptions);
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent successfully:", info.messageId);
   } catch (error) {
     console.error("Error sending notification:", error);
+    // Re-throw the error so it can be handled by the caller
+    throw new Error(error instanceof Error ? error.message : "Failed to send email notification");
   }
 }

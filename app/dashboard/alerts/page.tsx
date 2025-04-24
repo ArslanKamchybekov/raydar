@@ -18,6 +18,8 @@ const AlertsPage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  console.log("Alerts:", alerts);
+
   const [newAlert, setNewAlert] = useState<Alert>({
     id: "",
     user_id: user?.id || "",

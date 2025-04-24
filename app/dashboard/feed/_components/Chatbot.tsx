@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { MessageCircle, Send, X } from 'lucide-react'
+import Image from 'next/image'
 
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false)
@@ -20,13 +21,13 @@ export default function Chatbot() {
           className="fixed bottom-4 right-4 rounded-full"
           onClick={toggleChat}
         >
-          <MessageCircle size={24} />
+          <Image src="/logo.png" alt="Chatbot" width={40} height={40} />
         </Button>
       )}
       {isOpen && (
-        <Card className="fixed bottom-4 right-4 w-1/4 h-3/4 flex flex-col">
+        <Card className="fixed bottom-4 right-4 w-[400px] h-3/4 flex flex-col">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Raydar AI</CardTitle>
+            <CardTitle>raydar-v1.0</CardTitle>
             <Button variant="ghost" size="icon" onClick={toggleChat}>
               <X size={24} />
             </Button>
