@@ -8,8 +8,8 @@ from storage3.exceptions import StorageApiError # type: ignore
 
 from text_extraction.main import predict_the_description_main
 from sketch_classifier.sketch_classifier import SketchClassifier
-from ai.processors.similarity_processor import SimilarityProcessor
-from ai.types.types import ProcessorConfig
+from text_extraction.processors.similarity_processor import SimilarityProcessor
+from text_extraction.custom_types import ProcessorConfig
 
 load_dotenv()
 storage = supabase.storage
