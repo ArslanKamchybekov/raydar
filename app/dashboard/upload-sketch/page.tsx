@@ -70,7 +70,9 @@ export default function UploadSketchPage() {
       }
 
       const data = await response.json();
-      setRelevantItems(data.images || []);
+      console.log(data);
+      console.log(data.images);
+      setRelevantItems(data.matches || []);
 
       toast({
         title: "Success",
