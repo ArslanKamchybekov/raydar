@@ -5,7 +5,7 @@ from torchvision import transforms
 from PIL import Image
 import matplotlib.pyplot as plt
 
-class_labels_path = 'classes.txt'  # Replace with the actual path to your class labels file
+class_labels_path = 'sketch_classifier/classes.txt'  # Replace with the actual path to your class labels file
 
 with open(class_labels_path, 'r') as file:
     class_labels = [line.strip() for line in file.readlines()]  # Read each line and strip any extra whitespace/newlines
@@ -15,11 +15,12 @@ print(class_labels[:10])  # Display the first 10 class labels
 
 # Load the pre-trained model architecture
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print("using device", device)
 model = models.resnet18(pretrained=False)  # Don't load the pre-trained weights
 model.fc = nn.Linear(model.fc.in_features, 250)  # Set to 250 classes (based on trained model)
 
 # Load the trained weights
-model.load_state_dict(torch.load('resnet18_trained_model.pth'))
+model.load_state_dict(torch.load('sketch_classifier/resnet18_trained_modelv3.pth'))
 model = model.to(device)  # Move to GPU if available
 model.eval()  # Set to evaluation mode (important!)
 
@@ -31,7 +32,7 @@ transform = transforms.Compose([
 ])
 
 
-image_path = 'headphone_drawing.jpg'  # Specify the path to the JPG image
+image_path = 'image.png'  # Specify the path to the JPG image
 image = Image.open(image_path).convert('RGB')  # Open and ensure it's RGB
 
 

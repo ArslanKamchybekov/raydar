@@ -1,11 +1,11 @@
 from typing import List, Dict, Optional
 import spacy
-from constants.colors import colors
-from constants.brands import brands
-from constants.categories import categories
-from constants.locations import locations
-from constants.materials import materials
-from constants.weather import weather
+from text_extraction.constants.colors import colors
+from text_extraction.constants.brands import brands
+from text_extraction.constants.categories import categories
+from text_extraction.constants.locations import locations
+from text_extraction.constants.materials import materials
+from text_extraction.constants.weather import weather
 
 nlp = spacy.load("en_core_web_sm")
 

@@ -1,4 +1,4 @@
-from processors.similarity_processor import SimilarityProcessor
+from text_extraction.processors.similarity_processor import SimilarityProcessor
 from dotenv import load_dotenv
 
 def predict_the_description_main(input_description, threshold=0.45):

@@ -9,8 +9,8 @@ load_dotenv()
 
 # Create Supabase client
 supabase = create_client(
-    os.getenv("SUPABASE_URL"),
-    os.getenv("SUPABASE_KEY")
+    os.getenv("NEXT_PUBLIC_SUPABASE_URL"),
+    os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
 )
 
 # Mock descriptions and additional data
